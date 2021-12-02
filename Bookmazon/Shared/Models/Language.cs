@@ -15,6 +15,6 @@ namespace Bookmazon.Shared.Models
         public string Fullname { get; set; }
     
         // Relationship
-        public virtual ICollection<Product> Products { get; set; }
+        public virtual ICollection<Book> Products { get; set; }
     }
 }

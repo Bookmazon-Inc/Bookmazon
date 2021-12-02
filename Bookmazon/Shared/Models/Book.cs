@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Bookmazon.Shared.Models
 {
-    public class Product
+    public class Book
     {
         [Key][StringLength(13)]
         public string ISBN { get; set; }
