@@ -15,17 +15,36 @@ namespace Bookmazon.Shared.Models
         //fluent API 2.Key
         public int InvoiceID { get; set; }
 
+
         [Required]
-        [StringLength(12)]
+        [StringLength(13)]
         public string ISBN { get; set; }
 
 
         [Required]
-        [StringLength()]
+        [StringLength(40)]
         public string ProductTitle { get; set; }
+
+
+        [Required]
         public int Amount { get; set; }
+
+
+        [Required]
+        [Column(TypeName ="decimal (18,4)")]
         public decimal NetPrice { get; set; }
+
+
+        [Required]
+        [Column(TypeName = "decimal (18,4)")]
         public decimal GrossPrice { get; set; }
+
+
+        [Required]
+        [Range(0,100)]
         public int Discount { get; set; }
+
+        // 1:n Relation
+        public Invoice Invoice { get; set; }
     }
 }
