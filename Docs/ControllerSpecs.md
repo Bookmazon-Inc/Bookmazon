@@ -18,6 +18,6 @@
 - 404 NotFound - no entity to update
 - 400 BadRequest - ModelsState invalid
 
-### Delete ``[HttpDelete] /{id}``
+### Delete ``[HttpDelete] - /{id}``
 - 404 NotFound - Not entity to delete
 - 204 NoContet - Deleted
