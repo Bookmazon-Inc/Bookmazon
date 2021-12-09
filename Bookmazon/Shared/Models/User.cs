@@ -51,7 +51,7 @@ namespace Bookmazon.Shared.Models
 
 
         //Relation
-        public UserType UserType { get; set; }
+        public virtual UserType UserType { get; set; }
         public virtual ICollection<CustomerOrder> CustomerOrders { get; set;}
         public virtual ICollection<Roles> Roles { get; set; }
 

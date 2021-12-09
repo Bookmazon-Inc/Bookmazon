@@ -25,14 +25,14 @@ namespace Bookmazon.Server.Data
 
             //Cascade Behaviour
             modelbuilder.Entity<Invoice>().HasOne(s => s.InvoiceState).WithMany(s => s.Invoices).OnDelete(DeleteBehavior.Restrict);
-            modelbuilder.Entity<InvoicePosition>().HasOne(s => s.Invoice).WithMany(s => s.InvoicePositions).OnDelete(DeleteBehavior.Restrict);
+            modelbuilder.Entity<InvoicePosition>().HasOne(s => s.Invoices).WithMany(s => s.InvoicePositions).OnDelete(DeleteBehavior.Restrict);
 
             //Setting Schema
 
             //Invoice Schema
             modelbuilder.Entity<Invoice>().ToTable("Invoice", "inv");
-            modelbuilder.Entity<InvoicePosition>().ToTable("Invoice", "inv");
-            modelbuilder.Entity<InvoiceState>().ToTable("Invoice", "inv");
+            modelbuilder.Entity<InvoicePosition>().ToTable("InvoicePosition", "inv");
+            modelbuilder.Entity<InvoiceState>().ToTable("InvoiceState", "inv");
 
 
         }

@@ -46,6 +46,7 @@ namespace Bookmazon.Server.Data
 
             //Cascade Restrictions
             modelbuilder.Entity<Storage>().HasOne(s => s.StorageLocation).WithMany(s => s.Storage).OnDelete(DeleteBehavior.Restrict);
+            modelbuilder.Entity<Storage>().HasOne(s => s.Book).WithMany(s => s.Storage).OnDelete(DeleteBehavior.Restrict);
 
             modelbuilder.Entity<SupplyOrder>().HasOne(s => s.Supplier).WithMany(s => s.SupplyOrders).OnDelete(DeleteBehavior.Restrict);
             modelbuilder.Entity<SupplyOrder>().HasOne(s => s.SupplyOrderState).WithMany(s => s.SupplyOrders).OnDelete(DeleteBehavior.Restrict);

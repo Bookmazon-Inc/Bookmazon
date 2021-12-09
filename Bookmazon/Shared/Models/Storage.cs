@@ -12,6 +12,7 @@ namespace Bookmazon.Shared.Models
     {
         [Key]
         [StringLength(13)]
+        [ForeignKey("Book")]
         public string ISBN { get; set; }   
         
         [Key]
@@ -24,6 +25,7 @@ namespace Bookmazon.Shared.Models
 
 
         //1:n Relation
-        public StorageLocation StorageLocation { get; set; }    
+        public virtual StorageLocation StorageLocation { get; set; }    
+        public virtual Book Book { get; set; }
     }
 }

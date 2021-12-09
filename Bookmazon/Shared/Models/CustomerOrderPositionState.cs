@@ -21,6 +21,6 @@ namespace Bookmazon.Shared.Models
         public string? Notes { get; set; }
 
 
-        public ICollection<CustomerOrderPosition>?  CustomerOrderPositions { get; set; }
+        public virtual ICollection<CustomerOrderPosition>?  CustomerOrderPositions { get; set; }
     }
 }
