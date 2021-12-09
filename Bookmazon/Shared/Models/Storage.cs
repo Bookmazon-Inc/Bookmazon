@@ -14,7 +14,8 @@ namespace Bookmazon.Shared.Models
         [StringLength(13)]
         public string ISBN { get; set; }   
         
-        //2. Key in Fluent API
+        [Key]
+        [ForeignKey("StorageLocation")]
         public int StorageLocationID { get; set; } 
 
 

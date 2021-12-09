@@ -1,4 +1,7 @@
-using Microsoft.AspNetCore.ResponseCompression;
+﻿using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Bookmazon.Server.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +9,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+
+builder.Services.AddDbContext<DBInvoiceContext>(options =>
+
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DBInvoiceContext")));
+
+builder.Services.AddDbContext<DBContext>(options =>
+
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DBContext")));
 
 var app = builder.Build();
 

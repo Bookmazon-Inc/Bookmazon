@@ -87,5 +87,7 @@ namespace Bookmazon.Shared.Models
 
         // 1:n relations 
         public InvoiceState InvoiceState { get; set; }
+
+        public ICollection<InvoicePosition> InvoicePositions { get; set; }
     }
 }

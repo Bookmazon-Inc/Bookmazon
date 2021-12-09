@@ -11,12 +11,15 @@ namespace Bookmazon.Shared.Models
     {
         public int CustomerOrderStateId { get; set; }
 
+
         [Required]
         [StringLength(50)]
         public string Title { get; set; }
 
+
         [StringLength(100)]
         public string? Notes { get; set; }
+
 
         public ICollection<CustomerOrder>? CustomerOrders { get; set; }
     }

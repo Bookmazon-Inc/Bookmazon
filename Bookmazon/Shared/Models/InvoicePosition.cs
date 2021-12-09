@@ -12,7 +12,10 @@ namespace Bookmazon.Shared.Models
     {
         [Key]
         public int InvoicePositionID { get; set; }
-        //fluent API 2.Key
+        
+
+        [Key]
+        [ForeignKey("Invoice")]
         public int InvoiceID { get; set; }
 
 
