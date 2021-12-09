@@ -7,7 +7,7 @@ namespace Bookmazon.Server.Interfaces.Repos
         #region User
         // Get
         Task<IEnumerable<User>> GetAllUsers();
-        Task<User> GetUser(int userId);
+        Task<User?> GetUser(int userId);
 
         // Set
         void AddUser(User user);

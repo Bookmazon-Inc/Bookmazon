@@ -8,7 +8,7 @@ namespace Bookmazon.Server.Interfaces.Repos
         #region CustomerOrder
         // Get
         Task<IEnumerable<CustomerOrder>> GetAllCustomerOrders(ICustomerOrderFilter? customerOrderFilter);
-        Task<CustomerOrder> GetCustomerOrder(int CustomerOrderId);
+        Task<CustomerOrder?> GetCustomerOrder(int CustomerOrderId);
 
         // Set
         void AddCustomerOrder(CustomerOrder customerOrder);

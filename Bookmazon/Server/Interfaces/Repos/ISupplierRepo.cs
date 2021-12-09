@@ -6,7 +6,7 @@ namespace Bookmazon.Server.Interfaces.Repos
     {
         // Get 
         Task<IEnumerable<Supplier>> GetAllSuppliers();
-        Task<Supplier> GetSupplier(int supplierId);
+        Task<Supplier?> GetSupplier(int supplierId);
 
         // Set
         void AddSupplier(Supplier supplier);
