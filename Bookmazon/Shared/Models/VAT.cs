@@ -10,10 +10,10 @@ namespace Bookmazon.Shared.Models
     public class VAT
     {
         [Key]
-        public int VATId { get; set; }
+        public int VATID { get; set; }
         public int VATPercentage { get; set; }
     
         // Relationship
-        public virtual ICollection<Book> Products { get; set; }
+        public virtual ICollection<Book> Books { get; set; }
     }
 }

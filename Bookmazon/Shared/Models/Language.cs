@@ -11,10 +11,14 @@ namespace Bookmazon.Shared.Models
     {
         [Key][StringLength(2)]
         public string LanguageCode { get; set; }
+
+
         [Required][StringLength(50)]
-        public string Fullname { get; set; }
+        public string FullName { get; set; }
+
+
     
         // Relationship
-        public virtual ICollection<Book> Products { get; set; }
+        public virtual ICollection<Book> Books { get; set; }
     }
 }

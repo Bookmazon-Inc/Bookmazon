@@ -10,13 +10,19 @@ namespace Bookmazon.Shared.Models
     public class Supplier
     {
         [Key]
-        public int SupplierId { get; set;}
+        public int SupplierID { get; set;}
+
+
         [Required][StringLength(50)]
         public string Title { get; set; }
+
+
         [StringLength(400)]
         public string? Notes { get; set; }
 
         // (n:m) Relationship
-        public virtual ICollection<Book> Products { get; set; }  
+        public virtual ICollection<Book> Books { get; set; } 
+        
+        public virtual ICollection<SupplyOrder> SupplyOrders { get; set; }
     }
 }
