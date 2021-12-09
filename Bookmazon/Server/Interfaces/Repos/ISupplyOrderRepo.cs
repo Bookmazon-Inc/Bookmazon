@@ -1,4 +1,5 @@
-﻿using Bookmazon.Shared.Models;
+﻿using Bookmazon.Server.Interfaces.Filter;
+using Bookmazon.Shared.Models;
 
 namespace Bookmazon.Server.Interfaces.Repos
 {
