@@ -16,7 +16,6 @@ namespace Bookmazon.Server.Interfaces.Repos
 
         #endregion
 
-
         #region VAT
         Task<VAT?> GetVAT(int VATID);
         Task<ICollection<VAT>> GetAllVATs();
@@ -26,7 +25,7 @@ namespace Bookmazon.Server.Interfaces.Repos
 
         #endregion
 
-        #region language
+        #region Language
         Task<Language?> GetLanguage(string languageCode);
         Task<IEnumerable<Language>> GetAllLanguages();
         void AddLanguage(Language language);
@@ -34,7 +33,7 @@ namespace Bookmazon.Server.Interfaces.Repos
         void DeleteLanguage(Language language);
         #endregion
 
-        #region Ganre
+        #region Genre
         Task<Genre?> GetGenre(int genreId);
         Task<IEnumerable<Genre>> GetAllGenre();
         void AddGenre(Genre genre);

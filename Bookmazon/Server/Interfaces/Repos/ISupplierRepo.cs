@@ -4,6 +4,8 @@ namespace Bookmazon.Server.Interfaces.Repos
 {
     public interface ISupplierRepo
     {
+
+        #region Supplier
         // Get 
         Task<IEnumerable<Supplier>> GetAllSuppliers();
         Task<Supplier?> GetSupplier(int supplierId);
@@ -13,5 +15,7 @@ namespace Bookmazon.Server.Interfaces.Repos
         void ConnectSupplierToBook(int supplierId, string ISBN);
         void UpdateSupplier(Supplier supplier);
         void RemoveSupplier(Supplier supplier);
+
+        #endregion
     }
 }
