@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Bookmazon.Server.Data;
@@ -10,6 +12,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Bookmazon API", Version = "V1" });
+
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+});
+
 builder.Services.AddDbContext<DBInvoiceContext>(options =>
 
     options.UseSqlServer(builder.Configuration.GetConnectionString("DBInvoiceContext")));
@@ -17,6 +29,7 @@ builder.Services.AddDbContext<DBInvoiceContext>(options =>
 builder.Services.AddDbContext<DBContext>(options =>
 
     options.UseSqlServer(builder.Configuration.GetConnectionString("DBContext")));
+
 
 var app = builder.Build();
 
@@ -39,6 +52,9 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.MapRazorPages();
 app.MapControllers();
