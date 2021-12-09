@@ -12,9 +12,11 @@ namespace Bookmazon.Shared.Models
     {
         [Key]
         [StringLength(13)]
+        [ForeignKey("Book")]
         public string ISBN { get; set; }   
         
-        //2. Key in Fluent API
+        [Key]
+        [ForeignKey("StorageLocation")]
         public int StorageLocationID { get; set; } 
 
 
@@ -23,6 +25,7 @@ namespace Bookmazon.Shared.Models
 
 
         //1:n Relation
-        public StorageLocation StorageLocation { get; set; }    
+        public virtual StorageLocation StorageLocation { get; set; }    
+        public virtual Book Book { get; set; }
     }
 }

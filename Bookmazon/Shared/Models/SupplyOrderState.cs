@@ -10,12 +10,12 @@ namespace Bookmazon.Shared.Models
     public class SupplyOrderState
     {
         [Key]
-        public int SupplayOrderStateId { get; set; }
+        public int SupplayOrderStateID { get; set; }
 
         [Required]
         [StringLength(50)]
         public string Title { get; set; }
 
-        public ICollection<SupplyOrder> SupplyOrders { get; set; }
+        public virtual ICollection<SupplyOrder> SupplyOrders { get; set; }
     }
 }

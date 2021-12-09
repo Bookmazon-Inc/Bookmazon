@@ -43,14 +43,16 @@ namespace Bookmazon.Shared.Models
 
         [Required] 
         [StringLength(32)]
-        public string Salt { get; set; }  
-        
+        public string Salt { get; set; }
 
         [Required]
+        [ForeignKey("UserType")]
         public int UserTypeID { get; set; }
 
 
-        //n:m Relation
+        //Relation
+        public virtual UserType UserType { get; set; }
+        public virtual ICollection<CustomerOrder> CustomerOrders { get; set;}
         public virtual ICollection<Roles> Roles { get; set; }
 
     }

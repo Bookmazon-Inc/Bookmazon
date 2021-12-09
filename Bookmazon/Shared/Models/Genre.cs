@@ -11,12 +11,18 @@ namespace Bookmazon.Shared.Models
     {
         [Key]
         public int GenreId { get; set; }
+
+
         [Required][StringLength(50)]
         public string Title { get; set; }
+
+
         [StringLength(400)]
         public string? Notes { get; set; }
+
+
     
         // Relationship
-        public virtual ICollection<Book> Products { get; set; }  
+        public virtual ICollection<Book> Books { get; set; }  
     }
 }

@@ -12,7 +12,9 @@ namespace Bookmazon.Shared.Models
     {
         [Key]
         public int InvoicePositionID { get; set; }
-        //fluent API 2.Key
+        
+
+        [ForeignKey("Invoice")]
         public int InvoiceID { get; set; }
 
 
@@ -44,7 +46,9 @@ namespace Bookmazon.Shared.Models
         [Range(0,100)]
         public int Discount { get; set; }
 
+
+
         // 1:n Relation
-        public Invoice Invoice { get; set; }
+        public virtual Invoice Invoices { get; set; }
     }
 }

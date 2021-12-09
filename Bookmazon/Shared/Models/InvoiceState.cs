@@ -22,5 +22,7 @@ namespace Bookmazon.Shared.Models
         [StringLength(50)]
         public string? Notes { get; set; }
 
+        public virtual ICollection<Invoice> Invoices { get; set; }
+
     }
 }

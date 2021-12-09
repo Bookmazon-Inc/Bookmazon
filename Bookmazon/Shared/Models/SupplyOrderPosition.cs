@@ -10,9 +10,12 @@ namespace Bookmazon.Shared.Models
 {
     public class SupplyOrderPosition
     {
-        public int SuppllyOrderId { get; set; }
+        [Key]
+        [ForeignKey("SupplyOrder")]
+        public int SuppllyOrderID { get; set; }
 
-        public int SupplayOrderPositionId { get; set; }
+        [Key]
+        public int SupplayOrderPositionID { get; set; }
 
         [Required()]
         public int Amount { get; set; }
@@ -23,9 +26,14 @@ namespace Bookmazon.Shared.Models
         [Range(0, 100)]
         public int Discount { get; set; }
 
-        public int SupllyOrderPositionStateId { get; set; }
+        [ForeignKey("SupplyOrderPositionState")]
+        public int SupplyOrderPositionStateID { get; set; }
+
+
 
         public virtual SupplyOrderPositionState SupplyOrderPositionState { get; set; }
         public virtual SupplyOrder SupplyOrder { get; set; }
+
+        public virtual Book Books { get; set; }
     }
 }

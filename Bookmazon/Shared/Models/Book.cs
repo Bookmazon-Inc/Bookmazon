@@ -12,27 +12,56 @@ namespace Bookmazon.Shared.Models
     {
         [Key][StringLength(13)]
         public string ISBN { get; set; }
+
+
         [Required][StringLength(120)]
         public string Title { get; set; }
+
+
         [Required][StringLength(800)]
         public string Description { get; set; }
+
+
         [Required][StringLength(2000)]
         public string PictureURL { get; set; }
+
+
         [Required][StringLength(400)]
         public string? Notes { get; set; }
 
+
+
         // Relationship Fields
+        [ForeignKey("Language")]
         [StringLength(2)]
         public string LanguageCode { get; set; }
-        public int GenreId { get; set; }
-        public int PublisherId { get; set; }
-        public int VATId { get; set; }
+
+
+        [ForeignKey("Genre")]
+        public int GenreID { get; set; }
+
+
+        [ForeignKey("Publisher")]
+        public int PublisherID { get; set; }
+
+
+        [ForeignKey("VAT")]
+        public int VATID { get; set; }
+
     
         // Objects (1:n relationship)
         public Language Language { get; set; }
+
         public Genre Genre { get; set; }
+
         public Publisher Publisher { get; set; }
+
         public VAT VAT { get; set; }
+
+
+        public virtual ICollection<CustomerOrderPosition> CustomerOrderPositions { get; set;}
+        public virtual ICollection<SupplyOrderPosition> SupplyOrderPositions { get; set;}
+        public virtual ICollection<Storage> Storage { get; set;}
 
         // Lists (n:m relationship)
         public virtual ICollection<Supplier> Suppliers { get; set; } 

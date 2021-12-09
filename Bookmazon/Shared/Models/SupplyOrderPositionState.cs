@@ -9,7 +9,8 @@ namespace Bookmazon.Shared.Models
 {
     public class SupplyOrderPositionState
     {
-        public int SupplayOrderPositionStateId { get; set; }
+        [Key]
+        public int SupplayOrderPositionStateID { get; set; }
 
         [Required]
         [StringLength(50)]

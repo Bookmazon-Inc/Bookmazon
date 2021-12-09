@@ -10,25 +10,41 @@ namespace Bookmazon.Shared.Models
 {
     public class CustomerOrderPosition
     {
-        public int CustomerOrderId { get; set; }
-        public int CustomerOrderPositionId { get; set; }
+        [Key]
+        public int CustomerOrderPositionID { get; set; }
+
+
+        [Key]
+        [ForeignKey("CustomerOrder")]
+        public int CustomerOrderID { get; set; }
+
+
+        [ForeignKey("CustomerOrderPositionState")]
+        public int CustomerOrderPositionStateID { get; set; }
+
 
         [Required]
         public int Amount { get; set; }
 
+        [ForeignKey("Book)")]
         [Required]
         [StringLength(13)]
         public string ISBN { get; set; }
+
 
         [Required]
         [Column(TypeName = "decimal(18, 4)")]
         public decimal Price { get; set; }
 
+
         public int Discount { get; set; }
 
 
-        public virtual CustomerOrderPositionState? CustomerOrderPositionState { get; set; }
 
+        //Relations
+        public virtual CustomerOrderPositionState? CustomerOrderPositionState { get; set; }
         public virtual CustomerOrder CustomerOrder { get; set; }
+
+        public virtual Book Books { get; set; }
     }
 }

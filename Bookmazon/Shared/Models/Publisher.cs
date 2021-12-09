@@ -11,10 +11,14 @@ namespace Bookmazon.Shared.Models
     {
         [Key]
         public int PublisherId { get; set; }
+
+
         [Required][StringLength(50)]
         public string PublisherName { get; set; }
+
+
     
         // Relationship
-        public virtual ICollection<Book> Products { get; set; }
+        public virtual ICollection<Book> Books { get; set; }
     }
 }

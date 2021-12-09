@@ -18,5 +18,7 @@ namespace Bookmazon.Shared.Models
         [StringLength(50)]
         public string LocationName { get; set; }    
 
+        public virtual ICollection<Storage> Storage { get; set; }
+
     }
 }
