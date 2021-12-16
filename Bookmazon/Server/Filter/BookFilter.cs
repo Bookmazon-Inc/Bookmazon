@@ -8,7 +8,7 @@ namespace Bookmazon.Server.Filter
         public BookFilter()
         {
             AddFilter(new SelectFilter<int> { PropertyName = nameof(Book.GenreID)});
-            AddFilter(new RangeFilter { PropertyName = nameof(Book.Price)});
+            //AddFilter(new RangeFilter { PropertyName = nameof(Book.Price)});
         }
     }
 }
