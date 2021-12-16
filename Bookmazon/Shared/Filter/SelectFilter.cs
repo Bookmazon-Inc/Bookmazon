@@ -65,7 +65,7 @@ namespace  Bookmazon.Shared.Filter
                 .Select(s => {
                     try
                     {
-                        return Convert.ChangeType(s, typeof(T));
+                        return Convert.ChangeType(s, typeof(TValues));
                     } catch  (Exception ex){
                         return null;
                     }
