@@ -59,6 +59,7 @@ namespace Bookmazon.Server.Repos
         /// </summary>
         /// <param name="userId">The Id of the user to connect to</param>
         /// <param name="roleID">THe Id of the role which should be connected to the user</param>
+        /// /// <exception cref="EntityNotFoundException">This exception will be throw if no role or user has been found</exception>
         public void ConnectUserToRole(int userId, int roleId)
         {
             User user = _dbc.Users.Find(userId);
@@ -70,6 +71,12 @@ namespace Bookmazon.Server.Repos
 
             user.Roles.Add(role);
         }
+        /// <summary>
+        /// Removes the connection between a role and a user
+        /// </summary>
+        /// <param name="userId">The Id of the user</param>
+        /// <param name="roleId">The Id of the role</param>
+        /// <exception cref="EntityNotFoundException">This exception will be throw if no role or user has been found</exception>
         public void RemoveUserFromRole (int userId, int roleId)
         {
             User user = _dbc.Users.Find(userId);
@@ -98,7 +105,6 @@ namespace Bookmazon.Server.Repos
             _dbc.Remove(user);
         }
         #endregion
-
 
         #region Roles
         // Get
@@ -150,7 +156,10 @@ namespace Bookmazon.Server.Repos
         }
         #endregion
 
+
+
         #region Helper Functions
+        // TODO: Talk about this section of code and decide how to do this 
         /// <summary>
         /// Hashes a password
         /// </summary>
@@ -164,7 +173,8 @@ namespace Bookmazon.Server.Repos
         /// <summary>
         /// Verifies if a password is hashed correctly
         /// </summary>
-        /// <param name="hpwd">The hashed passw</param>
+        /// <param name="hpwd">The hashed pwd</param>
+        /// <param name="user">The user to check the pwd</param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
         public bool VerifyPwd(string hpwd, User user)

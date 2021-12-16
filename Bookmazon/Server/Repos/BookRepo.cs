@@ -1,4 +1,5 @@
 ﻿using Bookmazon.Server.Data;
+using Bookmazon.Server.Exceptions;
 using Bookmazon.Server.Interfaces.Filter;
 using Bookmazon.Server.Interfaces.Repos;
 using Bookmazon.Shared.Models;
@@ -115,37 +116,227 @@ namespace Bookmazon.Server.Repos
         #endregion
 
         #region Language
-        Task<Language?> GetLanguage(string languageCode);
-        Task<IEnumerable<Language>> GetAllLanguages();
-        void AddLanguage(Language language);
-        void UpdateLanguage(Language language);
-        void DeleteLanguage(Language language);
+        /// <summary>
+        /// Returns a specific Langage based on the languagecode
+        /// </summary>
+        /// <param name="languageCode">The 2 character long langagecode (Example: DE => german, EN => english)</param>
+        /// <returns>Task of a language (async)</returns>
+        public async Task<Language?> GetLanguage(string languageCode)
+        {
+            return await _dbc.Languages.FindAsync(languageCode);
+        }
+        /// <summary>
+        /// Returns all langages in th database
+        /// </summary>
+        /// <returns>Task of IEnum of Languages (async)</returns>
+        public async Task<IEnumerable<Language>> GetAllLanguages()
+        {
+            var query = from l in _dbc.Languages
+                        select l;
+
+            return await query.ToArrayAsync();
+        }
+        /// <summary>
+        /// Adds a new language to the database
+        /// </summary>
+        /// <param name="language">The language to add</param>
+        public void AddLanguage(Language language)
+        {
+            _dbc.Languages.Add(language);
+        }
+        /// <summary>
+        /// Updates the values of a language
+        /// </summary>
+        /// <param name="language">The language to update</param>
+        public void UpdateLanguage(Language language)
+        {
+            _dbc.Languages.Update(language);
+        }
+        /// <summary>
+        /// Removes a language from the database
+        /// </summary>
+        /// <param name="language">The language to remove</param>
+        public void DeleteLanguage(Language language)
+        {
+            _dbc.Languages.Remove(language);
+        }
         #endregion
 
         #region Genre
-        Task<Genre?> GetGenre(int genreId);
-        Task<IEnumerable<Genre>> GetAllGenre();
-        void AddGenre(Genre genre);
-        void UpdateGenre(Genre genre);
-        void DeleteGenre(Genre genre);
+        /// <summary>
+        /// Gets a specific genre from the database
+        /// </summary>
+        /// <param name="genreId">The id to look for</param>
+        /// <returns></returns>
+        public async Task<Genre?> GetGenre(int genreId)
+        {
+            return await _dbc.Genres.FindAsync(genreId);
+        }
+        /// <summary>
+        /// Returns all Genres from the database 
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<Genre>> GetAllGenre()
+        {
+            var query = from g in _dbc.Genres
+                        select g;
+
+            return await query.ToArrayAsync();
+        }
+        
+        /// <summary>
+        /// Adds a new Genre to the database
+        /// </summary>
+        /// <param name="genre">The genre to add</param>
+        public void AddGenre(Genre genre) 
+        { 
+            _dbc.Genres.Add(genre); 
+        }
+        /// <summary>
+        /// Updates the values of a genre
+        /// </summary>
+        /// <param name="genre">The genre to update</param>
+        public void UpdateGenre(Genre genre) 
+        { 
+            _dbc.Genres.Update(genre); 
+        }
+        /// <summary>
+        /// Removes a genre from the database
+        /// </summary>
+        /// <param name="genre">The genre to remove</param>
+        public void DeleteGenre(Genre genre)
+        {
+            _dbc.Genres.Remove(genre);
+        }
         #endregion
 
         #region Author
-        Task<Author?> GetAuthor(int authorId);
-        Task<IEnumerable<Author>> GetAllAuthor();
-        void AddAuthor(Author author);
-        void ConnectAuthorToBook(string ISBN, int AuthorId);
-        void RemoveAuthorFromBook(string ISBN, int AuthorId);
-        void UpdateAuthor(Author author);
-        void DeleteAuthor(Author author);
+        /// <summary>
+        /// Returns a specific author from the database
+        /// </summary>
+        /// <param name="authorId">The Id of the Author</param>
+        /// <returns></returns>
+        public async Task<Author?> GetAuthor(int authorId)
+        {
+            return await _dbc.Authors.FindAsync(authorId); 
+        }
+        /// <summary>
+        /// Returns all Authors that are in the database
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<Author>> GetAllAuthor()
+        {
+            var query = from a in _dbc.Authors
+                        select a;
+
+            return await query.ToArrayAsync();
+        }
+
+        /// <summary>
+        /// Adds an author to the database
+        /// </summary>
+        /// <param name="author"></param>
+        public void AddAuthor(Author author)
+        {
+            _dbc.Authors.Add(author);
+        }
+        /// <summary>
+        /// Connects a Author with a book via an intermediate table 
+        /// </summary>
+        /// <param name="ISBN"></param>
+        /// <param name="AuthorId"></param>
+        /// <exception cref="EntityNotFoundException">This exception will be throw if no book or Author has been found</exception>
+        public void ConnectAuthorToBook(string ISBN, int AuthorId)
+        {
+            Book book = _dbc.Books.Find(ISBN);
+            Author author = _dbc.Authors.Find(AuthorId);
+
+            // Check if Role and User exist
+            if (book == null) throw new EntityNotFoundException(nameof(book));
+            if (author == null) throw new EntityNotFoundException(nameof(author));
+
+            author.Books.Add(book);
+        }
+        /// <summary>
+        /// Removes the connection between an author and an book
+        /// </summary>
+        /// <param name="ISBN"></param>
+        /// <param name="AuthorId"></param>
+        /// <exception cref="EntityNotFoundException">This exception will be throw if no book or Author has been found</exception>
+        public void RemoveAuthorFromBook(string ISBN, int AuthorId)
+        {
+            Book book = _dbc.Books.Find(ISBN);
+            Author author = _dbc.Authors.Find(AuthorId);
+
+            // Check if Role and User exist
+            if (book == null) throw new EntityNotFoundException(nameof(book));
+            if (author == null) throw new EntityNotFoundException(nameof(author));
+
+        }
+        /// <summary>
+        /// Updates the values of an author
+        /// </summary>
+        /// <param name="author">The author to update</param>
+        public void UpdateAuthor(Author author) 
+        { 
+            _dbc.Authors.Update(author);
+        }
+        /// <summary>
+        /// Removes an Author from the database
+        /// </summary>
+        /// <param name="author">The author to remove</param>
+        public void DeleteAuthor(Author author)
+        {
+            _dbc.Authors.Remove(author);
+        }
         #endregion
 
         #region Publisher
-        Task<Publisher?> GetPublisher(int publisherId);
-        Task<IEnumerable<Publisher>> GetAllPublisher();
-        void AddPublisher(Publisher publisher);
-        void UpdatePublisher(Publisher publisher);
-        void DeletePublisher(Publisher publisher);
+        /// <summary>
+        /// Gets a specific publisher from the databse
+        /// </summary>
+        /// <param name="publisherId">the id of the publisher</param>
+        /// <returns></returns>
+        public async Task<Publisher?> GetPublisher(int publisherId)
+        {
+            return await _dbc.Publishers.FindAsync(publisherId);
+        }
+        /// <summary>
+        /// Returns all publishers from the database
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<Publisher>> GetAllPublisher()
+        {
+            var query = from p in _dbc.Publishers
+                        select p;
+
+            return await query.ToArrayAsync();
+        }
+
+        /// <summary>
+        /// Adds a new publisher to the database
+        /// </summary>
+        /// <param name="publisher">The publisher to add</param>
+        public void AddPublisher(Publisher publisher)
+        {
+            _dbc.Publishers.Add(publisher);
+        }
+        /// <summary>
+        /// Updates the values of a publisher
+        /// </summary>
+        /// <param name="publisher">The publisher to update</param>
+        public void UpdatePublisher(Publisher publisher)
+        {
+            _dbc.Publishers.Update(publisher);
+        }
+        /// <summary>
+        /// Removes a Publisher from the database
+        /// </summary>
+        /// <param name="publisher">The publisher to remove</param>
+        public void DeletePublisher(Publisher publisher)
+        {
+            _dbc.Publishers.Remove(publisher);
+        }
         #endregion
     }
 }
