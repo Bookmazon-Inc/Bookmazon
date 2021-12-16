@@ -8,8 +8,6 @@ namespace Bookmazon.Server.Interfaces.Repos
         #region Book
         Task<Book?> GetBook(string ISBN);
         Task<IEnumerable<Book>> GetAllBooks(IBookFilter? bookFilter);
-        Task<IEnumerable<Book>> GetAllBooksWhere(Func<Book, bool> where);
-        Task<IEnumerable<Book>> SearchBookByTitle(string bookTitle, Func<Book, bool> where);
         void AddBook(Book book);
         void UpdateBook(Book book);
         void DeleteBook(Book book);
@@ -45,6 +43,8 @@ namespace Bookmazon.Server.Interfaces.Repos
         Task<Author?> GetAuthor(int authorId);
         Task<IEnumerable<Author>> GetAllAuthor();
         void AddAuthor(Author author);
+        void ConnectAuthorToBook(string ISBN, int AuthorId);
+        void RemoveAuthorFromBook(string ISBN, int AuthorId);
         void UpdateAuthor(Author author);
         void DeleteAuthor(Author author);
         #endregion

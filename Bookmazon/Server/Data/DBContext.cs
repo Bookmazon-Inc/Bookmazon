@@ -30,8 +30,9 @@ namespace Bookmazon.Server.Data
         public DbSet<StorageLocation> StorageLocations { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<SupplyOrder> SupplyOrders { get; set; }
-        public DbSet<SupplyOrderPosition> SupplyOrdersPositions { get; set;}
-        public DbSet<SupplyOrderPositionState> SupplyOrdersState { get; set;}
+        public DbSet<SupplyOrderState> SupplyOrderStates { get; set; }
+        public DbSet<SupplyOrderPosition> SupplyOrderPositions { get; set;}
+        public DbSet<SupplyOrderPositionState> SupplyOrderPositionStates { get; set;}
         public DbSet<User> Users { get; set; }
         public DbSet<UserType> UserTypes { get; set; }
         public DbSet<VAT> VAT { get; set; }
@@ -41,7 +42,7 @@ namespace Bookmazon.Server.Data
 
             //Multiple Primary Keys
             modelbuilder.Entity<Storage>().HasKey(k => new { k.ISBN, k.StorageLocationID });
-            modelbuilder.Entity<SupplyOrderPosition>().HasKey(k => new { k.SupplayOrderPositionID, k.SuppllyOrderID });
+            modelbuilder.Entity<SupplyOrderPosition>().HasKey(k => new { k.SupplyOrderPositionID, k.SuppllyOrderID });
             modelbuilder.Entity<CustomerOrderPosition>().HasKey(k => new { k.CustomerOrderPositionID, k.CustomerOrderID });
 
             //Cascade Restrictions

@@ -10,7 +10,7 @@ namespace Bookmazon.Shared.Models
     public class SupplyOrderState
     {
         [Key]
-        public int SupplayOrderStateID { get; set; }
+        public int SupplyOrderStateID { get; set; }
 
         [Required]
         [StringLength(50)]
