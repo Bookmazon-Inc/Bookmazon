@@ -7,28 +7,27 @@ namespace Bookmazon.Server.Interfaces.Repos
         #region Invoice
         Task<Invoice?> GetInvoice(int invoiceID);
         Task<IEnumerable<Invoice>> GetAllInvoices();
-        void AddGenre(Invoice invoice);
-        void UpdateGenre(Invoice invoice);
-        void DeleteGenre(Invoice invoice);
+        void AddInvoice(Invoice invoice);
+        void UpdateInvoice(Invoice invoice);
+        void DeleteInvoice(Invoice invoice);
 
         #endregion
 
         #region InvoicePositions
-        Task<InvoicePosition?> GetInvoicePosition(int invoicePositionID);
+        Task<InvoicePosition?> GetInvoicePosition(int invoicePositionID, int invoiceId);
         Task<IEnumerable<InvoicePosition>> GetAllInvoicePositions();
-        void AddGenre(InvoicePosition invoicePosition);
-        void UpdateGenre(InvoicePosition invoicePosition);
-        void DeleteGenre(InvoicePosition invoicePosition);
+        void AddInvoicePosition(InvoicePosition invoicePosition);
+        void UpdateInvoicePosition(InvoicePosition invoicePosition);
+        void DeleteInvoicePosition(InvoicePosition invoicePosition);
 
         #endregion
 
         #region InvoiceState
         Task<InvoiceState?> GetInvoiceState(int invoiceStateID);
         Task<IEnumerable<InvoiceState>> GetAllInvoicesStates();
-        void AddGenre(InvoiceState invoiceState);
-        void UpdateGenre(InvoiceState invoiceState);
-        void DeleteGenre(InvoiceState invoiceState);
-
+        void AddInvoiceState(InvoiceState invoiceState);
+        void UpdateInvoiceState(InvoiceState invoiceState);
+        void DeleteInvoiceState(InvoiceState invoiceState);
         #endregion
 
     }

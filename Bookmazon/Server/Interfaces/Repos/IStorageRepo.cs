@@ -7,7 +7,7 @@ namespace Bookmazon.Server.Interfaces.Repos
         #region Storage
         // Get
         Task<IEnumerable<Storage>> GetAllStorages();
-        Task<Storage?> GetStorage(string storageId);
+        Task<Storage?> GetStorage(string ISBN, int StorageLocationID);
         
         // Set
         void AddStorage(Storage storage);
@@ -18,7 +18,7 @@ namespace Bookmazon.Server.Interfaces.Repos
         #region StorageLocation
         // Get
         Task<IEnumerable<StorageLocation>> GetAllStorageLocations();
-        Task<StorageLocation> GetStorageLocation(string storageId);
+        Task<StorageLocation> GetStorageLocation(int StorageLocationID);
 
         // Set
         void AddStorageLocation(StorageLocation storageLocation);

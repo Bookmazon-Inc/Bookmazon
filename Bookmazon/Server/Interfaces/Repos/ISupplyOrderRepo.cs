@@ -24,13 +24,13 @@ namespace Bookmazon.Server.Interfaces.Repos
         // Set
         void AddSupplyOrderState(SupplyOrderState SupplyOrderState);
         void UpdateSupplyOrderState(SupplyOrderState SupplyOrderState);
-        void RemoveSupplyOrderState(SupplyOrderPositionState SupplyOrderPositionState);
+        void RemoveSupplyOrderState(SupplyOrderState SupplyOrderPosition);
         #endregion
 
         #region SupplyOrderPositions
         // Get
         Task<IEnumerable<SupplyOrderPosition>> GetAllSupplyOrderPositions();
-        Task<SupplyOrderPosition> GetSupplyOrderPosition(int SupplyOrderPositionId);
+        Task<SupplyOrderPosition> GetSupplyOrderPosition(int SupplyOrderPositionId, int SupplyOrderId);
 
         // Set
         void AddSupplyOrderPosition(SupplyOrderPosition SupplyOrderPosition);

@@ -15,7 +15,7 @@ namespace Bookmazon.Shared.Models
         public int SuppllyOrderID { get; set; }
 
         [Key]
-        public int SupplayOrderPositionID { get; set; }
+        public int SupplyOrderPositionID { get; set; }
 
         [Required()]
         public int Amount { get; set; }
