@@ -1,4 +1,4 @@
-﻿using Bookmazon.Server.Interfaces.Filter;
+﻿using Bookmazon.Server.Filter;
 using Bookmazon.Shared.Models;
 
 namespace Bookmazon.Server.Interfaces.Repos
@@ -7,7 +7,7 @@ namespace Bookmazon.Server.Interfaces.Repos
     {
         #region SupplyOrder
         // Get
-        Task<IEnumerable<SupplyOrder>> GetAllSupplyOrders(ISupplyOrderFilter? supplyOrderFilter);
+        Task<IEnumerable<SupplyOrder>> GetAllSupplyOrders(SupplyOrderFilter? supplyOrderFilter);
         Task<SupplyOrder?> GetSupplyOrder(int SupplyOrderId);
 
         // Set

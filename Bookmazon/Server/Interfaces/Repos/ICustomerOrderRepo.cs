@@ -1,4 +1,4 @@
-﻿using Bookmazon.Server.Interfaces.Filter;
+﻿using Bookmazon.Server.Filter;
 using Bookmazon.Shared.Models;
 
 namespace Bookmazon.Server.Interfaces.Repos
@@ -7,7 +7,7 @@ namespace Bookmazon.Server.Interfaces.Repos
     {
         #region CustomerOrder
         // Get
-        Task<IEnumerable<CustomerOrder>> GetAllCustomerOrders(ICustomerOrderFilter? customerOrderFilter);
+        Task<IEnumerable<CustomerOrder>> GetAllCustomerOrders(CustomerOrderFilter? customerOrderFilter);
         Task<CustomerOrder?> GetCustomerOrder(int CustomerOrderId);
 
         // Set

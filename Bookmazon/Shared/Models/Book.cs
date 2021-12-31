@@ -30,6 +30,17 @@ namespace Bookmazon.Shared.Models
         public string? Notes { get; set; }
 
 
+        [Required][Column(TypeName = "decimal(18, 4)")]
+        public decimal NetPriceSell { get; set; }
+
+
+        [Required][Column(TypeName = "decimal(18, 4)")]
+        public decimal PricePurchase { get; set; }
+
+        [NotMapped]
+        public decimal PriceSell => ((VAT.VATPercentage / 100) * NetPriceSell) + NetPriceSell; 
+        
+
 
         // Relationship Fields
         [ForeignKey("Language")]
