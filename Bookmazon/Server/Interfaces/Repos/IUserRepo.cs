@@ -26,16 +26,5 @@ namespace Bookmazon.Server.Interfaces.Repos
         void UpdateRole(Roles role);
         void DeleteRole(Roles role);
         #endregion
-
-        #region UserType
-        // Get 
-        Task<IEnumerable<UserType>> GetAllUserTypes();
-        Task<UserType> GetUserType(int typeId);
-
-        // Set
-        void AddUserType(UserType userType);
-        void UpdateUserType(UserType userType);
-        void DeleteUserType(UserType userType);
-        #endregion
     }
 }

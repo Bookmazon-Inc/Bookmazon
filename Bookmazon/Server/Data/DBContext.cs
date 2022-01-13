@@ -33,7 +33,6 @@ namespace Bookmazon.Server.Data
         public DbSet<SupplyOrderPosition> SupplyOrdersPositions { get; set;}
         public DbSet<SupplyOrderPositionState> SupplyOrdersState { get; set;}
         public DbSet<User> Users { get; set; }
-        public DbSet<UserType> UserTypes { get; set; }
         public DbSet<VAT> VAT { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelbuilder)
@@ -96,7 +95,6 @@ namespace Bookmazon.Server.Data
             //User Schema
             modelbuilder.Entity<Roles>().ToTable("Roles", "usr");
             modelbuilder.Entity<User>().ToTable("User", "usr");
-            modelbuilder.Entity<UserType>().ToTable("UserType", "usr");
 
         }
 

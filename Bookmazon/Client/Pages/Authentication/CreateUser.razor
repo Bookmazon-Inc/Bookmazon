@@ -2,7 +2,8 @@
 @using Bookmazon.Shared.Models
 @using Bookmazon.Client.ViewModels
 
-@inject RegisterViewModel _registerViewModel
+@*@inject HttpClient http*@
+@inject IRegisterViewModel _registerViewModel
 @inject NavigationManager _navigationManager
 
 
@@ -48,17 +49,10 @@
     <button class="btn btn-danger" @onclick="Save">Save</button>
 
 @code {
-
+    //RegisterViewModel _registerViewModel = new();
     protected async Task Save()
     {
-        try
-        {
-                await _registerViewModel.RegisterUser();
-        }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-
+        //await http.PostAsJsonAsync<User>("/user/registeruser", _registerViewModel);
+        await _registerViewModel.RegisterUser();
     }
 }

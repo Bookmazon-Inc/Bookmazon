@@ -13,10 +13,10 @@ namespace Bookmazon.Server.Controllers
     public class UserController : ControllerBase
     {
 
-        private readonly ILogger<WeatherForecastController> _logger;
+        private readonly ILogger<UserController> _logger;
         private readonly DBContext _context;
 
-        public UserController(ILogger<WeatherForecastController> logger, DBContext context)
+        public UserController(ILogger<UserController> logger, DBContext context)
         {
             _logger = logger;
             _context = context;
@@ -25,23 +25,32 @@ namespace Bookmazon.Server.Controllers
         [HttpPost("registeruser")]
         public async Task<ActionResult> RegisterUser(User user)
         {
-            try
+            var emailExists = _context.Users.Where(e => e.Email == user.Email).FirstOrDefault();
+            var userNameExists = _context.Users.Where(u => u.UserName == user.UserName).FirstOrDefault();
+            if (emailExists == null && userNameExists == null)
             {
-                var emailExists = _context.Users.Where(e => e.Email == user.Email).FirstOrDefault();
-                var userNameExists = _context.Users.Where(u => u.UserName == user.UserName).FirstOrDefault();
-                if (emailExists == null && userNameExists == null)
-                {
-                    user.Salt = GenerateSalt();
-                    user.Password = PasswordHash(user.Salt, user.Password);
-                    _context.Users.Add(user);
-                    Commit(_context);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
+                user.Salt = GenerateSalt();
+                user.Password = PasswordHash(user.Salt, user.Password);
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
             }
 
+            return Ok();
+        }
+
+        [HttpPost("loginuser")]
+        public async Task<ActionResult> LoginUser(User user)
+        {
+            var userExists = _context.Users.Where(u => u.UserName == user.UserName || u.Email == user.Email).FirstOrDefault();
+            if(userExists != null)
+            {
+                var password = PasswordHash(userExists.Salt, user.Password);
+
+                if(password == userExists.Password)
+                {
+
+                }
+            }
 
             return Ok();
         }
@@ -67,11 +76,6 @@ namespace Bookmazon.Server.Controllers
                 iterationCount: 10000,
                 numBytesRequested: 56));
             return hashedPassword;
-        }
-
-        public void Commit(DBContext context)
-        {
-            context.SaveChangesAsync();
         }
 
     }
