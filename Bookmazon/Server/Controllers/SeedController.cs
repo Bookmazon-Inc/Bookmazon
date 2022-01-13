@@ -16,7 +16,7 @@ namespace Bookmazon.Server.Controllers
         {
             _dbc = dbc;
         }
-
+        [HttpGet("SeedUP")]
         public void SeedUP()
         {
             #region Objects
@@ -110,55 +110,99 @@ namespace Bookmazon.Server.Controllers
             Storage stor3 = new Storage { StorageLocationID = sloc3.StorageLocationID, ISBN = book2.ISBN, Amount = 50 };
             #endregion
 
-            _dbc.StorageLocations.AddRangeAsync(sloc1, sloc2, sloc3);
-            _dbc.CustomerOrderStates.AddRangeAsync(costate1, costate2, costate3, costate4, costate5);
-            _dbc.CustomerOrderPositionStates.AddRangeAsync(cosstate1, cosstate2);
-            _dbc.Languages.AddRangeAsync(de, en);
-            _dbc.Publishers.AddRangeAsync(pub1, pub2, pub3);
-            _dbc.Roles.AddRangeAsync(role1, role2, role3);
-            _dbc.Genres.AddRangeAsync(gen1, gen2, gen3, gen4, gen5);
-            _dbc.VAT.AddRangeAsync(vat1, vat2);
-            _dbc.Suppliers.AddRangeAsync(sup1, sup2);
-            _dbc.SupplyOrderStates.AddRangeAsync(sustate1, sustate2, sustate3, sustate4, sustate5);
-            _dbc.SupplyOrderPositionStates.AddRangeAsync(supstate1, supstate2);
-            _dbc.Authors.AddRangeAsync(aut1, aut2);
-            _dbc.Discounts.AddRangeAsync(dis1, dis2);
-            _dbc.Books.AddRangeAsync(book1, book2);
-            _dbc.SupplyOrders.AddRangeAsync(so1, so2);
-            _dbc.SupplyOrderPositions.AddRangeAsync(sop1, sop2, sop3);
-            _dbc.Storages.AddRangeAsync(stor1, stor2, stor3);
+
+            // This Wall of text sets Identity Insert of all tables that have an identity to true.
+            // It Inserts the seed and sets Identity Insert back to off
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Author] ON");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[CustomerOrder] ON");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[CustomerOrderPosition] ON");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[CustomerOrderPositionState] ON");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[CustomerOrderState] ON");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Discount] ON");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Genre] ON");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Language] ON");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Publisher] ON");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [usr].[Roles] ON");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [usr].[RolesUser] ON");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [str].[Storage] ON");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [str].[StorageLocation] ON");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Supplier] ON");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[SupplyOrder] ON");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[SupplyOrderPosition] ON");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[SupplyOrderPositionState] ON");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[SupplyOrderState] ON");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [usr].[User] ON");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[VAT] ON");
+
+            _dbc.StorageLocations.AddRange(sloc1, sloc2, sloc3);
+            _dbc.CustomerOrderStates.AddRange(costate1, costate2, costate3, costate4, costate5);
+            _dbc.CustomerOrderPositionStates.AddRange(cosstate1, cosstate2);
+            _dbc.Languages.AddRange(de, en);
+            _dbc.Publishers.AddRange(pub1, pub2, pub3);
+            _dbc.Roles.AddRange(role1, role2, role3);
+            _dbc.Genres.AddRange(gen1, gen2, gen3, gen4, gen5);
+            _dbc.VAT.AddRange(vat1, vat2);
+            _dbc.Suppliers.AddRange(sup1, sup2);
+            _dbc.SupplyOrderStates.AddRange(sustate1, sustate2, sustate3, sustate4, sustate5);
+            _dbc.SupplyOrderPositionStates.AddRange(supstate1, supstate2);
+            _dbc.Authors.AddRange(aut1, aut2);
+            _dbc.Discounts.AddRange(dis1, dis2);
+            _dbc.Books.AddRange(book1, book2);
+            _dbc.SupplyOrders.AddRange(so1, so2);
+            _dbc.SupplyOrderPositions.AddRange(sop1, sop2, sop3);
+            _dbc.Storages.AddRange(stor1, stor2, stor3);
+
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Author] OFF");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[CustomerOrder] OFF");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[CustomerOrderPositionState] OFF");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[CustomerOrderState] OFF");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Discount] OFF");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Genre] OFF");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Publisher] OFF");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [usr].[Roles] OFF");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [str].[Storage] OFF");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [str].[StorageLocation] OFF");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Supplier] OFF");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[SupplyOrder] OFF");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[SupplyOrderPositionState] OFF");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[SupplyOrderState] OFF");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [usr].[User] OFF");
+            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[VAT] OFF");
+
+            _dbc.SaveChangesAsync();
         }
 
         /// <summary>
         /// This function truncates the whole database
         /// </summary>
+        [HttpGet("SeedDOWN")]
         public void SeedDOWN()
         {
-            _dbc.Database.ExecuteSqlRawAsync("TRUNCATE TABLE [bok].[Author]");
-            _dbc.Database.ExecuteSqlRawAsync("TRUNCATE TABLE [bok].[AuthorBook]");
-            _dbc.Database.ExecuteSqlRawAsync("TRUNCATE TABLE [bok].[Book]");
-            _dbc.Database.ExecuteSqlRawAsync("TRUNCATE TABLE [bok].[BookDiscount]");
-            _dbc.Database.ExecuteSqlRawAsync("TRUNCATE TABLE [bok].[BookSupplier]");
-            _dbc.Database.ExecuteSqlRawAsync("TRUNCATE TABLE [ord].[CustomerOrder]");
-            _dbc.Database.ExecuteSqlRawAsync("TRUNCATE TABLE [ord].[CustomerOrderPosition]");
-            _dbc.Database.ExecuteSqlRawAsync("TRUNCATE TABLE [ordCustomerOrderPositionState]");
-            _dbc.Database.ExecuteSqlRawAsync("TRUNCATE TABLE [ord].CustomerOrderState");
-            _dbc.Database.ExecuteSqlRawAsync("TRUNCATE TABLE [bok].[Discount]");
-            _dbc.Database.ExecuteSqlRawAsync("TRUNCATE TABLE [bok].[Genre]");
-            _dbc.Database.ExecuteSqlRawAsync("TRUNCATE TABLE [bok].[Language]");
-            _dbc.Database.ExecuteSqlRawAsync("TRUNCATE TABLE [bok].[Publisher]");
-            _dbc.Database.ExecuteSqlRawAsync("TRUNCATE TABLE [usr].[Roles]");
-            _dbc.Database.ExecuteSqlRawAsync("TRUNCATE TABLE [usr].[RolesUser]");
-            _dbc.Database.ExecuteSqlRawAsync("TRUNCATE TABLE [str].[Storage]");
-            _dbc.Database.ExecuteSqlRawAsync("TRUNCATE TABLE [str].[StorageLocation]");
-            _dbc.Database.ExecuteSqlRawAsync("TRUNCATE TABLE [bok].[Supplier]");
-            _dbc.Database.ExecuteSqlRawAsync("TRUNCATE TABLE [ord].[SupplyOrder]");
-            _dbc.Database.ExecuteSqlRawAsync("TRUNCATE TABLE [ord].[SupplyOrderPosition]");
-            _dbc.Database.ExecuteSqlRawAsync("TRUNCATE TABLE [ord].[SupplyOrderPositionState]");
-            _dbc.Database.ExecuteSqlRawAsync("TRUNCATE TABLE [ord].[SupplyOrderState]");
-            _dbc.Database.ExecuteSqlRawAsync("TRUNCATE TABLE [usr].[User]");
-            _dbc.Database.ExecuteSqlRawAsync("TRUNCATE TABLE [usr].[UserType]");
-            _dbc.Database.ExecuteSqlRawAsync("TRUNCATE TABLE [bok].[VAT]");
+            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [bok].[Author]");
+            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [bok].[AuthorBook]");
+            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [bok].[Book]");
+            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [bok].[BookDiscount]");
+            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [bok].[BookSupplier]");
+            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [ord].[CustomerOrder]");
+            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [ordCustomerOrderPositionState]");
+            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [ord].CustomerOrderState");
+            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [bok].[Discount]");
+            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [bok].[Genre]");
+            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [bok].[Language]");
+            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [bok].[Publisher]");
+            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [usr].[Roles]");
+            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [usr].[RolesUser]");
+            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [str].[Storage]");
+            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [str].[StorageLocation]");
+            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [bok].[Supplier]");
+            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [ord].[SupplyOrder]");
+            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [ord].[SupplyOrderPositionState]");
+            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [ord].[SupplyOrderState]");
+            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [usr].[User]");
+            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [usr].[UserType]");
+            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [bok].[VAT]");
+
+            _dbc.SaveChangesAsync();
         }
     }
 }
