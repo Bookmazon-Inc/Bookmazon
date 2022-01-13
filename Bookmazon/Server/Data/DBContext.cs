@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Bookmazon.Shared.Models;
+using Microsoft.IdentityModel.Tokens;
+using System.Reflection;
 
 namespace Bookmazon.Server.Data
 {
@@ -39,10 +41,10 @@ namespace Bookmazon.Server.Data
 
         protected override void OnModelCreating(ModelBuilder modelbuilder)
         {
-
+            #region Settings
             //Multiple Primary Keys
             modelbuilder.Entity<Storage>().HasKey(k => new { k.ISBN, k.StorageLocationID });
-            modelbuilder.Entity<SupplyOrderPosition>().HasKey(k => new { k.SupplyOrderPositionID, k.SuppllyOrderID });
+            modelbuilder.Entity<SupplyOrderPosition>().HasKey(k => new { k.SupplyOrderPositionID, k.SupplyOrderID });
             modelbuilder.Entity<CustomerOrderPosition>().HasKey(k => new { k.CustomerOrderPositionID, k.CustomerOrderID });
 
             //Cascade Restrictions
@@ -61,7 +63,7 @@ namespace Bookmazon.Server.Data
             modelbuilder.Entity<Book>().HasOne(s => s.VAT).WithMany(s => s.Books).OnDelete(DeleteBehavior.Restrict);
             
             modelbuilder.Entity<SupplyOrderPosition>().HasOne(s => s.SupplyOrderPositionState).WithMany(s => s.SupplyOrderPositions).OnDelete(DeleteBehavior.Restrict);
-            modelbuilder.Entity<SupplyOrderPosition>().HasOne(s => s.Books).WithMany(s => s.SupplyOrderPositions).OnDelete(DeleteBehavior.Restrict);
+            modelbuilder.Entity<SupplyOrderPosition>().HasOne(s => s.Book).WithMany(s => s.SupplyOrderPositions).OnDelete(DeleteBehavior.Restrict);
 
             modelbuilder.Entity<CustomerOrderPosition>().HasOne(s => s.CustomerOrderPositionState).WithMany(s => s.CustomerOrderPositions).OnDelete(DeleteBehavior.Restrict);
             modelbuilder.Entity<CustomerOrderPosition>().HasOne(s => s.Books).WithMany(s => s.CustomerOrderPositions).OnDelete(DeleteBehavior.Restrict);
@@ -96,8 +98,7 @@ namespace Bookmazon.Server.Data
             modelbuilder.Entity<Roles>().ToTable("Roles", "usr");
             modelbuilder.Entity<User>().ToTable("User", "usr");
             modelbuilder.Entity<UserType>().ToTable("UserType", "usr");
-
+            #endregion
         }
-
     }
 }

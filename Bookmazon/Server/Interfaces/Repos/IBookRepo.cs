@@ -7,9 +7,7 @@ namespace Bookmazon.Server.Interfaces.Repos
     {
         #region Book
         Task<Book?> GetBook(string ISBN);
-        Task<IEnumerable<Book>> GetAllBooks(IBookFilter? bookFilter);
-        Task<IEnumerable<Book>> GetAllBooksWhere(Func<Book, bool> where);
-        Task<IEnumerable<Book>> SearchBookByTitle(string bookTitle, Func<Book, bool> where);
+        Task<IEnumerable<Book>> GetAllBooks(BookFilter? bookFilter);
         void AddBook(Book book);
         void UpdateBook(Book book);
         void DeleteBook(Book book);

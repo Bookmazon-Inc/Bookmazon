@@ -1,5 +1,5 @@
 ﻿using Bookmazon.Server.Data;
-using Bookmazon.Server.Interfaces.Filter;
+using Bookmazon.Server.Filter;
 using Bookmazon.Server.Interfaces.Repos;
 using Bookmazon.Shared.Models;
 using Microsoft.EntityFrameworkCore;
@@ -24,7 +24,7 @@ namespace Bookmazon.Server.Repos
         /// </summary>
         /// <param name="SupplyOrderFilter">An Optional filter</param>
         /// <returns>Task of IEnumarable of SupplyOrders (async)</returns>
-        public async Task<IEnumerable<SupplyOrder>> GetAllSupplyOrders(ISupplyOrderFilter? SupplyOrderFilter)
+        public async Task<IEnumerable<SupplyOrder>> GetAllSupplyOrders(SupplyOrderFilter? SupplyOrderFilter)
         {
             var query = from co in _dbc.SupplyOrders
                         select co;
@@ -139,7 +139,7 @@ namespace Bookmazon.Server.Repos
         public async Task<IEnumerable<SupplyOrderPosition>> GetAllPositionsOfOrder(int SupplyOrderId)
         {
             var query = from cop in _dbc.SupplyOrderPositions
-                        where cop.SuppllyOrderID == SupplyOrderId
+                        where cop.SupplyOrderID == SupplyOrderId
                         select cop;
 
             return await query.ToArrayAsync();
@@ -154,7 +154,7 @@ namespace Bookmazon.Server.Repos
         {
             var query = from cop in _dbc.SupplyOrderPositions
                         where cop.SupplyOrderPositionID == SupplyOrderPositionId
-                        where cop.SuppllyOrderID == SupplyOrderId
+                        where cop.SupplyOrderID == SupplyOrderId
                         select cop;
 
             return await query.FirstAsync();
