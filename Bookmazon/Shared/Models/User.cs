@@ -33,6 +33,7 @@ namespace Bookmazon.Shared.Models
 
         [Required]
         [StringLength(100)]
+        [EmailAddress]
         public string Email { get; set; }
 
 
