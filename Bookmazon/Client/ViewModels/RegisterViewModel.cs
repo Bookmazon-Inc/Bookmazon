@@ -8,18 +8,10 @@ namespace Bookmazon.Client.ViewModels
     public class RegisterViewModel : IRegisterViewModel
     {
         public string UserName { get; set; }
-
-
         public string? LastName { get; set; }
-
-
         public string? FirstName { get; set; }
-
-
         public string? CompanyName { get; set; }
-
         public string Email { get; set; }
-
         public string Password { get; set; }
 
 
@@ -34,12 +26,6 @@ namespace Bookmazon.Client.ViewModels
         }
         public async Task RegisterUser()
         {
-            Console.WriteLine(this.UserName);
-            Console.WriteLine(this.LastName);
-            Console.WriteLine(this.FirstName);
-            Console.WriteLine(this.CompanyName);
-            Console.WriteLine(this.Email);
-            Console.WriteLine(this.Password);
             await _httpClient.PostAsJsonAsync<User>("/user/registeruser", this);
         }
 

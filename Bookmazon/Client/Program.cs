@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using Bookmazon.Client;
 using Bookmazon.Client.ViewModels;
 using Microsoft.AspNetCore.Components.Web;
@@ -7,11 +8,12 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddTransient<RegisterViewModel>();
+builder.Services.AddBlazoredLocalStorage();
 
 //builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
 //
-builder.Services.AddHttpClient<IRegisterViewModel, RegisterViewModel>("BookmazonClient", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+builder.Services.AddHttpClient<IRegisterViewModel, RegisterViewModel>("BookmazonRegisterClient", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+builder.Services.AddHttpClient<ILoginViewModel, LoginViewModel>("BookmazonLoginClient", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 
 await builder.Build().RunAsync();
