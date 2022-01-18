@@ -115,20 +115,15 @@ namespace Bookmazon.Server.Controllers
             // It Inserts the seed and sets Identity Insert back to off
             _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Author] ON");
             _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[CustomerOrder] ON");
-            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[CustomerOrderPosition] ON");
             _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[CustomerOrderPositionState] ON");
             _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[CustomerOrderState] ON");
             _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Discount] ON");
             _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Genre] ON");
-            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Language] ON");
             _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Publisher] ON");
             _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [usr].[Roles] ON");
-            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [usr].[RolesUser] ON");
-            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [str].[Storage] ON");
             _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [str].[StorageLocation] ON");
             _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Supplier] ON");
             _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[SupplyOrder] ON");
-            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[SupplyOrderPosition] ON");
             _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[SupplyOrderPositionState] ON");
             _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[SupplyOrderState] ON");
             _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [usr].[User] ON");
@@ -160,7 +155,6 @@ namespace Bookmazon.Server.Controllers
             _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Genre] OFF");
             _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Publisher] OFF");
             _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [usr].[Roles] OFF");
-            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [str].[Storage] OFF");
             _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [str].[StorageLocation] OFF");
             _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Supplier] OFF");
             _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[SupplyOrder] OFF");
