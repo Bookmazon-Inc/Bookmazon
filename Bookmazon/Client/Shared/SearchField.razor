@@ -1,0 +1,36 @@
+﻿@using Bookmazon.Shared.Filter
+@inject NavigationManager Nav
+
+
+
+
+
+<form @onsubmit:preventDefault @onsubmit="search">
+    <div class="form-group">
+        <div class="input-group">
+            <input  @bind="searchString" class="form-control" placeholder="search"/>
+            <button type="submit" class="oi oi-magnifying-glass btn btn-secondary"></button>
+        </div>
+    </div>
+</form>
+
+@code {
+    private string searchString { get; set; } = "";
+
+
+    private void search()
+    {
+        if (String.IsNullOrEmpty(searchString))
+            return;
+
+
+        var searchFilter = new LikeFilter
+        {
+            PropertyName = "searchString",
+            Value = searchString
+        };
+
+
+        Nav.NavigateTo($"/books?{searchFilter.ToQueryString()}");
+    }
+}

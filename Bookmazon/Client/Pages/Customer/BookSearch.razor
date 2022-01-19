@@ -1,0 +1,62 @@
+﻿@page "/books"
+@using Bookmazon.Shared.Dtos.Book
+@using Bookmazon.Shared.Filter
+
+@inject HttpClient Http;
+
+@if(books != null)
+{
+    <table class="table">
+
+    <thead>
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+
+    @foreach(var book in books)
+    {
+        <tbody>
+            <tr>
+                <td> 
+                    <img src="@book.PictureURL" style="max-height: 90px;"/> 
+                </td>
+                <td>@book.Title @book.Description</td>
+                <td>@String.Format("{0:c}", book.Price)</td>
+            </tr>
+        </tbody>
+    }
+
+</table>
+}
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "searchString")]
+    public string searchString { get; set; }
+
+    private BookDto[] books;
+
+
+
+    protected override Task OnParametersSetAsync()
+    {
+        return base.OnParametersSetAsync();
+    }
+
+
+    protected override async Task OnInitializedAsync() {
+
+        var filter = new LikeFilter
+            {
+                PropertyName = "Title",
+                Value = searchString
+            };
+
+
+        books = await Http.GetFromJsonAsync<BookDto[]>($"/api/book?{filter.ToQueryString()}");
+
+    }
+}

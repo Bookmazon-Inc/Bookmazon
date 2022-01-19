@@ -4,6 +4,7 @@ using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Bookmazon.Server.Data;
+using Bookmazon.Server.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +30,9 @@ builder.Services.AddDbContext<DBInvoiceContext>(options =>
 builder.Services.AddDbContext<DBContext>(options =>
 
     options.UseSqlServer(builder.Configuration.GetConnectionString("DBContext")));
+
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
 var app = builder.Build();
