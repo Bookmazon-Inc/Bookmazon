@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bookmazon.Server.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20211209144654_changed Storage Model")]
-    partial class changedStorageModel
+    [Migration("20220113212746_changed User")]
+    partial class changedUser
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -102,6 +102,9 @@ namespace Bookmazon.Server.Migrations
                         .HasMaxLength(2)
                         .HasColumnType("nvarchar(2)");
 
+                    b.Property<decimal>("NetPriceSell")
+                        .HasColumnType("decimal(18,4)");
+
                     b.Property<string>("Notes")
                         .IsRequired()
                         .HasMaxLength(400)
@@ -111,6 +114,9 @@ namespace Bookmazon.Server.Migrations
                         .IsRequired()
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
+
+                    b.Property<decimal>("PricePurchase")
+                        .HasColumnType("decimal(18,4)");
 
                     b.Property<int>("PublisherID")
                         .HasColumnType("int");
@@ -563,13 +569,10 @@ namespace Bookmazon.Server.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Salt")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("nvarchar(32)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserName")
                         .IsRequired()
@@ -580,6 +583,8 @@ namespace Bookmazon.Server.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("UserID");
+
+                    b.HasAlternateKey("UserName", "Email");
 
                     b.HasIndex("UserTypeID");
 

@@ -1,0 +1,48 @@
+﻿@page "/loginuser"
+@using Bookmazon.Shared.Models
+@using Bookmazon.Client.ViewModels
+@using Bookmazon.Shared.Models.Authentication
+@using Blazored.LocalStorage
+
+@inject ILoginViewModel _loginViewModel
+@inject NavigationManager _navigationManager
+@inject ILocalStorageService _localStorageService
+
+<EditForm Model ="@_loginViewModel" OnValidSubmit="@AuthenticateJWT">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="email" @bind="_loginViewModel.Email" placeholder="email" class="form-control dark-theme-textbox">
+    </div>
+<br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="text" @bind="_loginViewModel.UserName" placeholder="user name" class="form-control dark-theme-textbox">
+    </div>
+<br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="password" @bind="_loginViewModel.Password" placeholder="password" class="form-control dark-theme-textbox">
+    </div>
+<br />
+    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-3 col-3">
+        <button class="btn btn-danger" type="submit">Login</button>
+        &nbsp;
+        <a style="font-weight: bold;" href="/createuser">Create a User Profile?</a>
+    </div>
+</EditForm>
+
+@code {
+
+    public async Task AuthenticateJWT()
+    {
+        AuthenticationResponse authenticationResponse = await _loginViewModel.AuthenticateJwt();
+        if(authenticationResponse.Token != string.Empty)
+        {
+            await _localStorageService.SetItemAsync("jwt_token", authenticationResponse.Token);
+        }
+        else
+        {
+            Console.WriteLine("Invalid username, email or password");
+        }
+
+    }
+}

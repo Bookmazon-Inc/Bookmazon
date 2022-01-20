@@ -1,0 +1,56 @@
+﻿@page "/createuser"
+@using Bookmazon.Shared.Models
+@using Bookmazon.Client.ViewModels
+
+@*@inject HttpClient http*@
+@inject IRegisterViewModel _registerViewModel
+@inject NavigationManager _navigationManager
+
+
+<h2 class="white-text"><b>Create a user account</b></h2>
+<hr class="white-horizontal-line">
+
+
+
+<EditForm Model ="@_registerViewModel" OnValidSubmit="@Save">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="text" @bind="_registerViewModel.FirstName" placeholder="first name" class="form-control dark-theme-textbox" autocomplete="new-first name">
+    </div>
+<br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="text" @bind="_registerViewModel.LastName" placeholder="last name" class="form-control dark-theme-textbox" autocomplete="new-last name">
+    </div>
+<br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="text" @bind="_registerViewModel.CompanyName" placeholder="company name" class="form-control dark-theme-textbox" autocomplete="new-company name">
+    </div>
+<br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="email" @bind="_registerViewModel.Email" placeholder="email" class="form-control dark-theme-textbox" autocomplete="new-email">
+    </div>
+<br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="text" @bind="_registerViewModel.UserName" placeholder="user name" class="form-control dark-theme-textbox" autocomplete="new-username">
+    </div>
+<br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="password" @bind="_registerViewModel.Password" placeholder="password" class="form-control dark-theme-textbox" autocomplete="new-password">
+    </div>
+<br />
+    <div class="col-xl-6 col-md-8 col-12">
+    <button class="btn btn-danger" type="submit">Register</button>
+    &nbsp;
+    <a style="font-weight: bold;" href="/loginuser">Already have an account?</a>
+</div>
+</EditForm>
+
+@code {
+    //RegisterViewModel _registerViewModel = new();
+    protected async Task Save()
+    {
+        //await http.PostAsJsonAsync<User>("/user/registeruser", _registerViewModel);
+        await _registerViewModel.RegisterUser();
+    }
+}

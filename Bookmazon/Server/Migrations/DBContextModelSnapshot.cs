@@ -567,13 +567,10 @@ namespace Bookmazon.Server.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Salt")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("nvarchar(32)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserName")
                         .IsRequired()
@@ -582,6 +579,8 @@ namespace Bookmazon.Server.Migrations
 
                     b.HasKey("UserID");
 
+                    b.HasAlternateKey("Email");
+                    
                     b.ToTable("User", "usr");
                 });
 
