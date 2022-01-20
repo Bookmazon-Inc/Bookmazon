@@ -1,6 +1,10 @@
-﻿@using Bookmazon.Shared.Filter
-@inject NavigationManager Nav
+﻿@using Bookmazon.Client.QueryString
+@using Bookmazon.Client.Services
+@using Bookmazon.Shared.Filter
 
+
+@inject NavigationManager Nav
+@inject BookSearchService bookSearchService
 
 
 
@@ -8,29 +12,43 @@
 <form @onsubmit:preventDefault @onsubmit="search">
     <div class="form-group">
         <div class="input-group">
-            <input  @bind="searchString" class="form-control" placeholder="search"/>
+            <input  @bind="_serachString" class="form-control" placeholder="search"/>
             <button type="submit" class="oi oi-magnifying-glass btn btn-secondary"></button>
         </div>
     </div>
 </form>
 
 @code {
-    private string searchString { get; set; } = "";
+    [QueryStringParameter]
+    public string SearchString { get; set; }
+
+    private string _serachString;
+
+
+    protected override void OnInitialized()
+    {
+        bookSearchService.OnSearchRequest += setSearchStringParams;
+    }
+
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        // 👇 Read the value of each property decorated by [QueryStringParameter] from the query string
+        this.SetParametersFromQueryString(Nav);
+
+        _serachString = SearchString;
+
+        return base.SetParametersAsync(parameters);
+    }
 
 
     private void search()
     {
-        if (String.IsNullOrEmpty(searchString))
-            return;
+        bookSearchService.Search(_serachString);
+    }
 
-
-        var searchFilter = new LikeFilter
-        {
-            PropertyName = "searchString",
-            Value = searchString
-        };
-
-
-        Nav.NavigateTo($"/books?{searchFilter.ToQueryString()}");
+    private void setSearchStringParams(object sender, string searchString)
+    {
+        SearchString = searchString;
+        this.UpdateQueryString(Nav);
     }
 }

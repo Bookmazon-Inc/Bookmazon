@@ -17,7 +17,7 @@
             {
                 <div class="col-3 pt-3" @onclick="@(() => { Nav.NavigateTo($"/book/{@book.ISBN}"); })">
                     <div class="card">
-                        <img class="card-img-top" src="@book.PictureURL"/>
+                        <img class="card-img-top" src="@book.PictureURL" style="max-height: 320px;"/>
 
                         <div class="card-body">
                             <h5 class="card-title" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@book.Title</h5>
@@ -41,11 +41,4 @@
             books = await Http.GetFromJsonAsync<BookDto[]>("/api/book/");
         } catch {}
     }
-}
-
-
-
-
-@code {
-
 }

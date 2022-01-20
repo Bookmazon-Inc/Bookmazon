@@ -1,32 +1,41 @@
 ﻿@page "/books"
+@using Bookmazon.Client.Services
 @using Bookmazon.Shared.Dtos.Book
 @using Bookmazon.Shared.Filter
 
-@inject HttpClient Http;
+@inject HttpClient Http
+@inject BookSearchService bookSearchService
+@inject NavigationManager Nav
 
 @if(books != null)
 {
-    <table class="table">
+    <table class="row">
 
-    <thead>
-        <tr>
-            <th></th>
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
 
     @foreach(var book in books)
     {
-        <tbody>
-            <tr>
-                <td> 
-                    <img src="@book.PictureURL" style="max-height: 90px;"/> 
-                </td>
-                <td>@book.Title @book.Description</td>
-                <td>@String.Format("{0:c}", book.Price)</td>
-            </tr>
-        </tbody>
+        <div class="col-12 mt-5">
+            <div class="row">
+                <div class="col-2"> 
+                    <img src="@book.PictureURL" style="max-height: 220px;"/> 
+                </div>
+                <div class="col-8">
+                    <div class="row">
+                        <div class="col">
+                            <h4>@book.Title</h4> 
+                        </div>
+                    </div>
+                     <div class="row">
+                        <div class="col">
+                            @book.Description   
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2 text-end">
+                    @String.Format("{0:c}", book.Price)
+                </div>
+            </div>
+        </div>
     }
 
 </table>
@@ -35,20 +44,31 @@
 @code {
     [Parameter]
     [SupplyParameterFromQuery(Name = "searchString")]
-    public string searchString { get; set; }
+    public string SearchString { get; set; }
 
     private BookDto[] books;
 
 
 
-    protected override Task OnParametersSetAsync()
+    protected override void OnInitialized() {
+
+        if(!String.IsNullOrEmpty(SearchString))
+        {
+            search(this, SearchString);
+        }
+
+
+        bookSearchService.OnSearchRequest += search;
+    }
+
+    public void Dispose()
     {
-        return base.OnParametersSetAsync();
+        bookSearchService.OnSearchRequest -= search;
     }
 
 
-    protected override async Task OnInitializedAsync() {
-
+    private async void search(object sender, string searchString)
+    {
         var filter = new LikeFilter
             {
                 PropertyName = "Title",
@@ -58,5 +78,6 @@
 
         books = await Http.GetFromJsonAsync<BookDto[]>($"/api/book?{filter.ToQueryString()}");
 
+        StateHasChanged();
     }
 }
