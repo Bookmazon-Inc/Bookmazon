@@ -2,8 +2,10 @@ using Bookmazon.Server.Data;
 using Bookmazon.Shared;
 using Bookmazon.Shared.Models;
 using Bookmazon.Shared.Models.Authentication;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -48,13 +50,21 @@ namespace Bookmazon.Server.Controllers
         public async Task<ActionResult> LoginUser(User user)
         {
             var userExists = _context.Users.Where(u => u.UserName == user.UserName || u.Email == user.Email).FirstOrDefault();
-            if(userExists != null)
+            if (userExists != null)
             {
                 var password = PasswordHash(userExists.Salt, user.Password);
 
-                if(password == userExists.Password)
+                if (password == userExists.Password)
                 {
-
+                    //create a claim
+                    var claimEmail = new Claim(ClaimTypes.Email, userExists.Email);
+                    var claimNameIdentifier = new Claim(ClaimTypes.NameIdentifier, userExists.UserID.ToString());
+                    //create claimsIdentity
+                    var claimsIdentity = new ClaimsIdentity(new[] { claimEmail, claimNameIdentifier }, "serverAuth");
+                    //create claimsPrincipal
+                    var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+                    //Sign In User
+                    await HttpContext.SignInAsync(claimsPrincipal);
                 }
             }
 
@@ -77,7 +87,7 @@ namespace Bookmazon.Server.Controllers
                 }
             }
             return await Task.FromResult(new AuthenticationResponse() { Token = token });
-            
+
         }
 
 
@@ -127,5 +137,46 @@ namespace Bookmazon.Server.Controllers
             return tokenHandler.WriteToken(token);
         }
 
+        [HttpPost("getuserbyjwt")]
+        public async Task<ActionResult<User>> GetUserByJWT([FromBody] string jwtToken)
+        {
+            try
+            {
+                //getting the secret key
+                string secretKey = _configuration["JWTSettings:SecretKey"];
+                var key = Encoding.ASCII.GetBytes(secretKey);
+
+                //preparing the validation parameters
+                var tokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+                var tokenHandler = new JwtSecurityTokenHandler();
+                SecurityToken securityToken;
+
+                //validating the token
+                var principle = tokenHandler.ValidateToken(jwtToken, tokenValidationParameters, out securityToken);
+                var jwtSecurityToken = (JwtSecurityToken)securityToken;
+
+                if (jwtSecurityToken != null && jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    //returning the user if found
+                    var userId = principle.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                    return await _context.Users.FirstOrDefaultAsync(u => u.UserID == Convert.ToInt64(userId));
+                }
+            }
+            catch (Exception ex)
+            {
+                //logging the error and returning null
+                Console.WriteLine("Exception : " + ex.Message);
+                return null;
+            }
+            //returning null if token is not validated
+            return null;
+
+        }
     }
 }

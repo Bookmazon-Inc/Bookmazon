@@ -1,4 +1,9 @@
-﻿@inherits LayoutComponentBase
+﻿@using Blazored.LocalStorage
+@using Bookmazon.Shared.Models
+
+@inherits LayoutComponentBase
+@inject ILocalStorageService _localStorageService
+@inject NavigationManager _navigationManager
 
 <div class="page">
     <div class="sidebar">
@@ -9,6 +14,7 @@
         <div class="top-row px-4">
             <a href="/createuser">Create</a>
             <a href="/loginuser">Login</a>
+            <a @onclick="LogoutUser">Logout</a>
             <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
         </div>
 
@@ -17,3 +23,12 @@
         </article>
     </main>
 </div>
+
+@code{
+
+        private async Task LogoutUser()
+    {
+        await _localStorageService.RemoveItemAsync("jwt_token");
+        _navigationManager.NavigateTo("/", true);
+    }
+}
