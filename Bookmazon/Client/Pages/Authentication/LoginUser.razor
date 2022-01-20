@@ -8,15 +8,15 @@
 @inject NavigationManager _navigationManager
 @inject ILocalStorageService _localStorageService
 
+<h2 class="white-text"><b>Login</b></h2>
+<hr class="white-horizontal-line">
+
+
 <EditForm Model ="@_loginViewModel" OnValidSubmit="@AuthenticateJWT">
     <DataAnnotationsValidator />
     <ValidationSummary />
     <div class="col-xl-6 col-md-8 col-12">
         <input type="email" @bind="_loginViewModel.Email" placeholder="email" class="form-control dark-theme-textbox">
-    </div>
-<br />
-    <div class="col-xl-6 col-md-8 col-12">
-        <input type="text" @bind="_loginViewModel.UserName" placeholder="user name" class="form-control dark-theme-textbox">
     </div>
 <br />
     <div class="col-xl-6 col-md-8 col-12">
@@ -38,6 +38,7 @@
         if(authenticationResponse.Token != string.Empty)
         {
             await _localStorageService.SetItemAsync("jwt_token", authenticationResponse.Token);
+            _navigationManager.NavigateTo("/");
         }
         else
         {

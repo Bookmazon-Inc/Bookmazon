@@ -1,12 +1,12 @@
 ﻿using Bookmazon.Server.Data;
-using Bookmazon.Server.Interfaces.Filter;
+using Bookmazon.Server.Filter;
 using Bookmazon.Server.Interfaces.Repos;
 using Bookmazon.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bookmazon.Server.Repos
 {
-    public class CustomerOrderRepo : ICustomerOrderRepo
+    public class CustomerOrderRepo
     {
         //Constructor
         public CustomerOrderRepo (DBContext context)
@@ -24,7 +24,7 @@ namespace Bookmazon.Server.Repos
         /// </summary>
         /// <param name="customerOrderFilter">An Optional filter</param>
         /// <returns>Task of IEnumarable of CustomerOrders (async)</returns>
-        public async Task<IEnumerable<CustomerOrder>> GetAllCustomerOrders(ICustomerOrderFilter? customerOrderFilter)
+        public async Task<IEnumerable<CustomerOrder>> GetAllCustomerOrders(CustomerOrderFilter? customerOrderFilter)
         {
             var query = from co in _dbc.CustomerOrders
                         select co;

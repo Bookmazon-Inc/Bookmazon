@@ -1,13 +1,13 @@
 ﻿using Bookmazon.Server.Data;
 using Bookmazon.Server.Exceptions;
-using Bookmazon.Server.Interfaces.Filter;
+using Bookmazon.Server.Filter;
 using Bookmazon.Server.Interfaces.Repos;
 using Bookmazon.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bookmazon.Server.Repos
 {
-    public class BookRepo : IBookRepo
+    public class BookRepo
     {
         public BookRepo(DBContext context)
         {
@@ -32,7 +32,7 @@ namespace Bookmazon.Server.Repos
         /// </summary>
         /// <param name="bookFilter">The optional filter</param>
         /// <returns></returns>
-        public async Task<IEnumerable<Book>> GetAllBooks(IBookFilter? bookFilter)
+        public async Task<IEnumerable<Book>> GetAllBooks(BookFilter? bookFilter)
         {
             var query = from b in _dbc.Books
                         select b;
