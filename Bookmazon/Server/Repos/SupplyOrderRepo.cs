@@ -139,7 +139,7 @@ namespace Bookmazon.Server.Repos
         public async Task<IEnumerable<SupplyOrderPosition>> GetAllPositionsOfOrder(int SupplyOrderId)
         {
             var query = from cop in _dbc.SupplyOrderPositions
-                        where cop.SuppllyOrderID == SupplyOrderId
+                        where cop.SupplyOrderID == SupplyOrderId
                         select cop;
 
             return await query.ToArrayAsync();
@@ -154,7 +154,7 @@ namespace Bookmazon.Server.Repos
         {
             var query = from cop in _dbc.SupplyOrderPositions
                         where cop.SupplyOrderPositionID == SupplyOrderPositionId
-                        where cop.SuppllyOrderID == SupplyOrderId
+                        where cop.SupplyOrderID == SupplyOrderId
                         select cop;
 
             return await query.FirstAsync();

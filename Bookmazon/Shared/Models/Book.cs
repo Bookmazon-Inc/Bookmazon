@@ -26,7 +26,7 @@ namespace Bookmazon.Shared.Models
         public string PictureURL { get; set; }
 
 
-        [Required][StringLength(400)]
+        [StringLength(400)]
         public string? Notes { get; set; }
 
 

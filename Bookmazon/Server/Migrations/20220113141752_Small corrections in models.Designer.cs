@@ -4,6 +4,7 @@ using Bookmazon.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bookmazon.Server.Migrations
 {
     [DbContext(typeof(DBContext))]
-    partial class DBContextModelSnapshot : ModelSnapshot
+    [Migration("20220113141752_Small corrections in models")]
+    partial class Smallcorrectionsinmodels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -104,6 +106,7 @@ namespace Bookmazon.Server.Migrations
                         .HasColumnType("decimal(18,4)");
 
                     b.Property<string>("Notes")
+                        .IsRequired()
                         .HasMaxLength(400)
                         .HasColumnType("nvarchar(400)");
 
@@ -567,16 +570,50 @@ namespace Bookmazon.Server.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
 
                     b.Property<string>("Salt")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<int>("UserTypeID")
+                        .HasColumnType("int");
 
                     b.HasKey("UserID");
 
-                    b.HasAlternateKey("Email");
+                    b.HasIndex("UserTypeID");
 
                     b.ToTable("User", "usr");
+                });
+
+            modelBuilder.Entity("Bookmazon.Shared.Models.UserType", b =>
+                {
+                    b.Property<int>("UserTypeID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserTypeID"), 1L, 1);
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("TypeName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("UserTypeID");
+
+                    b.ToTable("UserType", "usr");
                 });
 
             modelBuilder.Entity("Bookmazon.Shared.Models.VAT", b =>
@@ -799,6 +836,17 @@ namespace Bookmazon.Server.Migrations
                     b.Navigation("SupplyOrder");
 
                     b.Navigation("SupplyOrderPositionState");
+                });
+
+            modelBuilder.Entity("Bookmazon.Shared.Models.User", b =>
+                {
+                    b.HasOne("Bookmazon.Shared.Models.UserType", "UserType")
+                        .WithMany()
+                        .HasForeignKey("UserTypeID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserType");
                 });
 
             modelBuilder.Entity("BookSupplier", b =>
