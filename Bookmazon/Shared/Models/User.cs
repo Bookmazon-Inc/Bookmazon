@@ -14,10 +14,6 @@ namespace Bookmazon.Shared.Models
         public int UserID { get; set; }
 
 
-        [StringLength(256)]
-        public string UserName { get; set; }    
-
-
         [StringLength(100)]
         public string? LastName { get; set; }
 

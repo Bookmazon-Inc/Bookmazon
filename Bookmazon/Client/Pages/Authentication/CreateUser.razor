@@ -32,10 +32,6 @@
     </div>
 <br />
     <div class="col-xl-6 col-md-8 col-12">
-        <input type="text" @bind="_registerViewModel.UserName" placeholder="user name" class="form-control dark-theme-textbox" autocomplete="new-username">
-    </div>
-<br />
-    <div class="col-xl-6 col-md-8 col-12">
         <input type="password" @bind="_registerViewModel.Password" placeholder="password" class="form-control dark-theme-textbox" autocomplete="new-password">
     </div>
 <br />
@@ -52,5 +48,6 @@
     {
         //await http.PostAsJsonAsync<User>("/user/registeruser", _registerViewModel);
         await _registerViewModel.RegisterUser();
+        _navigationManager.NavigateTo("/loginuser");
     }
 }

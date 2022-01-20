@@ -7,11 +7,15 @@ namespace Bookmazon.Client.ViewModels
 {
     public class RegisterViewModel : IRegisterViewModel
     {
-        public string UserName { get; set; }
         public string? LastName { get; set; }
         public string? FirstName { get; set; }
         public string? CompanyName { get; set; }
+
+        [Required]
+        [EmailAddress]
         public string Email { get; set; }
+
+        [Required]
         public string Password { get; set; }
 
 
@@ -26,14 +30,13 @@ namespace Bookmazon.Client.ViewModels
         }
         public async Task RegisterUser()
         {
-            await _httpClient.PostAsJsonAsync<User>("/user/registeruser", this);
+            await _httpClient.PostAsJsonAsync<User>("/authorization/registeruser", this);
         }
 
         public static implicit operator RegisterViewModel(User user)
         {
             return new RegisterViewModel
             {
-                UserName = user.UserName,
                 LastName = user.LastName,
                 FirstName = user.FirstName,
                 CompanyName = user.CompanyName,
@@ -46,7 +49,6 @@ namespace Bookmazon.Client.ViewModels
         {
             return new User
             {
-                UserName = registerViewModel.UserName,
                 LastName = registerViewModel.LastName,
                 FirstName = registerViewModel.FirstName,
                 CompanyName = registerViewModel.CompanyName,

@@ -39,7 +39,7 @@ namespace Bookmazon.Server.Data
         protected override void OnModelCreating(ModelBuilder modelbuilder)
         {
             //Unique Restrictions
-            modelbuilder.Entity<User>().HasAlternateKey(a => new {a.UserName, a.Email});
+            modelbuilder.Entity<User>().HasAlternateKey(a => new {a.Email});
 
             //Multiple Primary Keys
             modelbuilder.Entity<Storage>().HasKey(k => new { k.ISBN, k.StorageLocationID });

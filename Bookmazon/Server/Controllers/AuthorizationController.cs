@@ -16,14 +16,14 @@ namespace Bookmazon.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class UserController : ControllerBase
+    public class AuthorizationController : ControllerBase
     {
 
-        private readonly ILogger<UserController> _logger;
+        private readonly ILogger<AuthorizationController> _logger;
         private readonly DBContext _context;
         private readonly IConfiguration _configuration;
 
-        public UserController(ILogger<UserController> logger, DBContext context, IConfiguration configuration)
+        public AuthorizationController(ILogger<AuthorizationController> logger, DBContext context, IConfiguration configuration)
         {
             _logger = logger;
             _context = context;
@@ -34,8 +34,7 @@ namespace Bookmazon.Server.Controllers
         public async Task<ActionResult> RegisterUser(User user)
         {
             var emailExists = _context.Users.Where(e => e.Email == user.Email).FirstOrDefault();
-            var userNameExists = _context.Users.Where(u => u.UserName == user.UserName).FirstOrDefault();
-            if (emailExists == null && userNameExists == null)
+            if (emailExists == null)
             {
                 user.Salt = GenerateSalt();
                 user.Password = PasswordHash(user.Salt, user.Password);
@@ -49,7 +48,7 @@ namespace Bookmazon.Server.Controllers
         [HttpPost("loginuser")]
         public async Task<ActionResult> LoginUser(User user)
         {
-            var userExists = _context.Users.Where(u => u.UserName == user.UserName || u.Email == user.Email).FirstOrDefault();
+            var userExists = _context.Users.Where(u =>u.Email == user.Email).FirstOrDefault();
             if (userExists != null)
             {
                 var password = PasswordHash(userExists.Salt, user.Password);
@@ -76,7 +75,7 @@ namespace Bookmazon.Server.Controllers
         {
             string token = string.Empty;
 
-            User userExists = _context.Users.Where(u => u.UserName == authenticationRequest.UserName || u.Email == authenticationRequest.Email).FirstOrDefault();
+            User userExists = _context.Users.Where(u =>u.Email == authenticationRequest.Email).FirstOrDefault();
 
             if (userExists != null)
             {
