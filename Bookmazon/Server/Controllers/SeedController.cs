@@ -96,7 +96,7 @@ namespace Bookmazon.Server.Controllers
             };
             Book book2 = new Book
             {
-                ISBN = "978-2-88951-210-2",
+                ISBN = "9782889512102",
                 Title = "Beastars, Bd.1",
                 Description = "Es ist ein brüchiger Frieden, der das Zusammenleben von Fleisch- und Pflanzenfressern ermöglicht, und besonders Grauwolf Legoshi spürt immer wieder, wie seine pflanzenfressenden Mitschüler ihm mit Angst begegnen. Dabei steckt hinter seinen scharfen Klauen und dem furchteinflößenden Aussehen ein sensibler Kerl. Als jedoch sein Alpaka-Freund Tem auf brutalste Art und Weise ermordet wird, drohen Misstrauen und Vorurteile in Hass umzuschlagen ...",
                 PictureURL = "https://multimedia.knv.de/cover/78/52/28/7852285700001A.jpg",
@@ -121,99 +121,104 @@ namespace Bookmazon.Server.Controllers
             #endregion
 
 
-            // This Wall of text sets Identity Insert of all tables that have an identity to true.
-            // It Inserts the seed and sets Identity Insert back to off
-            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [str].[StorageLocation] ON");
-            _dbc.StorageLocations.AddRange(sloc1, sloc2, sloc3);
-            _dbc.SaveChanges();
-            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [str].[StorageLocation] OFF");
+            using (var ts = _dbc.Database.BeginTransaction())
+            {
+                // This Wall of text sets Identity Insert of all tables that have an identity to true.
+                // It Inserts the seed and sets Identity Insert back to off
+                _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [str].[StorageLocation] ON");
+                _dbc.StorageLocations.AddRange(sloc1, sloc2, sloc3);
+                _dbc.SaveChanges();
+                _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [str].[StorageLocation] OFF");
 
 
-            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[CustomerOrderState] ON");
-            _dbc.CustomerOrderStates.AddRange(costate1, costate2, costate3, costate4, costate5);
-            _dbc.SaveChanges();
-            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[CustomerOrderState] OFF");
+                _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[CustomerOrderState] ON");
+                _dbc.CustomerOrderStates.AddRange(costate1, costate2, costate3, costate4, costate5);
+                _dbc.SaveChanges();
+                _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[CustomerOrderState] OFF");
 
 
-            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[CustomerOrderPositionState] ON");
-            _dbc.CustomerOrderPositionStates.AddRange(cosstate1, cosstate2);
-            _dbc.SaveChanges();
-            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[CustomerOrderPositionState] OFF");
+                _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[CustomerOrderPositionState] ON");
+                _dbc.CustomerOrderPositionStates.AddRange(cosstate1, cosstate2);
+                _dbc.SaveChanges();
+                _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[CustomerOrderPositionState] OFF");
 
 
-            _dbc.Languages.AddRange(de, en);
-            _dbc.SaveChanges();
+                _dbc.Languages.AddRange(de, en);
+                _dbc.SaveChanges();
 
 
-            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Publisher] ON");
-            _dbc.Publishers.AddRange(pub1, pub2, pub3);
-            _dbc.SaveChanges();
-            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Publisher] OFF");
+                _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Publisher] ON");
+                _dbc.Publishers.AddRange(pub1, pub2, pub3);
+                _dbc.SaveChanges();
+                _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Publisher] OFF");
 
 
-            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [usr].[Roles] ON");
-            _dbc.Roles.AddRange(role1, role2, role3);
-            _dbc.SaveChanges();
-            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [usr].[Roles] OFF");
+                _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [usr].[Roles] ON");
+                _dbc.Roles.AddRange(role1, role2, role3);
+                _dbc.SaveChanges();
+                _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [usr].[Roles] OFF");
 
 
-            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Genre] ON");
-            _dbc.Genres.AddRange(gen1, gen2, gen3, gen4, gen5);
-            _dbc.SaveChanges();
-            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Genre] OFF");
+                _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Genre] ON");
+                _dbc.Genres.AddRange(gen1, gen2, gen3, gen4, gen5);
+                _dbc.SaveChanges();
+                _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Genre] OFF");
 
 
-            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[VAT] ON");
-            _dbc.VAT.AddRange(vat1, vat2);
-            _dbc.SaveChanges();
-            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[VAT] OFF");
+                _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[VAT] ON");
+                _dbc.VAT.AddRange(vat1, vat2);
+                _dbc.SaveChanges();
+                _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[VAT] OFF");
 
 
-            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Supplier] ON");
-            _dbc.Suppliers.AddRange(sup1, sup2);
-            _dbc.SaveChanges();
-            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Supplier] OFF");
+                _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Supplier] ON");
+                _dbc.Suppliers.AddRange(sup1, sup2);
+                _dbc.SaveChanges();
+                _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Supplier] OFF");
 
 
 
-            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[SupplyOrderState] ON");
-            _dbc.SupplyOrderStates.AddRange(sustate1, sustate2, sustate3, sustate4, sustate5);
-            _dbc.SaveChanges();
-            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[SupplyOrderState] OFF");
+                _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[SupplyOrderState] ON");
+                _dbc.SupplyOrderStates.AddRange(sustate1, sustate2, sustate3, sustate4, sustate5);
+                _dbc.SaveChanges();
+                _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[SupplyOrderState] OFF");
 
 
-            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[SupplyOrderPositionState] ON");
-            _dbc.SupplyOrderPositionStates.AddRange(supstate1, supstate2);
-            _dbc.SaveChanges();
-            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[SupplyOrderPositionState] OFF");
+                _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[SupplyOrderPositionState] ON");
+                _dbc.SupplyOrderPositionStates.AddRange(supstate1, supstate2);
+                _dbc.SaveChanges();
+                _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[SupplyOrderPositionState] OFF");
 
 
-            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Author] ON");
-            _dbc.Authors.AddRange(aut1, aut2);
-            _dbc.SaveChanges();
-            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Author] OFF");
+                _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Author] ON");
+                _dbc.Authors.AddRange(aut1, aut2);
+                _dbc.SaveChanges();
+                _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Author] OFF");
 
 
-            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Discount] ON");
-            _dbc.Discounts.AddRange(dis1, dis2);
-            _dbc.SaveChanges();
-            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Discount] OFF");
+                _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Discount] ON");
+                _dbc.Discounts.AddRange(dis1, dis2);
+                _dbc.SaveChanges();
+                _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [bok].[Discount] OFF");
 
 
-            _dbc.Books.AddRange(book1, book2);
-            _dbc.SaveChanges();
+                _dbc.Books.AddRange(book1, book2);
+                _dbc.SaveChanges();
 
 
-            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[SupplyOrder] ON");
-            _dbc.SupplyOrders.AddRange(so1, so2);
-            _dbc.SaveChanges();
-            _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[SupplyOrder] OFF");
+                _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[SupplyOrder] ON");
+                _dbc.SupplyOrders.AddRange(so1, so2);
+                _dbc.SaveChanges();
+                _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[SupplyOrder] OFF");
 
 
-            _dbc.SupplyOrderPositions.AddRange(sop1, sop2, sop3);
-            _dbc.Storages.AddRange(stor1, stor2, stor3);
+                _dbc.SupplyOrderPositions.AddRange(sop1, sop2, sop3);
+                _dbc.Storages.AddRange(stor1, stor2, stor3);
 
-            _dbc.SaveChanges();
+                _dbc.SaveChanges();
+
+                ts.Commit();
+            }
         }
 
         /// <summary>
@@ -253,7 +258,7 @@ namespace Bookmazon.Server.Controllers
         /// It deletes ALL ENTRIES from the database and refilles them with the given seed
         /// </summary>
         [HttpGet("Reseed")]
-        public void ReSeed()
+        public void Reseed()
         {
             SeedDOWN();
             SeedUP();
