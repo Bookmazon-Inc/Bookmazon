@@ -21,8 +21,8 @@ namespace Bookmazon.Server.Controllers
         {
             #region Objects
             StorageLocation sloc1 = new StorageLocation { StorageLocationID = 1, LocationName = "Location 1" };
-            StorageLocation sloc2 = new StorageLocation { StorageLocationID = 1, LocationName = "Location 2" };
-            StorageLocation sloc3 = new StorageLocation { StorageLocationID = 1, LocationName = "Location 3" };
+            StorageLocation sloc2 = new StorageLocation { StorageLocationID = 2, LocationName = "Location 2" };
+            StorageLocation sloc3 = new StorageLocation { StorageLocationID = 3, LocationName = "Location 3" };
 
             CustomerOrderState costate1 = new CustomerOrderState { CustomerOrderStateId = 1, Title = "New" };
             CustomerOrderState costate2 = new CustomerOrderState { CustomerOrderStateId = 2, Title = "In packaging" };
@@ -172,31 +172,41 @@ namespace Bookmazon.Server.Controllers
         [HttpGet("SeedDOWN")]
         public void SeedDOWN()
         {
-            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [bok].[Author]");
-            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [bok].[AuthorBook]");
-            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [bok].[Book]");
-            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [bok].[BookDiscount]");
-            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [bok].[BookSupplier]");
-            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [ord].[CustomerOrder]");
-            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [ordCustomerOrderPositionState]");
-            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [ord].CustomerOrderState");
-            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [bok].[Discount]");
-            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [bok].[Genre]");
-            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [bok].[Language]");
-            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [bok].[Publisher]");
-            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [usr].[Roles]");
-            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [usr].[RolesUser]");
-            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [str].[Storage]");
-            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [str].[StorageLocation]");
-            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [bok].[Supplier]");
-            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [ord].[SupplyOrder]");
-            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [ord].[SupplyOrderPositionState]");
-            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [ord].[SupplyOrderState]");
-            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [usr].[User]");
-            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [usr].[UserType]");
-            _dbc.Database.ExecuteSqlRaw("TRUNCATE TABLE [bok].[VAT]");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[Author]");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[AuthorBook]");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[Book]");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[BookDiscount]");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[BookSupplier]");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [ord].[CustomerOrder]");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [ord].[CustomerOrderPositionState]");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [ord].CustomerOrderState");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[Discount]");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[Genre]");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[Language]");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[Publisher]");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [usr].[Roles]");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [usr].[RolesUser]");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [str].[Storage]");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [str].[StorageLocation]");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[Supplier]");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [ord].[SupplyOrder]");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [ord].[SupplyOrderPositionState]");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [ord].[SupplyOrderState]");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [usr].[User]");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[VAT]");
 
             _dbc.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// This function combines the two previous seed functions. 
+        /// It deletes ALL ENTRIES from the database and refilles them with the given seed
+        /// </summary>
+        [HttpGet("Reseed")]
+        public void ReSeed()
+        {
+            SeedDOWN();
+            SeedUP();
         }
     }
 }
