@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Bookmazon.Server.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -176,13 +176,13 @@ namespace Bookmazon.Server.Migrations
                 schema: "ord",
                 columns: table => new
                 {
-                    SupplayOrderPositionStateID = table.Column<int>(type: "int", nullable: false)
+                    SupplyOrderPositionStateID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SupplyOrderPositionState", x => x.SupplayOrderPositionStateID);
+                    table.PrimaryKey("PK_SupplyOrderPositionState", x => x.SupplyOrderPositionStateID);
                 });
 
             migrationBuilder.CreateTable(
@@ -190,28 +190,33 @@ namespace Bookmazon.Server.Migrations
                 schema: "ord",
                 columns: table => new
                 {
-                    SupplayOrderStateID = table.Column<int>(type: "int", nullable: false)
+                    SupplyOrderStateID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SupplyOrderState", x => x.SupplayOrderStateID);
+                    table.PrimaryKey("PK_SupplyOrderState", x => x.SupplyOrderStateID);
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserType",
+                name: "User",
                 schema: "usr",
                 columns: table => new
                 {
-                    UserTypeID = table.Column<int>(type: "int", nullable: false)
+                    UserID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TypeName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                    LastName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    FirstName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    CompanyName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Salt = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserType", x => x.UserTypeID);
+                    table.PrimaryKey("PK_User", x => x.UserID);
+                    table.UniqueConstraint("AK_User_Email", x => x.Email);
                 });
 
             migrationBuilder.CreateTable(
@@ -226,27 +231,6 @@ namespace Bookmazon.Server.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_VAT", x => x.VATID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Storage",
-                schema: "str",
-                columns: table => new
-                {
-                    ISBN = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
-                    StorageLocationID = table.Column<int>(type: "int", nullable: false),
-                    Amount = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Storage", x => new { x.ISBN, x.StorageLocationID });
-                    table.ForeignKey(
-                        name: "FK_Storage_StorageLocation_StorageLocationID",
-                        column: x => x.StorageLocationID,
-                        principalSchema: "str",
-                        principalTable: "StorageLocation",
-                        principalColumn: "StorageLocationID",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -277,83 +261,7 @@ namespace Bookmazon.Server.Migrations
                         column: x => x.SupplyOrderStateID,
                         principalSchema: "ord",
                         principalTable: "SupplyOrderState",
-                        principalColumn: "SupplayOrderStateID",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "User",
-                schema: "usr",
-                columns: table => new
-                {
-                    UserID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    FirstName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    CompanyName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
-                    Salt = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
-                    UserTypeID = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_User", x => x.UserID);
-                    table.ForeignKey(
-                        name: "FK_User_UserType_UserTypeID",
-                        column: x => x.UserTypeID,
-                        principalSchema: "usr",
-                        principalTable: "UserType",
-                        principalColumn: "UserTypeID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Book",
-                schema: "bok",
-                columns: table => new
-                {
-                    ISBN = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(800)", maxLength: 800, nullable: false),
-                    PictureURL = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false),
-                    LanguageCode = table.Column<string>(type: "nvarchar(2)", maxLength: 2, nullable: false),
-                    GenreID = table.Column<int>(type: "int", nullable: false),
-                    PublisherID = table.Column<int>(type: "int", nullable: false),
-                    VATID = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Book", x => x.ISBN);
-                    table.ForeignKey(
-                        name: "FK_Book_Genre_GenreID",
-                        column: x => x.GenreID,
-                        principalSchema: "bok",
-                        principalTable: "Genre",
-                        principalColumn: "GenreId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Book_Language_LanguageCode",
-                        column: x => x.LanguageCode,
-                        principalSchema: "bok",
-                        principalTable: "Language",
-                        principalColumn: "LanguageCode",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Book_Publisher_PublisherID",
-                        column: x => x.PublisherID,
-                        principalSchema: "bok",
-                        principalTable: "Publisher",
-                        principalColumn: "PublisherId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Book_VAT_VATID",
-                        column: x => x.VATID,
-                        principalSchema: "bok",
-                        principalTable: "VAT",
-                        principalColumn: "VATID",
+                        principalColumn: "SupplyOrderStateID",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -417,6 +325,56 @@ namespace Bookmazon.Server.Migrations
                         principalTable: "User",
                         principalColumn: "UserID",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Book",
+                schema: "bok",
+                columns: table => new
+                {
+                    ISBN = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(800)", maxLength: 800, nullable: false),
+                    PictureURL = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
+                    Notes = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: true),
+                    NetPriceSell = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
+                    PricePurchase = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
+                    LanguageCode = table.Column<string>(type: "nvarchar(2)", maxLength: 2, nullable: false),
+                    GenreID = table.Column<int>(type: "int", nullable: false),
+                    PublisherID = table.Column<int>(type: "int", nullable: false),
+                    VATID = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Book", x => x.ISBN);
+                    table.ForeignKey(
+                        name: "FK_Book_Genre_GenreID",
+                        column: x => x.GenreID,
+                        principalSchema: "bok",
+                        principalTable: "Genre",
+                        principalColumn: "GenreId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Book_Language_LanguageCode",
+                        column: x => x.LanguageCode,
+                        principalSchema: "bok",
+                        principalTable: "Language",
+                        principalColumn: "LanguageCode",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Book_Publisher_PublisherID",
+                        column: x => x.PublisherID,
+                        principalSchema: "bok",
+                        principalTable: "Publisher",
+                        principalColumn: "PublisherId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Book_VAT_VATID",
+                        column: x => x.VATID,
+                        principalSchema: "bok",
+                        principalTable: "VAT",
+                        principalColumn: "VATID",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -501,45 +459,6 @@ namespace Bookmazon.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SupplyOrderPosition",
-                schema: "ord",
-                columns: table => new
-                {
-                    SuppllyOrderID = table.Column<int>(type: "int", nullable: false),
-                    SupplayOrderPositionID = table.Column<int>(type: "int", nullable: false),
-                    Amount = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
-                    Discount = table.Column<int>(type: "int", nullable: false),
-                    SupplyOrderPositionStateID = table.Column<int>(type: "int", nullable: false),
-                    BooksISBN = table.Column<string>(type: "nvarchar(13)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SupplyOrderPosition", x => new { x.SupplayOrderPositionID, x.SuppllyOrderID });
-                    table.ForeignKey(
-                        name: "FK_SupplyOrderPosition_Book_BooksISBN",
-                        column: x => x.BooksISBN,
-                        principalSchema: "bok",
-                        principalTable: "Book",
-                        principalColumn: "ISBN",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_SupplyOrderPosition_SupplyOrder_SuppllyOrderID",
-                        column: x => x.SuppllyOrderID,
-                        principalSchema: "ord",
-                        principalTable: "SupplyOrder",
-                        principalColumn: "SupplyOrderID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_SupplyOrderPosition_SupplyOrderPositionState_SupplyOrderPositionStateID",
-                        column: x => x.SupplyOrderPositionStateID,
-                        principalSchema: "ord",
-                        principalTable: "SupplyOrderPositionState",
-                        principalColumn: "SupplayOrderPositionStateID",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "CustomerOrderPosition",
                 schema: "ord",
                 columns: table => new
@@ -576,6 +495,73 @@ namespace Bookmazon.Server.Migrations
                         principalSchema: "ord",
                         principalTable: "CustomerOrderPositionState",
                         principalColumn: "CustomerOrderPositionStateId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Storage",
+                schema: "str",
+                columns: table => new
+                {
+                    ISBN = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
+                    StorageLocationID = table.Column<int>(type: "int", nullable: false),
+                    Amount = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Storage", x => new { x.ISBN, x.StorageLocationID });
+                    table.ForeignKey(
+                        name: "FK_Storage_Book_ISBN",
+                        column: x => x.ISBN,
+                        principalSchema: "bok",
+                        principalTable: "Book",
+                        principalColumn: "ISBN",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Storage_StorageLocation_StorageLocationID",
+                        column: x => x.StorageLocationID,
+                        principalSchema: "str",
+                        principalTable: "StorageLocation",
+                        principalColumn: "StorageLocationID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SupplyOrderPosition",
+                schema: "ord",
+                columns: table => new
+                {
+                    SupplyOrderID = table.Column<int>(type: "int", nullable: false),
+                    SupplyOrderPositionID = table.Column<int>(type: "int", nullable: false),
+                    Amount = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
+                    Discount = table.Column<int>(type: "int", nullable: false),
+                    SupplyOrderPositionStateID = table.Column<int>(type: "int", nullable: false),
+                    BookISBN = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SupplyOrderPosition", x => new { x.SupplyOrderPositionID, x.SupplyOrderID });
+                    table.ForeignKey(
+                        name: "FK_SupplyOrderPosition_Book_BookISBN",
+                        column: x => x.BookISBN,
+                        principalSchema: "bok",
+                        principalTable: "Book",
+                        principalColumn: "ISBN",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_SupplyOrderPosition_SupplyOrder_SupplyOrderID",
+                        column: x => x.SupplyOrderID,
+                        principalSchema: "ord",
+                        principalTable: "SupplyOrder",
+                        principalColumn: "SupplyOrderID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SupplyOrderPosition_SupplyOrderPositionState_SupplyOrderPositionStateID",
+                        column: x => x.SupplyOrderPositionStateID,
+                        principalSchema: "ord",
+                        principalTable: "SupplyOrderPositionState",
+                        principalColumn: "SupplyOrderPositionStateID",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -676,28 +662,22 @@ namespace Bookmazon.Server.Migrations
                 column: "SupplyOrderStateID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SupplyOrderPosition_BooksISBN",
+                name: "IX_SupplyOrderPosition_BookISBN",
                 schema: "ord",
                 table: "SupplyOrderPosition",
-                column: "BooksISBN");
+                column: "BookISBN");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SupplyOrderPosition_SuppllyOrderID",
+                name: "IX_SupplyOrderPosition_SupplyOrderID",
                 schema: "ord",
                 table: "SupplyOrderPosition",
-                column: "SuppllyOrderID");
+                column: "SupplyOrderID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SupplyOrderPosition_SupplyOrderPositionStateID",
                 schema: "ord",
                 table: "SupplyOrderPosition",
                 column: "SupplyOrderPositionStateID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_User_UserTypeID",
-                schema: "usr",
-                table: "User",
-                column: "UserTypeID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -797,10 +777,6 @@ namespace Bookmazon.Server.Migrations
             migrationBuilder.DropTable(
                 name: "SupplyOrderState",
                 schema: "ord");
-
-            migrationBuilder.DropTable(
-                name: "UserType",
-                schema: "usr");
         }
     }
 }
