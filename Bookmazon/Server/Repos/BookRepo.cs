@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Bookmazon.Server.Repos
 {
-    public class BookRepo : IBookRepo
+    public class BookRepo
     {
         public BookRepo(DBContext context)
         {

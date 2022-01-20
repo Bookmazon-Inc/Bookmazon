@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Bookmazon.Server.Repos
 {
-    public class SupplyOrderRepo : ISupplyOrderRepo
+    public class SupplyOrderRepo
     {
         //Constructor
         public SupplyOrderRepo(DBContext context)

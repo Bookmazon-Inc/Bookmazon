@@ -4,6 +4,7 @@ using Bookmazon.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bookmazon.Server.Migrations
 {
     [DbContext(typeof(DBContext))]
-    partial class DBContextModelSnapshot : ModelSnapshot
+    [Migration("20220120130544_Removed UserName")]
+    partial class RemovedUserName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -104,6 +106,7 @@ namespace Bookmazon.Server.Migrations
                         .HasColumnType("decimal(18,4)");
 
                     b.Property<string>("Notes")
+                        .IsRequired()
                         .HasMaxLength(400)
                         .HasColumnType("nvarchar(400)");
 
@@ -473,15 +476,14 @@ namespace Bookmazon.Server.Migrations
                     b.Property<int>("SupplyOrderPositionID")
                         .HasColumnType("int");
 
-                    b.Property<int>("SupplyOrderID")
+                    b.Property<int>("SuppllyOrderID")
                         .HasColumnType("int");
 
                     b.Property<int>("Amount")
                         .HasColumnType("int");
 
-                    b.Property<string>("BookISBN")
+                    b.Property<string>("BooksISBN")
                         .IsRequired()
-                        .HasMaxLength(13)
                         .HasColumnType("nvarchar(13)");
 
                     b.Property<int>("Discount")
@@ -493,11 +495,11 @@ namespace Bookmazon.Server.Migrations
                     b.Property<int>("SupplyOrderPositionStateID")
                         .HasColumnType("int");
 
-                    b.HasKey("SupplyOrderPositionID", "SupplyOrderID");
+                    b.HasKey("SupplyOrderPositionID", "SuppllyOrderID");
 
-                    b.HasIndex("BookISBN");
+                    b.HasIndex("BooksISBN");
 
-                    b.HasIndex("SupplyOrderID");
+                    b.HasIndex("SuppllyOrderID");
 
                     b.HasIndex("SupplyOrderPositionStateID");
 
@@ -776,15 +778,15 @@ namespace Bookmazon.Server.Migrations
 
             modelBuilder.Entity("Bookmazon.Shared.Models.SupplyOrderPosition", b =>
                 {
-                    b.HasOne("Bookmazon.Shared.Models.Book", "Book")
+                    b.HasOne("Bookmazon.Shared.Models.Book", "Books")
                         .WithMany("SupplyOrderPositions")
-                        .HasForeignKey("BookISBN")
+                        .HasForeignKey("BooksISBN")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Bookmazon.Shared.Models.SupplyOrder", "SupplyOrder")
                         .WithMany("SupplyOrderPositions")
-                        .HasForeignKey("SupplyOrderID")
+                        .HasForeignKey("SuppllyOrderID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -794,7 +796,7 @@ namespace Bookmazon.Server.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Book");
+                    b.Navigation("Books");
 
                     b.Navigation("SupplyOrder");
 

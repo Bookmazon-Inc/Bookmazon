@@ -42,7 +42,7 @@ namespace Bookmazon.Server.Data
         {
             #region Settings
             //Unique Restrictions
-            modelbuilder.Entity<User>().HasAlternateKey(a => new {a.UserName, a.Email});
+            modelbuilder.Entity<User>().HasAlternateKey(a => new {a.Email});
 
             //Multiple Primary Keys
             modelbuilder.Entity<Storage>().HasKey(k => new { k.ISBN, k.StorageLocationID });

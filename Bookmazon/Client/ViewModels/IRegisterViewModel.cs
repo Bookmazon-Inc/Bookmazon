@@ -2,7 +2,6 @@
 {
     public interface IRegisterViewModel
     {
-        public string UserName { get; set; }
 
         public string? LastName { get; set; }
 

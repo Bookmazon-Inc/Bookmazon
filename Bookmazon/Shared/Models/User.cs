@@ -11,7 +11,8 @@ namespace Bookmazon.Shared.Models
     public class User
     {
         [Key]
-        public int UserID { get; set; }  
+        public int UserID { get; set; }
+
 
         [StringLength(100)]
         public string? LastName { get; set; }
