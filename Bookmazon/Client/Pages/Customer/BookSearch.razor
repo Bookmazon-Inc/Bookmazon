@@ -1,0 +1,83 @@
+﻿@page "/books"
+@using Bookmazon.Client.Services
+@using Bookmazon.Shared.Dtos.Book
+@using Bookmazon.Shared.Filter
+
+@inject HttpClient Http
+@inject BookSearchService bookSearchService
+@inject NavigationManager Nav
+
+@if(books != null)
+{
+    <table class="row">
+
+
+    @foreach(var book in books)
+    {
+        <div class="col-12 mt-5">
+            <div class="row">
+                <div class="col-2"> 
+                    <img src="@book.PictureURL" style="max-height: 220px;"/> 
+                </div>
+                <div class="col-8">
+                    <div class="row">
+                        <div class="col">
+                            <h4>@book.Title</h4> 
+                        </div>
+                    </div>
+                     <div class="row">
+                        <div class="col">
+                            @book.Description   
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2 text-end">
+                    @String.Format("{0:c}", book.Price)
+                </div>
+            </div>
+        </div>
+    }
+
+</table>
+}
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "searchString")]
+    public string SearchString { get; set; }
+
+    private BookDto[] books;
+
+
+
+    protected override void OnInitialized() {
+
+        if(!String.IsNullOrEmpty(SearchString))
+        {
+            search(this, SearchString);
+        }
+
+
+        bookSearchService.OnSearchRequest += search;
+    }
+
+    public void Dispose()
+    {
+        bookSearchService.OnSearchRequest -= search;
+    }
+
+
+    private async void search(object sender, string searchString)
+    {
+        var filter = new LikeFilter
+            {
+                PropertyName = "Title",
+                Value = searchString
+            };
+
+
+        books = await Http.GetFromJsonAsync<BookDto[]>($"/api/book?{filter.ToQueryString()}");
+
+        StateHasChanged();
+    }
+}

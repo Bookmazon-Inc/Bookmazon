@@ -6,17 +6,10 @@
 @inject NavigationManager _navigationManager
 
 <div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
 
     <main>
-        <div class="top-row px-4">
-            <a href="/createuser">Create</a>
-            <a href="/loginuser">Login</a>
-            <a @onclick="LogoutUser">Logout</a>
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
+
+        <NavMenu />
 
         <article class="content px-4">
             @Body

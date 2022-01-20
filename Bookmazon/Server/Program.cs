@@ -7,6 +7,7 @@ using Bookmazon.Server.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Bookmazon.Server.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,6 +57,9 @@ builder.Services.AddAuthentication(options =>
             ClockSkew = TimeSpan.Zero
         };
     });
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 
 
 var app = builder.Build();
