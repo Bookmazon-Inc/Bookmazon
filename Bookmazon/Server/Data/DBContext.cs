@@ -34,11 +34,12 @@ namespace Bookmazon.Server.Data
         public DbSet<SupplyOrderPosition> SupplyOrderPositions { get; set;}
         public DbSet<SupplyOrderPositionState> SupplyOrderPositionStates { get; set;}
         public DbSet<User> Users { get; set; }
-        public DbSet<UserType> UserTypes { get; set; }
         public DbSet<VAT> VAT { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelbuilder)
         {
+            //Unique Restrictions
+            modelbuilder.Entity<User>().HasAlternateKey(a => new {a.UserName, a.Email});
 
             //Multiple Primary Keys
             modelbuilder.Entity<Storage>().HasKey(k => new { k.ISBN, k.StorageLocationID });
@@ -95,7 +96,6 @@ namespace Bookmazon.Server.Data
             //User Schema
             modelbuilder.Entity<Roles>().ToTable("Roles", "usr");
             modelbuilder.Entity<User>().ToTable("User", "usr");
-            modelbuilder.Entity<UserType>().ToTable("UserType", "usr");
 
         }
 

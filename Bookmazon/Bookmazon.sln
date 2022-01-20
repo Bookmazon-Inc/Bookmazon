@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bookmazon.Server", "Server\Bookmazon.Server.csproj", "{7AAA78C9-CABB-4CAE-8D94-2A53FE35A4DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bookmazon.Server", "Server\Bookmazon.Server.csproj", "{7AAA78C9-CABB-4CAE-8D94-2A53FE35A4DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bookmazon.Client", "Client\Bookmazon.Client.csproj", "{F9A67028-A5D1-4CE2-AF39-7468815BA61F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bookmazon.Client", "Client\Bookmazon.Client.csproj", "{F9A67028-A5D1-4CE2-AF39-7468815BA61F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bookmazon.Shared", "Shared\Bookmazon.Shared.csproj", "{C04ECB3B-76F6-4359-907F-211C362895CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bookmazon.Shared", "Shared\Bookmazon.Shared.csproj", "{C04ECB3B-76F6-4359-907F-211C362895CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

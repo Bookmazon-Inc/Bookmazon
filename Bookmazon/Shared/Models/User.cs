@@ -14,7 +14,6 @@ namespace Bookmazon.Shared.Models
         public int UserID { get; set; }
 
 
-        [Required]
         [StringLength(256)]
         public string UserName { get; set; }    
 
@@ -33,27 +32,20 @@ namespace Bookmazon.Shared.Models
 
         [Required]
         [StringLength(100)]
+        [EmailAddress]
         public string Email { get; set; }
 
 
         [Required]
-        [StringLength(64)]
         public string Password { get; set; }
 
+        public string? Salt { get; set; }
 
-        [Required] 
-        [StringLength(32)]
-        public string Salt { get; set; }
-
-        [Required]
-        [ForeignKey("UserType")]
-        public int UserTypeID { get; set; }
 
 
         //Relation
-        public virtual UserType UserType { get; set; }
-        public virtual ICollection<CustomerOrder> CustomerOrders { get; set;}
-        public virtual ICollection<Roles> Roles { get; set; }
+        public virtual ICollection<CustomerOrder>? CustomerOrders { get; set;}
+        public virtual ICollection<Roles>? Roles { get; set; }
 
     }
 }
