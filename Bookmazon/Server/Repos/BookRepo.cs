@@ -39,7 +39,7 @@ namespace Bookmazon.Server.Repos
 
             if(bookFilter != null)
             {
-                query = bookFilter.ApplyFilter(query);
+                bookFilter.ApplyFilter(query);
             }
 
             return await query.ToArrayAsync();

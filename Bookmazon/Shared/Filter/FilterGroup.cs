@@ -1,24 +1,24 @@
-﻿using System;
+﻿using Bookmazon.Shared.Models;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace  Bookmazon.Shared.Filter
 {
-    public abstract class FilterGroup
+    public abstract class FilterGroup<TEntity>
     {
-        private ICollection<IFilter> filters = new List<IFilter>();
+        private ICollection<IBaseFilter<TEntity>> filters = new List<IBaseFilter<TEntity>>();
 
-        protected void AddFilter(IFilter filter) => filters.Add(filter);
+        protected void AddFilter(IBaseFilter<TEntity> filter) => filters.Add(filter);
 
 
-        public IQueryable<T> ApplyFilter<T>(IQueryable<T> query) where T : class
+        public void ApplyFilter(IQueryable<TEntity> query)
         {
             foreach (var filter in filters)
-                query = filter.ApplyFilter(query);
-
-            return query;
+                filter.ApplyFilter(query);
         }
         public void FromQueryString(string queryString)
         {

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace  Bookmazon.Shared.Filter
 {
-    public class RangeFilter : IFilter
+    public class RangeFilter<TEntity> : IFilter<TEntity, int>
     {
         private int? max;
         public int Max { init => max = value; }
@@ -16,7 +16,8 @@ namespace  Bookmazon.Shared.Filter
         private int? min;
         public int Min { init => min = value; }
 
-        public string PropertyName { get; init; }
+        public Func<TEntity, int> GetPropertyValue { get; init; }
+        public string Name { get; init; }
 
         public IQueryable<T> ApplyFilter<T>(IQueryable<T> query)
         {
@@ -27,7 +28,7 @@ namespace  Bookmazon.Shared.Filter
         {
             NameValueCollection queryStringCol = System.Web.HttpUtility.ParseQueryString(queryString);
 
-            var values = queryStringCol.Get(PropertyName);
+            var values = queryStringCol.Get(Name);
 
             if(values == null)
             {
@@ -45,14 +46,14 @@ namespace  Bookmazon.Shared.Filter
         {
             NameValueCollection queryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
-            queryString.Add(PropertyName, $"{max},{min}");
+            queryString.Add(Name, $"{max},{min}");
 
             return queryString.ToString();
         }
 
         private bool isInRange<T>(T type)
         {
-            var prop = type.GetType().GetProperty(PropertyName);
+            var prop = type.GetType().GetProperty(Name);
 
 
             if (prop == null || !isNumericType(prop.PropertyType))
@@ -92,6 +93,11 @@ namespace  Bookmazon.Shared.Filter
                 default:
                     return false;
             }
+        }
+
+        public void ApplyFilter(IQueryable<TEntity> query)
+        {
+            throw new NotImplementedException();
         }
     }
 }

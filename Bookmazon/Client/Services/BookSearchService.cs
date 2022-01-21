@@ -1,4 +1,5 @@
-﻿using Bookmazon.Shared.Filter;
+﻿using Bookmazon.Shared.Dtos.Book;
+using Bookmazon.Shared.Filter;
 using Microsoft.AspNetCore.Components;
 
 namespace Bookmazon.Client.Services
@@ -30,9 +31,10 @@ namespace Bookmazon.Client.Services
                 OnSearchRequest?.Invoke(this, searchString);
             } else
             {
-                var filter = new LikeFilter
+                var filter = new LikeFilter<BookDto>
                 {
-                    PropertyName = "searchString",
+                    Name = "searchString",
+                    GetPropertyValue = (book) => book.Title,
                     Value = searchString
                 };
 

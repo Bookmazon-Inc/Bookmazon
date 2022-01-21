@@ -8,9 +8,9 @@ namespace  Bookmazon.Shared.Filter
 {
     public static class Extentions
     {
-        public static IQueryable<T> ApplyFilter<T>(this IQueryable<T> query, FilterGroup filters) where T : class
+        public static void ApplyFilter<T>(this IQueryable<T> query, FilterGroup<T> filters) where T : class
         {
-            return filters.ApplyFilter<T>(query);
+            filters.ApplyFilter(query);
         }
     }
 }

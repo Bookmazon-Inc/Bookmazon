@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace  Bookmazon.Shared.Filter
 {
-    public class SelectFilter<TValues> : IFilter
+    public class SelectFilter<TEntity, TValues> : IFilter<TEntity, TValues>
     {
 
         private ICollection<TValues> values;
@@ -18,7 +18,8 @@ namespace  Bookmazon.Shared.Filter
         public ICollection<TValues> Values {  init => values = value; }
         public string PropertyName { get; init; }
         public string? PropertyKey { get; init; } = null;
-
+        public Func<TEntity, TValues> GetPropertyValue { get => throw new NotImplementedException(); init => throw new NotImplementedException(); }
+        public string Name { get; init; }
 
         private ICollection<T> getICollection<T>(ICollection collection)
         {
@@ -82,6 +83,11 @@ namespace  Bookmazon.Shared.Filter
             queryString.Add(PropertyName, String.Join(",", values));
 
             return queryString.ToString();
+        }
+
+        public void ApplyFilter(IQueryable<TEntity> query)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -69,11 +69,12 @@
 
     private async void search(object sender, string searchString)
     {
-        var filter = new LikeFilter
-            {
-                PropertyName = "Title",
-                Value = searchString
-            };
+        var filter = new LikeFilter<BookDto>
+        {
+            Name = "q",
+            GetPropertyValue = (book) => book.Title,
+            Value = searchString
+        };
 
 
         books = await Http.GetFromJsonAsync<BookDto[]>($"/api/book?{filter.ToQueryString()}");
