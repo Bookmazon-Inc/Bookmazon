@@ -40,7 +40,7 @@ namespace Bookmazon.Server.Repos
 
             if (bookFilter != null)
             {
-                query = bookFilter.ApplyFilter(query);
+                bookFilter.ApplyFilter(ref query);
             }
 
 

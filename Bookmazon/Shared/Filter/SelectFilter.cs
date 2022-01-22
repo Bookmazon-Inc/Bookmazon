@@ -23,12 +23,6 @@ namespace  Bookmazon.Shared.Filter
         public ICollection<TValues> Values {  init => values = value; }
 
 
-
-        private ICollection<T> getICollection<T>(ICollection collection)
-        {
-            return (ICollection<T>)collection;
-        }
-
         public IQueryable<TEntity> ApplyFilter(IQueryable<TEntity> query)
         {
             if(values == null || values.Count() == 0)

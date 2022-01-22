@@ -28,9 +28,8 @@ namespace Bookmazon.Shared.Filter
 
             var whereStatementExpresion = getExpression<TEntity>(Value);
 
-            query = query.Where(whereStatementExpresion);
+            return query.Where(whereStatementExpresion);
 
-            return query;
         }
 
 

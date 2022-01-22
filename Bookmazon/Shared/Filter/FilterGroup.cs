@@ -15,13 +15,10 @@ namespace  Bookmazon.Shared.Filter
         protected void AddFilter(IBaseFilter<TEntity> filter) => filters.Add(filter);
 
 
-        public IQueryable<TEntity> ApplyFilter(IQueryable<TEntity> query)
+        public void ApplyFilter(ref IQueryable<TEntity> query)
         {
             foreach (var filter in filters)
                 query = filter.ApplyFilter(query);
-
-
-            return query;
         }
         public void FromQueryString(string queryString)
         {
