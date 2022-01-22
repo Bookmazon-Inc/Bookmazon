@@ -26,7 +26,7 @@ namespace Bookmazon.Shared.Filter
             if (String.IsNullOrEmpty(_value))
                 return query;
 
-            var whereStatementExpresion = getExpression<TEntity>(PropertyName, Value);
+            var whereStatementExpresion = getExpression<TEntity>(Value);
 
             query = query.Where(whereStatementExpresion);
 
@@ -51,10 +51,10 @@ namespace Bookmazon.Shared.Filter
         }
 
 
-        private Expression<Func<TEntity, bool>> getExpression<TEntity>(string fieldName, string value)
+        private Expression<Func<TEntity, bool>> getExpression<TEntity>(string value)
         {
 
-            PropertyDescriptor prop = TypeDescriptor.GetProperties(typeof(TEntity)).Find(fieldName, true);
+            PropertyDescriptor prop = TypeDescriptor.GetProperties(typeof(TEntity)).Find(PropertyName, true);
 
             if (prop != null)
             {

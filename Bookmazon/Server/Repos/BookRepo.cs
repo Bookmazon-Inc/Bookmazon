@@ -34,14 +34,17 @@ namespace Bookmazon.Server.Repos
         /// <returns></returns>
         public async Task<IEnumerable<Book>> GetAllBooks(BookFilter? bookFilter)
         {
-            var query = _dbc.Books.Where(book => book.Title.Length > 0);
-                        
+            var query = from b in _dbc.Books
+                        select b;
 
-            if(bookFilter != null)
+
+            if (bookFilter != null)
             {
                 query = bookFilter.ApplyFilter(query);
             }
 
+
+            query = query.Include(x => x.Genre).Include(x => x.Publisher).Include(x => x.Language);
             var t = query.ToQueryString();
             var x = query.Expression;
 

@@ -16,11 +16,11 @@ namespace  Bookmazon.Shared.Filter
         public string PropertyName { get; init; }
 
 
-        private int? max;
+        private int? max = null;
         public int Max { init => max = value; }
 
 
-        private int? min;
+        private int? min =  null;
         public int Min { init => min = value; }
 
 
@@ -40,7 +40,7 @@ namespace  Bookmazon.Shared.Filter
 
             if (max != null)
             {
-                var lessThan = getLessThanExpression<TEntity>(PropertyName, (int)max);
+                var lessThan = getLessThanExpression<TEntity>((int)max);
 
                 query = query.Where(lessThan);
             }
@@ -59,11 +59,15 @@ namespace  Bookmazon.Shared.Filter
                 return;
             }
             
-            int max = Convert.ToInt32(values.Split(",")[0]);
-            int min = Convert.ToInt32(values.Split(",")[1]);
+            try
+            {
+                max = Convert.ToInt32(values.Split(",")[0]);
+            }  catch { }
 
-            this.max = max;
-            this.min = min;
+            try { 
+                min = Convert.ToInt32(values.Split(",")[1]);
+            }  catch { }
+
         }
 
         public string ToQueryString()
@@ -126,7 +130,7 @@ namespace  Bookmazon.Shared.Filter
 
                 ParameterExpression parameter = Expression.Parameter(typeof(TEntity));
 
-                MemberExpression property = Expression.Property(parameter, PropertyName);
+                MemberExpression property = Expression.Property(parameter, prop.Name);
 
                 ConstantExpression constant;
 
