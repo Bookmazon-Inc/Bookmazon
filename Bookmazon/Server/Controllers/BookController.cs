@@ -29,6 +29,8 @@ namespace Bookmazon.Server.Controllers
         {
             var bookFilter = new BookFilter();
 
+            bookFilter.FromQueryString(Request.QueryString.ToString());
+
             var books = await _unitOfWork.BookRepo.GetAllBooks(bookFilter);
 
             return Ok(books.Select(s => s.ToBookDto()));

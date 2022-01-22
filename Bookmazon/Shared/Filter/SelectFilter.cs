@@ -3,75 +3,55 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace  Bookmazon.Shared.Filter
 {
-    public class SelectFilter<TValues> : IFilter
+    public class SelectFilter<TEntity, TValues> : IFilter<TEntity, TValues>
     {
+        public string Name { get; init; }
+        public string PropertyName { get; init; }
+
+
 
         private ICollection<TValues> values;
-
         public ICollection<TValues> Values {  init => values = value; }
-        public string PropertyName { get; init; }
-        public string? PropertyKey { get; init; } = null;
 
 
-        private ICollection<T> getICollection<T>(ICollection collection)
+        public IQueryable<TEntity> ApplyFilter(IQueryable<TEntity> query)
         {
-            return (ICollection<T>)collection;
-        }
+            if(values == null || values.Count() == 0)
+                return query;
 
-        public IQueryable<T> ApplyFilter<T>(IQueryable<T> query)
-        {
-            var propType = typeof(T).GetProperty(PropertyName).PropertyType;
-            var genericType = propType.GenericTypeArguments[0];
 
-            if (propType is ICollection && typeof(TValues) == genericType)
-            {
-                var key = PropertyKey ?? PropertyName + PropertyName.Substring(0, PropertyName.Length - 2) + "Id";
-
-                return query.Where(entity => 
-                    ((ICollection<Object>)entity.GetType().GetProperty(PropertyName).GetValue(entity))
-                    .AsQueryable<object>()
-                    .Where(x => 
-                        values.Contains((TValues)x.GetType().GetProperty(key).GetValue(x))
-                    ).Any()
-                );
-            } 
-            else if (typeof(TValues) == propType)
-            {
-                return query.Where(entity => values.Contains((TValues)entity.GetType().GetProperty(PropertyName).GetValue(entity)));
-            }
-
-            return query;
+            var a = getExpression<TEntity>(values);
+            return query.Where(a);
         }
 
         public void FromQueryString(string queryString)
         {
-            NameValueCollection queryStringCollection = System.Web.HttpUtility.ParseQueryString(string.Empty);
+            NameValueCollection queryStringCollection = System.Web.HttpUtility.ParseQueryString(queryString);
 
 
-            var valuesAsString = queryStringCollection.Get(PropertyName);
+            var valuesAsString = queryStringCollection.Get(Name);
 
             if (valuesAsString == null)
                 return;
 
-            values = (ICollection<TValues>)valuesAsString
-                .Split(",")
-                .Select(s => {
-                    try
-                    {
-                        return Convert.ChangeType(s, typeof(TValues));
-                    } catch  (Exception ex){
-                        return null;
-                    }
-                })
-                .Where(w => w != null)
-                .ToList();
+            var x = valuesAsString.Split(",").AsQueryable();
+
+            try
+            {
+                values = x.Select(s => (TValues)Convert.ChangeType(s, typeof(TValues))).Where(x => x != null).ToList();
+            } catch {
+                return;
+            }
+
         }
 
         public string ToQueryString()
@@ -79,9 +59,41 @@ namespace  Bookmazon.Shared.Filter
             NameValueCollection queryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
 
-            queryString.Add(PropertyName, String.Join(",", values));
+            queryString.Add(Name, String.Join(",", values));
 
             return queryString.ToString();
+        }
+
+        private Expression<Func<TEntity, bool>> getExpression<TEntity>(ICollection<TValues> values)
+        {
+            PropertyDescriptor prop = TypeDescriptor.GetProperties(typeof(TEntity)).Find(PropertyName, true);
+
+            if (prop != null)
+            {
+
+                if (prop.PropertyType == typeof(int))
+                {
+
+                    var parameter = Expression.Parameter(typeof(TEntity));
+
+                    var methods = typeof(ICollection<int>).GetMethods();
+
+
+                    MethodInfo contains = methods.FirstOrDefault(x => x.Name == "Contains");
+
+                    var IdProperty = Expression.Property(parameter, prop.Name);
+                    var vakueCollection = Expression.Constant(values);
+
+
+                    var body = Expression.Call(vakueCollection, contains, IdProperty);
+
+                    return Expression.Lambda<Func<TEntity, bool>>(body, parameter);
+                }
+
+
+            }
+
+            return null;
         }
     }
 }
