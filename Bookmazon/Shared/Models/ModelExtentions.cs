@@ -14,7 +14,7 @@ namespace Bookmazon.Shared.Models
     {
         public static BookDto ToBookDto(this Book book)
         {
-            return new BookDto { ISBN = book.ISBN, Title = book.Title, Description = book.Description, Genre = book.Genre?.ToGenreDto(), Language = book.Language?.ToLanguageDto(), PictureURL = book.PictureURL, Price = 0, Publisher = book.Publisher?.ToPublisherDto() }; 
+            return new BookDto { ISBN = book.ISBN, Title = book.Title, Description = book.Description, Genre = book.Genre?.ToGenreDto(), Language = book.Language?.ToLanguageDto(), PictureURL = book.PictureURL, Price = book.NetPriceSell, Publisher = book.Publisher?.ToPublisherDto() }; 
         }
 
         public static GenreDto ToGenreDto(this Genre genre)

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,18 +12,40 @@ namespace  Bookmazon.Shared.Filter
 {
     public class RangeFilter<TEntity> : IFilter<TEntity, int>
     {
+        public string Name { get; init; }
+        public string PropertyName { get; init; }
+
+
         private int? max;
         public int Max { init => max = value; }
+
 
         private int? min;
         public int Min { init => min = value; }
 
-        public Func<TEntity, int> GetPropertyValue { get; init; }
-        public string Name { get; init; }
 
-        public IQueryable<TEntity> ApplyFilter<TEntity>(IQueryable<TEntity> query)
+
+        public IQueryable<TEntity> ApplyFilter(IQueryable<TEntity> query)
         {
-            return query.Where(w => isInRange(w));
+            if(min == null && max == null)
+                return query;
+
+
+            if(min != null)
+            {
+                var greaterThan = getGreaterThanExpression<TEntity>((int)min);
+
+                query = query.Where(greaterThan);
+            }
+
+            if (max != null)
+            {
+                var lessThan = getLessThanExpression<TEntity>(PropertyName, (int)max);
+
+                query = query.Where(lessThan);
+            }
+
+            return query;
         }
 
         public void FromQueryString(string queryString)
@@ -51,58 +75,83 @@ namespace  Bookmazon.Shared.Filter
             return queryString.ToString();
         }
 
-        private bool isInRange<T>(T type)
+
+        private Expression<Func<TEntity, bool>> getGreaterThanExpression<TEntity>(int value)
         {
-            var prop = type.GetType().GetProperty(Name);
 
+            PropertyDescriptor prop = TypeDescriptor.GetProperties(typeof(TEntity)).Find(PropertyName, true);
 
-            if (prop == null || !isNumericType(prop.PropertyType))
-                return true;
-            
-            if(min != null && max != null)
-                return Convert.ToInt32(prop.GetValue(type)) >= min && Convert.ToInt32(prop.GetValue(type)) <= max;
-
-            if (min != null)
-                return Convert.ToInt32(prop.GetValue(type)) >= min;
-
-            if (max != null)
-                return Convert.ToInt32(prop.GetValue(type)) <= max;
-
-
-
-            return true;
-        }
-
-
-        private bool isNumericType(Type o)
-        {
-            var x = Type.GetTypeCode(o);
-
-            switch (x)
+            if (prop != null)
             {
-                case TypeCode.UInt16:
-                case TypeCode.UInt32:
-                case TypeCode.UInt64:
-                case TypeCode.Int16:
-                case TypeCode.Int32:
-                case TypeCode.Int64:
-                case TypeCode.Decimal:
-                case TypeCode.Double:
-                case TypeCode.Single:
-                    return true;
-                default:
-                    return false;
+
+
+
+                ParameterExpression parameter = Expression.Parameter(typeof(TEntity));
+
+                MemberExpression property = Expression.Property(parameter, PropertyName);
+
+                ConstantExpression constant;
+
+
+                if(prop.PropertyType == typeof(decimal))
+                {
+                    constant = Expression.Constant((decimal)value, typeof(decimal));
+                } else if(prop.PropertyType == typeof(int))
+                {
+                    constant = Expression.Constant((int)value, typeof(int));
+                } else
+                {
+                    return null;
+                }
+
+                BinaryExpression body = Expression.GreaterThan(constant, property);
+
+                var ExpressionTree = Expression.Lambda<Func<TEntity, bool>>(body, new[] { parameter });
+
+                return ExpressionTree;
             }
+
+            return null;
         }
 
-        public void ApplyFilter(IQueryable<TEntity> query)
+        private Expression<Func<TEntity, bool>> getLessThanExpression<TEntity>(int value)
         {
-            throw new NotImplementedException();
-        }
 
-        IQueryable<TEntity> IBaseFilter<TEntity>.ApplyFilter(IQueryable<TEntity> query)
-        {
-            throw new NotImplementedException();
+            PropertyDescriptor prop = TypeDescriptor.GetProperties(typeof(TEntity)).Find(PropertyName, true);
+
+            if (prop != null)
+            {
+
+
+
+                ParameterExpression parameter = Expression.Parameter(typeof(TEntity));
+
+                MemberExpression property = Expression.Property(parameter, PropertyName);
+
+                ConstantExpression constant;
+
+
+                if (prop.PropertyType == typeof(decimal))
+                {
+                    constant = Expression.Constant((decimal)value, typeof(decimal));
+                }
+                else if (prop.PropertyType == typeof(int))
+                {
+                    constant = Expression.Constant((int)value, typeof(int));
+                }
+                else
+                {
+                    return null;
+                }
+
+                BinaryExpression body = Expression.LessThan(constant, property);
+
+                var ExpressionTree = Expression.Lambda<Func<TEntity, bool>>(body, new[] { parameter });
+
+                return ExpressionTree;
+            }
+
+            return null;
         }
     }
 }

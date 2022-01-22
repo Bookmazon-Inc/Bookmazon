@@ -72,7 +72,6 @@
         var filter = new LikeFilter<BookDto>
         {
             Name = "q",
-            GetPropertyValue = (book) => book.Title,
             Value = searchString
         };
 

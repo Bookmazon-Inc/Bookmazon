@@ -12,6 +12,6 @@ namespace Bookmazon.Shared.Filter
         public string PropertyName { get; init; }
         public string ToQueryString();
         public void FromQueryString(string queryString);
-        public IQueryable<TEntity> ApplyFilter(IQueryable<TEntity> query);
+        IQueryable<TEntity> ApplyFilter(IQueryable<TEntity> query);
     }
 }

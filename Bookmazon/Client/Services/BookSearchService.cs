@@ -34,7 +34,6 @@ namespace Bookmazon.Client.Services
                 var filter = new LikeFilter<BookDto>
                 {
                     Name = "searchString",
-                    GetPropertyValue = (book) => book.Title,
                     Value = searchString
                 };
 
