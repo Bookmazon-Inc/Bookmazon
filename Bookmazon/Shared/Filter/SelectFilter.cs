@@ -26,9 +26,9 @@ namespace  Bookmazon.Shared.Filter
             return (ICollection<T>)collection;
         }
 
-        public IQueryable<T> ApplyFilter<T>(IQueryable<T> query)
+        public IQueryable<TEntity> ApplyFilter<TEntity>(IQueryable<TEntity> query)
         {
-            var propType = typeof(T).GetProperty(PropertyName).PropertyType;
+            var propType = typeof(TEntity).GetProperty(PropertyName).PropertyType;
             var genericType = propType.GenericTypeArguments[0];
 
             if (propType is ICollection && typeof(TValues) == genericType)
@@ -86,6 +86,11 @@ namespace  Bookmazon.Shared.Filter
         }
 
         public void ApplyFilter(IQueryable<TEntity> query)
+        {
+            throw new NotImplementedException();
+        }
+
+        IQueryable<TEntity> IBaseFilter<TEntity>.ApplyFilter(IQueryable<TEntity> query)
         {
             throw new NotImplementedException();
         }

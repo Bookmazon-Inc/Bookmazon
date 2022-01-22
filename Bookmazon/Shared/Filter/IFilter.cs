@@ -12,6 +12,6 @@ namespace  Bookmazon.Shared.Filter
 
     public interface IFilter<TEntity, TProperty> : IBaseFilter<TEntity>
     {
-        public Func<TEntity, TProperty> GetPropertyValue { get; init; }
+        
     }
 }

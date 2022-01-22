@@ -19,7 +19,7 @@ namespace  Bookmazon.Shared.Filter
         public Func<TEntity, int> GetPropertyValue { get; init; }
         public string Name { get; init; }
 
-        public IQueryable<T> ApplyFilter<T>(IQueryable<T> query)
+        public IQueryable<TEntity> ApplyFilter<TEntity>(IQueryable<TEntity> query)
         {
             return query.Where(w => isInRange(w));
         }
@@ -96,6 +96,11 @@ namespace  Bookmazon.Shared.Filter
         }
 
         public void ApplyFilter(IQueryable<TEntity> query)
+        {
+            throw new NotImplementedException();
+        }
+
+        IQueryable<TEntity> IBaseFilter<TEntity>.ApplyFilter(IQueryable<TEntity> query)
         {
             throw new NotImplementedException();
         }

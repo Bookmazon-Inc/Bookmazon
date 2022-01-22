@@ -9,8 +9,9 @@ namespace Bookmazon.Shared.Filter
     public interface IBaseFilter<TEntity>
     {
         public string Name { get; init; }
+        public string PropertyName { get; init; }
         public string ToQueryString();
         public void FromQueryString(string queryString);
-        public void ApplyFilter(IQueryable<TEntity> query);
+        public IQueryable<TEntity> ApplyFilter(IQueryable<TEntity> query);
     }
 }

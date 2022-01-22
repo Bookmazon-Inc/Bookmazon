@@ -11,7 +11,7 @@ namespace Bookmazon.Server.Filter
             //AddFilter(new RangeFilter { PropertyName = nameof(Book.PriceSell) });
             //AddFilter(new SelectFilter<int> { PropertyName = nameof(Book.Authors) });
             //AddFilter(new SelectFilter<string> { PropertyName = nameof(Book.Language) });
-            AddFilter(new LikeFilter<Book> { GetPropertyValue = (book) => book.Title, Name = "q" });
+            AddFilter(new LikeFilter<Book> { PropertyName = nameof(Book.Title), Name = "q" });
         }
     }
 }
