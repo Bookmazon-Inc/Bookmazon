@@ -1,0 +1,69 @@
+﻿@page "/AdminMain/Books"
+@using Bookmazon.Shared.Models
+@using Bookmazon.Shared.Dtos.Book
+@inject HttpClient Http
+
+<h1>Books</h1>
+<p>
+    <a style="font-weight: bold;" href="/AdminMain/Books/CreateBook">Add Book</a>
+</p>
+
+<h2>Books in Database</h2>
+@if (Books != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ISBN</th>
+                <th>Title</th>
+                <th>Price</th>
+                <th>Genre</th>
+                <th>Publisher</th>
+                <th>Language</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var book in Books)
+            {
+                @try
+                {
+                    <tr>
+                        <td>@book.ISBN</td>
+                        <td>@book.Title</td>
+                        <td>@book.Price</td>
+                        <td>@book.Genre.Title</td>
+                        <td>@book.Publisher.PublisherName</td>
+                        <td>@book.Language.FullName</td>
+                    </tr>
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p><em>Loading...</em></p>
+}
+
+
+
+@code {
+    // Variables
+    private List<BookDto>? Books;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetBooks();
+    }
+
+    private async Task GetBooks()
+    {
+        try { Books = await Http.GetFromJsonAsync<List<BookDto>>("api/Book"); }
+        catch (Exception e) { throw e; }
+    }
+}

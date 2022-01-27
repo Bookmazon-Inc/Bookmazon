@@ -1,0 +1,117 @@
+﻿@page "/AdminMain/Books/CreateBook"
+@using Bookmazon.Shared.Models
+@using Bookmazon.Shared.Dtos.Book
+@using Bookmazon.Shared.Dtos.Genre
+@using Bookmazon.Shared.Dtos.Language
+@using Bookmazon.Shared.Dtos.Publisher
+@using Bookmazon.Shared.Dtos.VAT
+@inject HttpClient Http
+
+<h1>Add a Book</h1>
+
+<EditForm Model ="@NewBook" OnValidSubmit="@Save">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="text" @bind="NewBook.ISBN" placeholder="ISBN" class="form-control dark-theme-textbox">
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="text" @bind="NewBook.Title" placeholder="Title" class="form-control dark-theme-textbox">
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <!-- <input type="text" @bind="NewBook.Description" placeholder="Description" class="form-control dark-theme-textbox"> -->
+        <textarea @bind="NewBook.Description" placeholder="Description" class="form-control dark-theme-textbox"></textarea>
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="text" @bind="NewBook.PictureURL" placeholder="Picture URL" class="form-control dark-theme-textbox">
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="number" @bind="NewBook.NetPriceSell" placeholder="Net selling price (0.0000)" class="form-control dark-theme-textbox">
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="text" @bind="NewBook.PricePurchase" placeholder="Net purchasing price (0.0000)" class="form-control dark-theme-textbox">
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <InputSelect @bind-Value="NewBook.GenreID" class="form-control dark-theme-textbox">
+            @foreach (GenreDto gen in Genres)
+            {
+                <option value="@gen.GenreId">@gen.Title</option>
+            }
+        </InputSelect>
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <InputSelect @bind-Value="NewBook.LanguageCode" class="form-control dark-theme-textbox">
+            @foreach (LanguageDto lan in Languages)
+           {
+                <option value="@lan.LanguageCode">@lan.FullName</option>
+           }
+        </InputSelect>
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <InputSelect @bind-Value="NewBook.PublisherID" class="form-control dark-theme-textbox">
+            @foreach (PublisherDto pub in Publishers)
+           {
+               <option value="@pub.PublisherId">@pub.PublisherName</option>
+           }
+        </InputSelect>
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <InputSelect @bind-Value="NewBook.VATID" class="form-control dark-theme-textbox">
+            @foreach (VATDto vat in VATs)
+           {
+               <option value="@vat.VATID">@vat.VATPercentage %</option>
+           }
+        </InputSelect>
+    </div>
+    <br />
+    <button class="btn btn-danger" type="submit">Add Book</button>
+</EditForm>
+
+@code {
+    // Variables
+    private BookCreateDto NewBook = new();
+    private List<GenreDto>? Genres = new();
+    private List<LanguageDto>? Languages = new();
+    private List<PublisherDto>? Publishers = new();
+    private List<VATDto>? VATs = new();
+
+
+    protected override Task OnInitializedAsync()
+    {
+        NewBook = new();
+        LoadData();
+        return base.OnInitializedAsync();
+    }
+
+    private async void LoadData()
+    {
+        try { Genres = await Http.GetFromJsonAsync<List<GenreDto>>("api/Genre"); }
+        catch (Exception e) { throw e; }
+
+        try { Languages = await Http.GetFromJsonAsync<List<LanguageDto>>("api/Language"); }
+        catch (Exception e) { throw e; }
+
+        try { Publishers = await Http.GetFromJsonAsync<List<PublisherDto>>("api/Publisher"); }
+        catch (Exception e) { throw e; }
+
+        try { VATs = await Http.GetFromJsonAsync<List<VATDto>>("api/VAT"); }
+        catch (Exception e) { throw e; }
+        
+        // For good measure
+        StateHasChanged();
+    }
+
+    private void Save()
+    {
+        
+    }
+}
