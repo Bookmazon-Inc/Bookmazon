@@ -19,5 +19,8 @@ namespace Bookmazon.Server.Interfaces
         IStorageRepo storageRepo { get; }
 
         ISupplyOrderRepo supplyOrderRepo { get; }
+
+        void Commit();
+        void CommitAsync();
     }
 }

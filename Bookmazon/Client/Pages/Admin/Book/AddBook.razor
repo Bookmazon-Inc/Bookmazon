@@ -1,15 +1,21 @@
-﻿@page "/AdminMain/Books/CreateBook"
+﻿@page "/AdminMain/Books/AddBook"
+
+
 @using Bookmazon.Shared.Models
+@using Bookmazon.Shared.Dtos.Author
 @using Bookmazon.Shared.Dtos.Book
 @using Bookmazon.Shared.Dtos.Genre
 @using Bookmazon.Shared.Dtos.Language
 @using Bookmazon.Shared.Dtos.Publisher
 @using Bookmazon.Shared.Dtos.VAT
+
+
 @inject HttpClient Http
+@inject NavigationManager navMan
 
 <h1>Add a Book</h1>
 
-<EditForm Model ="@NewBook" OnValidSubmit="@Save">
+<EditForm Model ="@NewBook" OnValidSubmit="()=>Save()">
     <DataAnnotationsValidator />
     <ValidationSummary />
     <div class="col-xl-6 col-md-8 col-12">
@@ -30,11 +36,11 @@
     </div>
     <br />
     <div class="col-xl-6 col-md-8 col-12">
-        <input type="number" @bind="NewBook.NetPriceSell" placeholder="Net selling price (0.0000)" class="form-control dark-theme-textbox">
+        <input type="number" @bind="NewBook.NetPriceSell" placeholder="Net selling price (0.0000)" class="form-control dark-theme-textbox" step="0.0001">
     </div>
     <br />
     <div class="col-xl-6 col-md-8 col-12">
-        <input type="text" @bind="NewBook.PricePurchase" placeholder="Net purchasing price (0.0000)" class="form-control dark-theme-textbox">
+        <input type="number" @bind="NewBook.PricePurchase" placeholder="Net purchasing price (0.0000)" class="form-control dark-theme-textbox"step="0.0001">
     </div>
     <br />
     <div class="col-xl-6 col-md-8 col-12">
@@ -64,6 +70,7 @@
         </InputSelect>
     </div>
     <br />
+    <!--
     <div class="col-xl-6 col-md-8 col-12">
         <InputSelect @bind-Value="NewBook.VATID" class="form-control dark-theme-textbox">
             @foreach (VATDto vat in VATs)
@@ -73,6 +80,44 @@
         </InputSelect>
     </div>
     <br />
+
+    <Label>Selected: @string.Join(", ", uncontrolledMultiSelectionResult.Select(x => x.Text))</Label>
+
+    <Dropdown ItemsSource=@items
+          MultiSelect="true"
+          Placeholder="Select options..."
+          OnChange=@UncontrolledMultiChangeHandler
+          Style="width:300px;" />
+
+
+    <div class="col-xl-6 col-md-8 col-12">
+        <select class="form-control dark-theme-textbox" multiple onchange=>
+            @foreach (AuthorDto aut in Authors)
+            {
+                <option value="@aut.AuthorId" onclick="()=>">
+                    @if (aut.Firstname != null && aut.Lastname != null)
+                    {
+                        @aut.Firstname @aut.Lastname
+                    }
+                    else
+                    {
+                        @if (@aut.Penname != null)
+                        {
+                            @if (aut.Firstname != null && aut.Lastname != null)
+                            {
+                                @aut.Penname
+                            }
+                            else 
+                            {
+                                @aut.Penname
+                            }
+                        }
+                    }
+                </option>
+            }
+        </select>
+    </div>
+    <br /> -->
     <button class="btn btn-danger" type="submit">Add Book</button>
 </EditForm>
 
@@ -83,6 +128,8 @@
     private List<LanguageDto>? Languages = new();
     private List<PublisherDto>? Publishers = new();
     private List<VATDto>? VATs = new();
+    private List<AuthorDto>? Authors = new();
+    private List<int>? SelectedAuthorIds = new();
 
 
     protected override Task OnInitializedAsync()
@@ -105,13 +152,23 @@
 
         try { VATs = await Http.GetFromJsonAsync<List<VATDto>>("api/VAT"); }
         catch (Exception e) { throw e; }
-        
+
+        try { Authors = await Http.GetFromJsonAsync<List<AuthorDto>>("api/Author"); }
+        catch (Exception e) { throw e; }
+
         // For good measure
         StateHasChanged();
     }
 
-    private void Save()
+    private void OnClick(int id)
     {
         
+    }
+
+    private async void Save()
+    {
+        // NewBook.AuthorIds = SelectedAuthorIds;
+        Http.PostAsJsonAsync("api/Book/AddBook", NewBook);
+        navMan.NavigateTo("/AdminMain/Books");
     }
 }

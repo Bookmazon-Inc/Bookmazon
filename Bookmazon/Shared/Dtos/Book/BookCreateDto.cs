@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Bookmazon.Shared.Models;
+using System;
+
 
 namespace Bookmazon.Shared.Dtos.Book
 {
@@ -22,5 +20,7 @@ namespace Bookmazon.Shared.Dtos.Book
         public int GenreID { get; set; }
         public int PublisherID { get; set; }
         public int VATID { get; set; }
+
+        public ICollection<int> AuthorIds { get; set; }
     }
 }
