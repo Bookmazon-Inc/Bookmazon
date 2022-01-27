@@ -47,6 +47,7 @@ namespace Bookmazon.Client.Services
 
                 _localStore.SetItemAsync(STORE_KEY, cartItems);
                 _eventService.SendEvent(cartItemAddedEvent, cartItem);
+                _eventService.SendEvent(cartCounterUpdatedEvent, cartItems.Count());
                 return;
             }
 
@@ -55,12 +56,39 @@ namespace Bookmazon.Client.Services
 
             _localStore.SetItemAsync(STORE_KEY, cartItems);
             _eventService.SendEvent(cartItemAddedEvent, cartItem);
-            _eventService.SendEvent(cartCounterUpdatedEvent, cartItems.Count());
-
         }
 
+        public void UpdateAmount(string ISBN, int newAmount)
+        {
+            var cartItem = cartItems.FirstOrDefault(x => x.ISBN == ISBN);
+
+            if (cartItem == null)
+                return;
+
+            if (newAmount <= 0) 
+            {
+                RemoveFromCart(ISBN);
+                return;
+            }
+
+            cartItem.Amount = newAmount;
+            _localStore.SetItemAsync(STORE_KEY, cartItems);
+        }
+
+        public void RemoveFromCart(string ISBN)
+        {
+            var cartItem = cartItems.FirstOrDefault(x => x.ISBN == ISBN);
+
+            if (cartItem == null)
+                return;
+
+            cartItems.Remove(cartItem);
+            _localStore.SetItemAsync(STORE_KEY, cartItems);
+            _eventService.SendEvent(cartCounterUpdatedEvent, cartItems.Count());
+        }
 
         private async void setAllCartItems()
+
         {
             cartItems = await _localStore.GetItemAsync<IList<CartItemDto>>(STORE_KEY);
 
@@ -71,5 +99,6 @@ namespace Bookmazon.Client.Services
 
             _eventService.SendEvent(cartCounterUpdatedEvent, cartItems.Count());
         }
+
     }
 }
