@@ -91,7 +91,7 @@ namespace Bookmazon.Server.Controllers
 
 
 
-        public string GenerateSalt()
+        private string GenerateSalt()
         {
             using (var generator = RandomNumberGenerator.Create())
             {
@@ -101,7 +101,7 @@ namespace Bookmazon.Server.Controllers
             }
         }
 
-        public string PasswordHash(string salt, string password)
+        private string PasswordHash(string salt, string password)
         {
             byte[] saltBytes = Convert.FromBase64String(salt);
             string hashedPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(

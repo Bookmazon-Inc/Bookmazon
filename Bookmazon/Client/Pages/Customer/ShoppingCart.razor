@@ -1,0 +1,100 @@
+﻿@page "/cart"
+
+@using Bookmazon.Client.Events
+@using Bookmazon.Client.Services
+@using Bookmazon.Shared.Dtos.Cart
+
+@inject CartService cartService
+@inject EventService eventService
+
+<h3>ShoppingCart</h3>
+
+@if(cartItems != null)
+{
+
+    <table class="row ">
+
+        <div class="col-9" style="height: calc(100vh - 100px); overflow-y: scroll;">
+            @foreach(var cartItem in cartItems)
+            {
+                <div class="row mt-5">
+
+                    <div class="col-2"> 
+                        <img src="@cartItem.PictureURL" style="max-height: 220px;"/> 
+                    </div>
+
+                    <div class="col-8">
+                        <div class="row">
+                            <div class="col">
+                                <h4>@cartItem.Title</h4> 
+                            </div>
+                        </div>
+                         <div class="row">
+                            <div class="col">
+                                @cartItem.Description   
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-2 text-end">
+                        <div class="row">
+                            <div class="col-6">
+                                <form @onsubmit="() => changeAmount(cartItem)" @onsubmit:preventDefault>
+                                    <input class="form-control" min="1" @bind="@cartItem.Amount"/> 
+                                </form>
+                            </div>
+                            <div class="col-6">
+                                <button class="btn btn-danger" @onclick="() => cartService.RemoveFromCart(cartItem.ISBN)">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row text-end">
+                            @String.Format("{0:c}", cartItem.Price)
+                        </div>
+                    </div>
+
+                </div>
+            }
+        </div>
+            <div class="col-3  justify-content-end align-items-center">
+
+                <div class="form-group">
+                    <label class="form-label">Total price</label>
+                    <input class="form-control" disabled value="@String.Format("{0:c}", cartItems.Sum(x => x.Amount * x.Price))"/>
+                </div>
+
+                <button class="btn btn-primary">
+                    Checkout
+                </button>
+            </div>
+    </table>
+
+}
+
+
+
+
+
+@code {
+    private IList<CartItemDto> cartItems { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        cartItems = cartService.cartItems;
+
+        eventService.AddEventHandler(new CartCounterUpdatedEvent(), updateCart);
+    }
+
+    private void updateCart(object sender, object args)
+    {
+        cartItems = cartService.cartItems;
+        StateHasChanged();
+    }
+
+    private void changeAmount(CartItemDto cartItem)
+    {
+        cartService.UpdateAmount(cartItem.ISBN, cartItem.Amount);
+    }
+}

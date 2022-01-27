@@ -1,10 +1,12 @@
 ﻿@page "/books"
+@using Bookmazon.Client.Events
 @using Bookmazon.Client.Services
 @using Bookmazon.Shared.Dtos.Book
 @using Bookmazon.Shared.Filter
 
 @inject HttpClient Http
 @inject BookSearchService bookSearchService
+@inject EventService eventService
 @inject NavigationManager Nav
 
 @if(books != null)
@@ -57,23 +59,24 @@
             search(this, SearchString);
         }
 
+        var searchEvent = new SearchBookEvent();
 
-        bookSearchService.OnSearchRequest += search;
+        eventService.AddEventHandler(searchEvent, search);
     }
 
     public void Dispose()
     {
-        bookSearchService.OnSearchRequest -= search;
+        eventService.RemoveEventHandler(search);
     }
 
 
-    private async void search(object sender, string searchString)
+    private async void search(object sender, object args)
     {
         var filter = new LikeFilter<BookDto>
-        {
-            Name = "q",
-            Value = searchString
-        };
+            {
+                Name = "q",
+                Value = (string)args
+            };
 
 
         books = await Http.GetFromJsonAsync<BookDto[]>($"/api/book?{filter.ToQueryString()}");

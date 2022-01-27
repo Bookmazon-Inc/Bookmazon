@@ -36,6 +36,23 @@ namespace Bookmazon.Server.Controllers
             return Ok(books.Select(s => s.ToBookDto()));
         }
 
+        /// <summary>
+        /// Get one book by ISBN
+        /// </summary>
+        /// <param name="ISBN"></param>
+        /// <returns></returns>
+        [HttpGet("{ISBN}")]
+        public async Task<ActionResult<BookDto>> GetByISBN(string ISBN)
+        {
+            var book = await _unitOfWork.BookRepo.GetBook(ISBN);
+
+            if(book == null)
+                return NotFound();
+
+
+            return book.ToBookDto();
+        }
+
 
     }
 }

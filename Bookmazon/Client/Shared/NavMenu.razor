@@ -1,4 +1,10 @@
-﻿<nav class="navbar navbar navbar-dark bg-dark">
+﻿@using Bookmazon.Client.Services
+@using Bookmazon.Client.Events
+
+@inject EventService eventService
+@inject CartService cartService
+
+<nav class="navbar navbar navbar-dark bg-dark">
   <div class="container-fluid">
     <NavLink class="navbar-brand" href="/">
         Bookmazon
@@ -8,12 +14,47 @@
     <SearchField />
 
 
-    <li class="d-flex">
+    <div class="d-flex justify-content-evenly w-25" style="color: #FFF">
+        <NavLink href="/cart">
+            <span type="button" class="oi oi-basket position-relative">
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                @cartAmount
+                <span class="visually-hidden">unread messages</span>
+              </span>
+            </span>
+        </NavLink>
         <NavLink href="/loginuser">
             Login
         </NavLink>
-    </li>
+    </div>
 
 
   </div>
 </nav>
+
+
+@code {
+    private int cartAmount { get; set; } = 0;
+
+
+    private void updateCartCounter(object sender, object args)
+    {
+        cartAmount = (int)args;
+        StateHasChanged();
+    }
+
+    protected override void OnInitialized()
+    {
+
+        cartAmount = cartService.cartItems.Count();
+        var cartCounterUpdated = new CartCounterUpdatedEvent();
+
+        eventService.AddEventHandler(cartCounterUpdated, updateCartCounter);
+    }
+
+
+    public void Dispose()
+    {
+        eventService.RemoveEventHandler(updateCartCounter);
+    }
+}
