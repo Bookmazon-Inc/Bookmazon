@@ -19,7 +19,7 @@ namespace Bookmazon.Shared.Models
         public string RoleName { get; set; }
 
         // n:m Relation
-        public virtual ICollection<User> User { get; set; }
+        public virtual ICollection<User>? User { get; set; }
 
 
     }

@@ -1,10 +1,12 @@
 ﻿@page "/createuser"
+@using Blazored.Toast.Services
 @using Bookmazon.Shared.Models
 @using Bookmazon.Client.ViewModels
 
 @*@inject HttpClient http*@
 @inject IRegisterViewModel _registerViewModel
 @inject NavigationManager _navigationManager
+@inject IToastService _toastService
 
 
 <h2 class="white-text"><b>Create a user account</b></h2>
@@ -43,11 +45,21 @@
 </EditForm>
 
 @code {
-    //RegisterViewModel _registerViewModel = new();
+
     protected async Task Save()
     {
-        //await http.PostAsJsonAsync<User>("/user/registeruser", _registerViewModel);
-        await _registerViewModel.RegisterUser();
-        _navigationManager.NavigateTo("/loginuser");
+
+        var userDoesNotExists = await _registerViewModel.RegisterUser(); 
+        if(userDoesNotExists == true)
+        {
+            _toastService.ShowInfo("User was successfully created.");
+            _navigationManager.NavigateTo("/");
+        }
+
+        else
+        {
+            _toastService.ShowError("Email already exists.");
+        }
     }
+
 }

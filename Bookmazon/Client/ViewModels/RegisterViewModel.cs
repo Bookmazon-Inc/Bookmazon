@@ -28,9 +28,18 @@ namespace Bookmazon.Client.ViewModels
         {
             _httpClient = httpClient;
         }
-        public async Task RegisterUser()
+        public async Task<bool> RegisterUser()
         {
-            await _httpClient.PostAsJsonAsync<User>("/authorization/registeruser", this);
+            var httpResponseMessage = await _httpClient.PostAsJsonAsync<User>("/authorization/registeruser", this);
+            var statusCode= httpResponseMessage.StatusCode.ToString();
+            if(statusCode == "OK")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public static implicit operator RegisterViewModel(User user)

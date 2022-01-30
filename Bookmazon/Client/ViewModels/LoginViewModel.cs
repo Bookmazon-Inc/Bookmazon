@@ -31,13 +31,36 @@ namespace Bookmazon.Client.ViewModels
 
         public async Task<AuthenticationResponse> AuthenticateJwt()
         {
+            //creating authentication request
             AuthenticationRequest authenticationRequest = new AuthenticationRequest();
             authenticationRequest.Email = this.Email;
             authenticationRequest.Password = this.Password;
 
+            //authenticating request
             var httpMessageResponse = await _httpClient.PostAsJsonAsync<AuthenticationRequest>($"authorization/authenticatetoken", authenticationRequest);
 
+            //sending token to client
             return await httpMessageResponse.Content.ReadFromJsonAsync<AuthenticationResponse>();
+        }
+
+        public async Task<User> GetUserByJWTAsync(string token)
+        {
+            //preparing the http request
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, "authorization/getuserbyjwt");
+            requestMessage.Content = new StringContent(token);
+
+            requestMessage.Content.Headers.ContentType
+                = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+
+            //making the http request
+            var response = await _httpClient.SendAsync(requestMessage);
+
+            var responseStatusCode = response.StatusCode;
+            var returnedUser = await response.Content.ReadFromJsonAsync<User>();
+
+            //returning the user if found
+            if (returnedUser != null) return await Task.FromResult(returnedUser);
+            else return null;
         }
 
         public static implicit operator LoginViewModel(User user)

@@ -1,12 +1,21 @@
 ﻿@using Blazored.LocalStorage
+@using Blazored.Toast
+@using Blazored.Toast.Configuration
 @using Bookmazon.Shared.Models
 
 @inherits LayoutComponentBase
 @inject ILocalStorageService _localStorageService
 @inject NavigationManager _navigationManager
+<link href="_content/Blazored.Toast/blazored-toast.min.css" rel="stylesheet" />
 
 <div class="page">
-
+        <BlazoredToasts RemoveToastsOnNavigation=true
+                Position="ToastPosition.BottomRight"
+                Timeout="3"
+                IconType="IconType.FontAwesome"
+                SuccessClass="success-toast-override"
+                SuccessIcon="fa fa-thumbs-up"
+                ErrorIcon="fa fa-bug" />
     <main>
 
         <NavMenu />
