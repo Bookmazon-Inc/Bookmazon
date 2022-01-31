@@ -21,6 +21,6 @@ namespace Bookmazon.Shared.Dtos.Book
         public int PublisherID { get; set; }
         public int VATID { get; set; }
 
-        public ICollection<int> AuthorIds { get; set; }
+        public ICollection<int>? AuthorIds { get; set; }
     }
 }

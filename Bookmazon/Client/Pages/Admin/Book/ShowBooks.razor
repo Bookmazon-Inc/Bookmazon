@@ -20,6 +20,7 @@
                 <th>Genre</th>
                 <th>Publisher</th>
                 <th>Language</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -34,6 +35,7 @@
                         <td>@book.Genre.Title</td>
                         <td>@book.Publisher.PublisherName</td>
                         <td>@book.Language.FullName</td>
+                        <td><button class="btn alert-danger" @onclick="@(()=>RemoveBook(@book))">Remove</button></td>
                     </tr>
                 }
                 catch (Exception e)
@@ -65,5 +67,15 @@ else
     {
         try { Books = await Http.GetFromJsonAsync<List<BookDto>>("api/Book"); }
         catch (Exception e) { throw e; }
+
+        StateHasChanged();
+    }
+
+    private async void RemoveBook(BookDto b)
+    {
+        try { await Http.PostAsJsonAsync("api/Book/RemoveBook", b); }
+        catch (Exception e) { throw e; }
+
+        await GetBooks();
     }
 }

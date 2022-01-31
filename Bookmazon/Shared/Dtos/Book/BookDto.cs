@@ -1,6 +1,7 @@
 ﻿using Bookmazon.Shared.Dtos.Genre;
 using Bookmazon.Shared.Dtos.Language;
 using Bookmazon.Shared.Dtos.Publisher;
+using Bookmazon.Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +33,5 @@ namespace Bookmazon.Shared.Dtos.Book
         public GenreDto Genre { get; set; }
 
         public PublisherDto Publisher { get; set; }
-
     }
 }

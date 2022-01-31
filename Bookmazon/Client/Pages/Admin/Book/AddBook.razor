@@ -15,11 +15,11 @@
 
 <h1>Add a Book</h1>
 
-<EditForm Model ="@NewBook" OnValidSubmit="()=>Save()">
+<EditForm Model="@NewBook" OnValidSubmit="@(()=>Save())">
     <DataAnnotationsValidator />
     <ValidationSummary />
     <div class="col-xl-6 col-md-8 col-12">
-        <input type="text" @bind="NewBook.ISBN" placeholder="ISBN" class="form-control dark-theme-textbox">
+        <input type="text" @bind="NewBook.ISBN" placeholder="ISBN" class="form-control dark-theme-textbox" maxlength="13">
     </div>
     <br />
     <div class="col-xl-6 col-md-8 col-12">
@@ -36,11 +36,11 @@
     </div>
     <br />
     <div class="col-xl-6 col-md-8 col-12">
-        <input type="number" @bind="NewBook.NetPriceSell" placeholder="Net selling price (0.0000)" class="form-control dark-theme-textbox" step="0.0001">
+        <input type="number" @bind="NewBook.NetPriceSell" placeholder="Net selling price (0.0000)" class="form-control dark-theme-textbox" step="0.0001" min="0">
     </div>
     <br />
     <div class="col-xl-6 col-md-8 col-12">
-        <input type="number" @bind="NewBook.PricePurchase" placeholder="Net purchasing price (0.0000)" class="form-control dark-theme-textbox"step="0.0001">
+        <input type="number" @bind="NewBook.PricePurchase" placeholder="Net purchasing price (0.0000)" class="form-control dark-theme-textbox"step="0.0001" min="0">
     </div>
     <br />
     <div class="col-xl-6 col-md-8 col-12">
@@ -66,6 +66,15 @@
             @foreach (PublisherDto pub in Publishers)
            {
                <option value="@pub.PublisherId">@pub.PublisherName</option>
+           }
+        </InputSelect>
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <InputSelect @bind-Value="NewBook.VATID" class="form-control dark-theme-textbox">
+            @foreach (VATDto vat in VATs)
+           {
+               <option value="@vat.VATID">@vat.VATPercentage %</option>
            }
         </InputSelect>
     </div>
@@ -156,19 +165,25 @@
         try { Authors = await Http.GetFromJsonAsync<List<AuthorDto>>("api/Author"); }
         catch (Exception e) { throw e; }
 
+        // Set Default Values
+        NewBook.VATID           = VATs[0].VATID;
+        NewBook.GenreID         = Genres[0].GenreId;
+        NewBook.LanguageCode    = Languages[0].LanguageCode;
+        NewBook.PublisherID     = Publishers[0].PublisherId;
+        
+
         // For good measure
         StateHasChanged();
     }
 
     private void OnClick(int id)
     {
-        
+
     }
 
-    private async void Save()
+    private async Task Save()
     {
-        // NewBook.AuthorIds = SelectedAuthorIds;
-        Http.PostAsJsonAsync("api/Book/AddBook", NewBook);
-        navMan.NavigateTo("/AdminMain/Books");
+        await Http.PostAsJsonAsync("api/Book/AddBook", NewBook);
+        navMan.NavigateTo("/AdminMain/Books");   
     }
 }

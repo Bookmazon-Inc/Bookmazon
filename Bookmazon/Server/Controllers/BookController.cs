@@ -36,12 +36,24 @@ namespace Bookmazon.Server.Controllers
             return Ok(books.Select(s => s.ToBookDto()));
         }
 
+        /// <summary>
+        /// This Function removes a book from the database
+        /// </summary>
+        /// <param name="bookDto"></param>
+        [HttpPost("RemoveBook")]
+        public async void RemoveBook(BookDto bookDto)
+        {
+            Book b = await _uow.BookRepo.GetBook(bookDto.ISBN);
+            _uow.BookRepo.DeleteBook(b);
+            _uow.Commit();
+        }
+
 
         /// <summary>
         /// This function adds a new book to the database
         /// </summary>
         /// <param name="bookDto"></param>
-        [HttpPost("/AddBook")]
+        [HttpPost("AddBook")]
         public void AddBook(BookCreateDto bookDto)
         {
             Book b = new Book { 
@@ -58,14 +70,13 @@ namespace Bookmazon.Server.Controllers
             };
 
             _uow.BookRepo.AddBook(b);
-
             // Connect Author and Book
             //foreach (int id in bookDto.AuthorIds)
             //{
             //    _uow.BookRepo.ConnectAuthorToBook(bookDto.ISBN, id);
             //}
 
-            _uow.CommitAsync();
+            _uow.Commit();
         }
     }
 }
