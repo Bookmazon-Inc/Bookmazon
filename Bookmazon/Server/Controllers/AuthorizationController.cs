@@ -30,19 +30,26 @@ namespace Bookmazon.Server.Controllers
             _configuration = configuration;
         }
 
+
         [HttpPost("registeruser")]
         public async Task<ActionResult> RegisterUser(User user)
         {
             var emailExists = _context.Users.Where(e => e.Email == user.Email).FirstOrDefault();
             if (emailExists == null)
             {
+                var customerRole = _context.Roles.FirstOrDefault(f => f.RoleID == 2) ??  new Roles { RoleID = 2, RoleName = "customer"};
+                user.Roles?.Add(customerRole);
                 user.Salt = GenerateSalt();
                 user.Password = PasswordHash(user.Salt, user.Password);
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
             }
 
-            return Ok();
         }
 
         [HttpPost("loginuser")]
@@ -75,6 +82,7 @@ namespace Bookmazon.Server.Controllers
         {
             string token = string.Empty;
 
+            //checking if user exists in database
             User userExists = _context.Users.Where(u =>u.Email == authenticationRequest.Email).FirstOrDefault();
 
             if (userExists != null)
@@ -82,6 +90,7 @@ namespace Bookmazon.Server.Controllers
                 authenticationRequest.Password = PasswordHash(userExists.Salt, authenticationRequest.Password);
                 if (authenticationRequest.Password == userExists.Password)
                 {
+                    //generating token
                     token = GenerateJwtToken(userExists);
                 }
             }
@@ -164,7 +173,7 @@ namespace Bookmazon.Server.Controllers
                 {
                     //returning the user if found
                     var userId = principle.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                    return await _context.Users.FirstOrDefaultAsync(u => u.UserID == Convert.ToInt64(userId));
+                    return await _context.Users.Where(u => u.UserID == Convert.ToInt64(userId)).FirstOrDefaultAsync();
                 }
             }
             catch (Exception ex)

@@ -1,4 +1,5 @@
-﻿using Bookmazon.Shared.Models.Authentication;
+﻿using Bookmazon.Shared.Models;
+using Bookmazon.Shared.Models.Authentication;
 
 namespace Bookmazon.Client.ViewModels
 {
@@ -10,5 +11,6 @@ namespace Bookmazon.Client.ViewModels
 
         public Task LoginUser();
         public Task<AuthenticationResponse> AuthenticateJwt();
+        public Task<User> GetUserByJWTAsync(string token);
     }
 }

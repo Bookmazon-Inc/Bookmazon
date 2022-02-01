@@ -1,12 +1,15 @@
 ﻿@page "/loginuser"
+@using Blazored.Toast.Services
 @using Bookmazon.Shared.Models
 @using Bookmazon.Client.ViewModels
 @using Bookmazon.Shared.Models.Authentication
 @using Blazored.LocalStorage
+@using Microsoft.AspNetCore.Components.Authorization
 
 @inject ILoginViewModel _loginViewModel
 @inject NavigationManager _navigationManager
 @inject ILocalStorageService _localStorageService
+@inject IToastService _toastService
 
 <h2 class="white-text"><b>Login</b></h2>
 <hr class="white-horizontal-line">
@@ -32,6 +35,20 @@
 
 @code {
 
+    [CascadingParameter]
+    public Task<AuthenticationState> authenticationState { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authenticationState;
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            _navigationManager.NavigateTo("/");
+        }
+    }
+
     public async Task AuthenticateJWT()
     {
         AuthenticationResponse authenticationResponse = await _loginViewModel.AuthenticateJwt();
@@ -42,7 +59,7 @@
         }
         else
         {
-            Console.WriteLine("Invalid username, email or password");
+            _toastService.ShowError("Invalid username or password.");
         }
 
     }

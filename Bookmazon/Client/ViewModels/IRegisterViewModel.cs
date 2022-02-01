@@ -13,6 +13,6 @@
 
         public string Password { get; set; }
 
-        public Task RegisterUser();
+        public Task<bool> RegisterUser();
     }
 }

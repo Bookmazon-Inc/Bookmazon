@@ -1,4 +1,5 @@
 ﻿using Blazored.LocalStorage;
+using Bookmazon.Client.ViewModels;
 using Bookmazon.Shared.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -10,26 +11,37 @@ namespace Bookmazon.Client
     public class CustomAuthStateProvider : AuthenticationStateProvider
     {
 
-        private readonly HttpClient _httpClient;
+        private readonly ILoginViewModel _loginViewModel;
         private readonly ILocalStorageService _localStorageService;
 
-        public CustomAuthStateProvider(HttpClient httpClient, ILocalStorageService localStorageService)
+        public CustomAuthStateProvider(ILoginViewModel loginviewmodel,  ILocalStorageService localStorageService)
         {
-            _httpClient = httpClient;
+            _loginViewModel = loginviewmodel;
             _localStorageService = localStorageService;
         }
 
         public async override Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            User currentUser = await GetUserByJWTAsync();
+            User? currentUser = await GetUserByJWTAsync();
 
             if (currentUser != null && currentUser.Email != null)
             {
                 //create a claims
-                var claimEmailAddress = new Claim(ClaimTypes.Email, currentUser.Email);
-                var claimNameIdentifier = new Claim(ClaimTypes.NameIdentifier, Convert.ToString(currentUser.UserID));
+                Claim[] getClaims()
+                {
+                    List<Claim> claims = new List<Claim>();
+                    claims.Add(new Claim(ClaimTypes.Email, currentUser.Email));
+                    claims.Add(new Claim(ClaimTypes.NameIdentifier, Convert.ToString(currentUser.UserID)));
+                    foreach (var role in currentUser.Roles)
+                    {
+                        claims.Add(new Claim(ClaimTypes.Role, role == null ? "" : role.ToString()));
+                    }
+                    return claims.ToArray();
+                }
+                
                 //create claimsIdentity
-                var claimsIdentity = new ClaimsIdentity(new[] { claimEmailAddress, claimNameIdentifier }, "serverAuth");
+                var claimsIdentity = new ClaimsIdentity(getClaims(), "serverAuth");
+
                 //create claimsPrincipal
                 var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
                 return new AuthenticationState(claimsPrincipal);
@@ -38,28 +50,13 @@ namespace Bookmazon.Client
                 return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
         }
 
-        public async Task<User> GetUserByJWTAsync()
+        public async Task<User?> GetUserByJWTAsync()
         {
             //pulling the token from localStorage
             var jwtToken = await _localStorageService.GetItemAsStringAsync("jwt_token");
             if (jwtToken == null) return null;
 
-            //preparing the http request
-            var requestMessage = new HttpRequestMessage(HttpMethod.Post, "user/getuserbyjwt");
-            requestMessage.Content = new StringContent(jwtToken);
-
-            requestMessage.Content.Headers.ContentType
-                = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-
-            //making the http request
-            var response = await _httpClient.SendAsync(requestMessage);
-
-            var responseStatusCode = response.StatusCode;
-            var returnedUser = await response.Content.ReadFromJsonAsync<User>();
-
-            //returning the user if found
-            if (returnedUser != null) return await Task.FromResult(returnedUser);
-            else return null;
+            return await _loginViewModel.GetUserByJWTAsync(jwtToken);
         }
     }
 }
