@@ -5,13 +5,13 @@
 @inject ILocalStorageService _localStorageService
 @inject NavigationManager _navigationManager
 
-<div class="page">
+<div class="page overflow-hidden">
 
-    <main>
+    <main class="overflow-hidden">
 
         <NavMenu />
 
-        <article class="content px-4">
+        <article class="content px-4 overflow-hidden">
             @Body
         </article>
     </main>

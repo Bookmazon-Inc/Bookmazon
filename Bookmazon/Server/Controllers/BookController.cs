@@ -35,7 +35,7 @@ namespace Bookmazon.Server.Controllers
 
             return Ok(books.Select(s => s.ToBookDto()));
         }
-
+        
         /// <summary>
         /// This Function removes a book from the database
         /// </summary>
@@ -46,6 +46,23 @@ namespace Bookmazon.Server.Controllers
             Book b = await _uow.BookRepo.GetBook(bookDto.ISBN);
             _uow.BookRepo.DeleteBook(b);
             _uow.Commit();
+        }
+        
+        /// <summary>
+        /// Get one book by ISBN
+        /// </summary>
+        /// <param name="ISBN"></param>
+        /// <returns></returns>
+        [HttpGet("{ISBN}")]
+        public async Task<ActionResult<BookDto>> GetByISBN(string ISBN)
+        {
+            var book = await _unitOfWork.BookRepo.GetBook(ISBN);
+
+            if(book == null)
+                return NotFound();
+
+
+            return book.ToBookDto();
         }
 
 
