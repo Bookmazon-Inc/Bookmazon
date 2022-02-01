@@ -42,6 +42,7 @@ namespace Bookmazon.Shared.Models
         
 
 
+
         // Relationship Fields
         [ForeignKey("Language")]
         [StringLength(2)]
@@ -72,7 +73,7 @@ namespace Bookmazon.Shared.Models
 
         public virtual ICollection<CustomerOrderPosition> CustomerOrderPositions { get; set;}
         public virtual ICollection<SupplyOrderPosition> SupplyOrderPositions { get; set;}
-        public virtual ICollection<Storage> Storage { get; set;}
+        public virtual ICollection<Storage> Storage { get; set; }
 
         // Lists (n:m relationship)
         public virtual ICollection<Supplier> Suppliers { get; set; } 

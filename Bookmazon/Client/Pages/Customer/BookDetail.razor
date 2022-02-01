@@ -1,0 +1,81 @@
+﻿@page "/book/{ISBN}"
+
+@using Bookmazon.Client.Services
+@using Bookmazon.Shared.Dtos.Book
+
+@inject HttpClient Http
+@inject CartService cartService
+
+<h3>BookDetail</h3>
+
+
+@if(notFound) {
+    <p>Not Found</p>
+} else if(book == null) {
+    <p>Loading...</p>
+} else {
+    <div class="row h-75">
+        <div class="col-6">
+            <img src="@book.PictureURL" class="h-50"/>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-12">
+
+                    <div class="row">
+                        <div class="col-12">
+                            <h3>@book.Title</h3>
+                        </div>
+                        <div class="col-12">
+                            <p>@String.Format("{0:c}", book.Price)</p>
+                        </div>
+                        <div class="col-12">
+                            <p>@book.Description</p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12 float-end">
+                            <div class="form-group">
+                                <input type="number" @bind="cartAmount" min="1" />
+                                <button class="btn btn-success" @onclick="addToCart">
+                                    Add to cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string ISBN { get; set; }
+
+    private BookDto book { get; set; }
+    private bool notFound { get; set; } = false;
+    private int cartAmount { get; set; } = 1;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await Http.GetAsync($"/api/book/{ISBN}");
+
+        if(response.IsSuccessStatusCode)
+        {
+            book = await response.Content.ReadFromJsonAsync<BookDto>();
+            return;
+        }
+
+        notFound = true;
+    }
+
+
+    private void addToCart()
+    {
+        cartService.AddToCart(book, cartAmount);
+    }
+}

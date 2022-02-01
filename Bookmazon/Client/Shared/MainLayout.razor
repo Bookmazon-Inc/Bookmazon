@@ -1,4 +1,4 @@
-﻿@using Blazored.LocalStorage
+@using Blazored.LocalStorage
 @using Blazored.Toast
 @using Blazored.Toast.Configuration
 @using Bookmazon.Shared.Models
@@ -17,10 +17,13 @@
                 SuccessIcon="fa fa-thumbs-up"
                 ErrorIcon="fa fa-bug" />
     <main>
+<div class="page overflow-hidden">
+
+    <main class="overflow-hidden">
 
         <NavMenu />
 
-        <article class="content px-4">
+        <article class="content px-4 overflow-hidden">
             @Body
         </article>
     </main>

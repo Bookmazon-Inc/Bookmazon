@@ -37,10 +37,16 @@ namespace Bookmazon.Server.Repos
             var query = from b in _dbc.Books
                         select b;
 
-            if(bookFilter != null)
+
+            if (bookFilter != null)
             {
-                query = bookFilter.ApplyFilter(query);
+                bookFilter.ApplyFilter(ref query);
             }
+
+
+            query = query.Include(x => x.Genre).Include(x => x.Publisher).Include(x => x.Language);
+            var t = query.ToQueryString();
+            var x = query.Expression;
 
             return await query.ToArrayAsync();
         }

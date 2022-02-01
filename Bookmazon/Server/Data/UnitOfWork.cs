@@ -33,5 +33,16 @@ namespace Bookmazon.Server.Data
         public IStorageRepo storageRepo => throw new NotImplementedException();
 
         public ISupplyOrderRepo supplyOrderRepo => throw new NotImplementedException();
+
+        #region Functions
+        public void Commit()
+        {
+            _dbContext.SaveChanges();
+        }
+        public async void CommitAsync()
+        {
+            await _dbContext.SaveChangesAsync();
+        }
+        #endregion
     }
 }

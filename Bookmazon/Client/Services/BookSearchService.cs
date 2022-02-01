@@ -1,4 +1,6 @@
-﻿using Bookmazon.Shared.Filter;
+﻿using Bookmazon.Client.Events;
+using Bookmazon.Shared.Dtos.Book;
+using Bookmazon.Shared.Filter;
 using Microsoft.AspNetCore.Components;
 
 namespace Bookmazon.Client.Services
@@ -6,14 +8,15 @@ namespace Bookmazon.Client.Services
     public class BookSearchService
     {
 
-        public event EventHandler<string> OnSearchRequest;
-
-
         private NavigationManager _nav;
+        private EventService _eventService;
 
-        public BookSearchService(NavigationManager nav)
+        private SearchBookEvent SearchBookEvent = new SearchBookEvent(); 
+
+        public BookSearchService(NavigationManager nav, EventService eventService)
         {
             _nav = nav;
+            _eventService = eventService;
         }
 
         public void Search(string searchString)
@@ -27,12 +30,12 @@ namespace Bookmazon.Client.Services
 
             if(_nav.Uri.Contains("/books"))
             {
-                OnSearchRequest?.Invoke(this, searchString);
+                _eventService.SendEvent(SearchBookEvent, searchString);
             } else
             {
-                var filter = new LikeFilter
+                var filter = new LikeFilter<BookDto>
                 {
-                    PropertyName = "searchString",
+                    Name = "searchString",
                     Value = searchString
                 };
 

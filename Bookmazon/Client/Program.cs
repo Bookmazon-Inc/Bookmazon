@@ -13,8 +13,6 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 
-
-//
 builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();
 
@@ -22,8 +20,9 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 AddHttpClients(builder);
 
+builder.Services.AddSingleton<EventService>();
 builder.Services.AddSingleton<BookSearchService>();
-builder.Services.AddSingleton<CartService>();
+builder.Services.AddTransient<CartService>();
 
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 builder.Services.AddBlazoredLocalStorage();
@@ -39,6 +38,7 @@ static void AddHttpClients(WebAssemblyHostBuilder builder)
     //.AddHttpMessageHandler<CustomAuthHandler>();
     builder.Services.AddHttpClient<IRegisterViewModel, RegisterViewModel>
         ("BookmazonRegisterClient", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+
     builder.Services.AddHttpClient<ILoginViewModel, LoginViewModel>
         ("BookmazonLoginClient", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 }

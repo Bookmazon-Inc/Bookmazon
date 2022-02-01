@@ -3,7 +3,7 @@ using Bookmazon.Shared.Models;
 
 namespace Bookmazon.Server.Filter
 {
-    public class SupplyOrderFilter : FilterGroup
+    public class SupplyOrderFilter : FilterGroup<SupplyOrder>
     {
         public SupplyOrderFilter()
         {
