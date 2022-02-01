@@ -56,7 +56,7 @@ namespace Bookmazon.Server.Controllers
         [HttpGet("{ISBN}")]
         public async Task<ActionResult<BookDto>> GetByISBN(string ISBN)
         {
-            var book = await _unitOfWork.BookRepo.GetBook(ISBN);
+            var book = await _uow.BookRepo.GetBook(ISBN);
 
             if(book == null)
                 return NotFound();

@@ -40,7 +40,7 @@
                         <div class="row">
                             <div class="col-6">
                                 <form @onsubmit="() => changeAmount(cartItem)" @onsubmit:preventDefault>
-                                    <input class="form-control" min="1" @bind="@cartItem.Amount"/> 
+                                    <input type="number" class="form-control" min="1" @bind="@cartItem.Amount"/> 
                                 </form>
                             </div>
                             <div class="col-6">
