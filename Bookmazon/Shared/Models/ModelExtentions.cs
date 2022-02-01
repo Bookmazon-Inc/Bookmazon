@@ -1,7 +1,9 @@
-﻿using Bookmazon.Shared.Dtos.Book;
+﻿using Bookmazon.Shared.Dtos.Author;
+using Bookmazon.Shared.Dtos.Book;
 using Bookmazon.Shared.Dtos.Genre;
 using Bookmazon.Shared.Dtos.Language;
 using Bookmazon.Shared.Dtos.Publisher;
+using Bookmazon.Shared.Dtos.VAT;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +32,16 @@ namespace Bookmazon.Shared.Models
         public static PublisherDto ToPublisherDto(this Publisher publisher)
         {
             return new PublisherDto { PublisherId = publisher.PublisherId, PublisherName = publisher.PublisherName };
+        }
+        
+        public static VATDto ToVATDto(this VAT vat)
+        {
+            return new VATDto { VATID = vat.VATID, VATPercentage = vat.VATPercentage };
+        }
+
+        public static AuthorDto ToAuthorDto(this Author author)
+        {
+            return new AuthorDto { AuthorId = author.AuthorId, Description = author.Description, Firstname = author.Firstname, Lastname = author.Lastname, Penname = author.Penname };
         }
     }
 }
