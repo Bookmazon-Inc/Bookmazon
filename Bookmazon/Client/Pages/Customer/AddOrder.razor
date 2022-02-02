@@ -1,0 +1,117 @@
+﻿@page "/Order"
+
+@using Bookmazon.Shared.Models
+@using Bookmazon.Shared.Dtos.Cart
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@using Bookmazon.Client.Services
+
+@inject NavigationManager navMan
+@inject CartService cartService
+@inject HttpClient Http
+
+
+<h2>Order</h2>
+<h3>Please enter your Adress</h3>
+<EditForm Model="@ord" OnValidSubmit="@(()=>Save())">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="text" @bind="@ord.Address" placeholder="Address" class="form-control dark-theme-textbox" maxlength="15">
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="text" @bind="@ord.ZIP" placeholder="ZIP" class="form-control dark-theme-textbox" maxlength="150">
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="text" @bind="@ord.City" placeholder="City" class="form-control dark-theme-textbox" maxlength="100">
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="text" @bind="@ord.Country" placeholder="Country" class="form-control dark-theme-textbox" maxlength="150">
+    </div>
+    <br />
+
+    <h3>Your Order Summarized</h3>
+    <h4>Positions</h4>
+    @if (cartItems != null)
+    {
+       <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>ISBN</th>
+                <th>Price</th>
+                <th>Amount</th>
+                <th>Total Price for position</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (CartItemDto item in cartItems)
+           {
+               <tr>
+                   <td>@item.Title</td>
+                   <td>@item.ISBN</td>
+                   <td>@item.Price</td>
+                   <td>@item.Amount</td>
+                   <td>@(item.Price * item.Amount)</td>
+               </tr>
+           }
+        </tbody>
+    </table>
+    }
+    else
+    {
+        <p><em>No Positions!</em></p>
+    }
+
+    <button class="btn btn-danger" @onclick="@(()=> Cancel())">Cancel</button>
+    @if (cartItems != null && cartItems.Count !<=0)
+    {
+        <button class="btn btn-danger" type="submit">Confirm Order</button>
+    }
+</EditForm>
+
+@code {
+    private CustomerOrder ord;
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationState { get; set; }
+    private IList<CartItemDto> cartItems;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ord.OrderDate = DateTime.Now;
+        var userID = (await authenticationState).User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        ord.UserID = int.Parse(userID);
+        cartItems = cartService.cartItems;
+    }
+
+    private async void Save()
+    {
+        int i = 1;
+        foreach (CartItemDto item in cartItems)
+        {
+            ord.CustomerOrderPositions.Add(
+                new CustomerOrderPosition
+                {
+                    CustomerOrderPositionID = i,
+                    Amount = item.Amount,
+                    ISBN = item.ISBN,
+                    Price = item.Price
+                }
+            );
+
+            // Count PositionID up
+            i++;
+        }
+
+        await Http.PostAsJsonAsync("/api/CustomerOrder/CreateOrder", ord);
+        cartService.cartItems.Clear();
+    }
+
+    private void Cancel()
+    {
+        navMan.NavigateTo("/");
+    }
+}

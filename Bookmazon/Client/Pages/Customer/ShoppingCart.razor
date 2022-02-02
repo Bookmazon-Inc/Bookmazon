@@ -5,6 +5,8 @@
 
 @inject CartService cartService
 @inject EventService eventService
+@inject HttpClient Http
+@inject NavigationManager navMan
 
 <h3>ShoppingCart</h3>
 
@@ -95,5 +97,11 @@
     private void changeAmount(CartItemDto cartItem)
     {
         cartService.UpdateAmount(cartItem.ISBN, cartItem.Amount);
+    }
+
+
+    private void CheckOut()
+    {
+        navMan.NavigateTo("/Order");
     }
 }

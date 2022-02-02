@@ -1,12 +1,17 @@
-﻿@page "/AdminMain"
-@using Microsoft.AspNetCore.Authorization
-@attribute [Authorize(Roles ="admin")]
+﻿@page "/Admin"
+@inject NavigationManager navMan
 
 
-<div class="alert alert-secondary mt-4">
-    <a class="font-weight link-dark" href="/AdminMain/Books">Show Books</a>
+<h2>Administrator Panel</h2>
+<div class="col-xl-6 col-md-8 col-12">
+    <button type="button" class="btn btn-lg btn-outline-primary" @onclick="@(()=>NavToBooks())">Show Books</button>
 </div>
+<br />
+
 
 @code {
-
+    public void NavToBooks()
+    {
+        navMan.NavigateTo("/AdminMain/Books");
+    }
 }
