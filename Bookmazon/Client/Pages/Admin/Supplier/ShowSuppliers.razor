@@ -1,12 +1,13 @@
-﻿@page "/AdminMain/Supplier"
+﻿@page "/AdminMain/Suppliers"
 @using Bookmazon.Shared.Models
 @using Bookmazon.Shared.Dtos.Supplier
 @using Microsoft.AspNetCore.Authorization
 @inject HttpClient Http
 @attribute [Authorize(Roles ="admin")]
+
 <h1>Suppliers</h1>
 <p>
-    <a style="font-weight: bold;" href="/AdminMain/Supplier/AddSupplier">Add Supplier</a>
+    <a style="font-weight: bold;" href="/AdminMain/Suppliers/AddSupplier">Add Supplier</a>
 </p>
 
 <h2>Suppliers in Database</h2>
@@ -15,8 +16,10 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Supplier Name</th>
-                <th>Supplier Notes</th>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Email</th>
+                <th>Notes</th>
                 <!-- <th></th> -->
             </tr>
         </thead>
@@ -27,6 +30,8 @@
                 {
                     <tr>
                         <td>@supplier.Title</td>
+                        <th>@supplier.PostalCode @supplier.City, @supplier.Land</th>
+                        <td>@supplier.Email</td>
                         <td>@supplier.Notes</td>
                         <!-- <td><button class="btn alert-danger" @onclick="@(()=>RemoveBook(@supplier))">Remove</button></td> -->
                     </tr>

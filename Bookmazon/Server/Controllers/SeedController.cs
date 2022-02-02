@@ -264,11 +264,9 @@ namespace Bookmazon.Server.Controllers
             _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[Publisher]");
             _dbc.Database.ExecuteSqlRaw("DELETE FROM [usr].[Roles]");
             _dbc.Database.ExecuteSqlRaw("DELETE FROM [usr].[RolesUser]");
-  
             _dbc.Database.ExecuteSqlRaw("DELETE FROM [str].[StorageLocation]");
             _dbc.Database.ExecuteSqlRaw("DELETE FROM [ord].[SupplyOrder]");
             _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[Supplier]");
-
             _dbc.Database.ExecuteSqlRaw("DELETE FROM [ord].[SupplyOrderPositionState]");
             _dbc.Database.ExecuteSqlRaw("DELETE FROM [ord].[SupplyOrderState]");
             _dbc.Database.ExecuteSqlRaw("DELETE FROM [usr].[User]");

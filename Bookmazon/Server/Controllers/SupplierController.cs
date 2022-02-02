@@ -2,6 +2,7 @@
 using Bookmazon.Server.Interfaces;
 using Bookmazon.Server.Repos;
 using Bookmazon.Shared.Dtos.Book;
+using Bookmazon.Shared.Dtos.Supplier;
 using Bookmazon.Shared.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +26,7 @@ namespace Bookmazon.Server.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BookDto>>> Index()
+        public async Task<ActionResult<IEnumerable<SupplierDto>>> Index()
         {
 
             var suppliers = await _uow.SupplierRepo.GetAllSuppliers();
@@ -34,62 +35,54 @@ namespace Bookmazon.Server.Controllers
         }
         
         /// <summary>
-        /// This Function removes a book from the database
+        /// This Function removes a supplier from the database
         /// </summary>
-        /// <param name="bookDto"></param>
+        /// <param name="supplierDto"></param>
         [HttpPost("RemoveBook")]
-        public async void RemoveBook(BookDto bookDto)
+        public async void RemoveSupplier(SupplierDto supplierDto)
         {
-            Book b = await _uow.BookRepo.GetBook(bookDto.ISBN);
-            _uow.BookRepo.DeleteBook(b);
+            Supplier s = await _uow.SupplierRepo.GetSupplier(supplierDto.SupplierID);
+            _uow.SupplierRepo.RemoveSupplier(s);
             _uow.Commit();
         }
         
         /// <summary>
-        /// Get one book by ISBN
+        /// Get one supplier by ID
         /// </summary>
-        /// <param name="ISBN"></param>
+        /// <param name="ID"></param>
         /// <returns></returns>
-        [HttpGet("{ISBN}")]
-        public async Task<ActionResult<BookDto>> GetByISBN(string ISBN)
+        [HttpGet("{ID}")]
+        public async Task<ActionResult<SupplierDto>> GetBySupplierID(int ID)
         {
-            var book = await _uow.BookRepo.GetBook(ISBN);
+            var supplier = await _uow.SupplierRepo.GetSupplier(ID);
 
-            if(book == null)
+            if(supplier == null)
                 return NotFound();
 
 
-            return book.ToBookDto();
+            return supplier.ToSupplierDto();
         }
 
 
         /// <summary>
-        /// This function adds a new book to the database
+        /// This function adds a new supplier to the database
         /// </summary>
-        /// <param name="bookDto"></param>
-        [HttpPost("AddBook")]
-        public void AddBook(BookCreateDto bookDto)
+        /// <param name="supplierDto"></param>
+        [HttpPost("AddSupplier")]
+        public void AddBook(SupplierDto supplierDto)
         {
-            Book b = new Book { 
-                ISBN = bookDto.ISBN,
-                Title = bookDto.Title,
-                Description = bookDto.Description,
-                PictureURL = bookDto.PictureURL,
-                NetPriceSell = bookDto.NetPriceSell,
-                PricePurchase = bookDto.PricePurchase,
-                LanguageCode = bookDto.LanguageCode,
-                GenreID = bookDto.GenreID,
-                PublisherID = bookDto.PublisherID,
-                VATID = bookDto.VATID
+            Supplier s = new Supplier { 
+                Title = supplierDto.Title,
+                Land = supplierDto.Land,
+                PostalCode = supplierDto.PostalCode,
+                City = supplierDto.City,
+                Street = supplierDto.Street,
+                HouseNumber = supplierDto.HouseNumber,
+                Email = supplierDto.Email,
+                Notes = supplierDto.Notes
             };
 
-            _uow.BookRepo.AddBook(b);
-            // Connect Author and Book
-            //foreach (int id in bookDto.AuthorIds)
-            //{
-            //    _uow.BookRepo.ConnectAuthorToBook(bookDto.ISBN, id);
-            //}
-
+            _uow.SupplierRepo.AddSupplier(s);
             _uow.Commit();
         }
     }

@@ -47,7 +47,7 @@ namespace Bookmazon.Shared.Models
 
         public static SupplierDto ToSupplierDto(this Supplier supplier)
         {
-            return new SupplierDto { SupplierID = supplier.SupplierID, Title = supplier.Title };
+            return new SupplierDto { SupplierID = supplier.SupplierID, Title = supplier.Title, Land = supplier.Land, City = supplier.City, Street = supplier.Street, HouseNumber = supplier.HouseNumber, PostalCode = supplier.PostalCode, Email = supplier.Email, Notes = supplier.Notes };
         }
     }
 }

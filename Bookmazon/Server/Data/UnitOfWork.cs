@@ -22,7 +22,8 @@ namespace Bookmazon.Server.Data
         private IBookRepo _bookRepo;
         public IBookRepo BookRepo => _bookRepo ??= new BookRepo(_dbContext);
 
-        public ISupplierRepo SupplierRepo => throw new NotImplementedException();
+        private ISupplierRepo _supplierRepo;
+        public ISupplierRepo SupplierRepo => _supplierRepo ??= new SupplierRepo(_dbContext);
 
         public ICustomerOrderRepo customerOrderRepo => throw new NotImplementedException();
 
