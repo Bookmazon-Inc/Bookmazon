@@ -53,7 +53,8 @@
         if(userDoesNotExists == true)
         {
             _toastService.ShowInfo("User was successfully created.");
-            _navigationManager.NavigateTo("/");
+            await Task.Delay(3000);
+            _navigationManager.NavigateTo("/loginuser");
         }
 
         else

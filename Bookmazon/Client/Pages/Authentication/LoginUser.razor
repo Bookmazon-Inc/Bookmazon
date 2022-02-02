@@ -15,6 +15,7 @@
 <hr class="white-horizontal-line">
 
 
+
 <EditForm Model ="@_loginViewModel" OnValidSubmit="@AuthenticateJWT">
     <DataAnnotationsValidator />
     <ValidationSummary />
@@ -40,22 +41,18 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var authState = await authenticationState;
-        var user = authState.User;
-
-        if (user.Identity.IsAuthenticated)
-        {
-            _navigationManager.NavigateTo("/");
-        }
     }
 
     public async Task AuthenticateJWT()
     {
+
         AuthenticationResponse authenticationResponse = await _loginViewModel.AuthenticateJwt();
         if(authenticationResponse.Token != string.Empty)
         {
             await _localStorageService.SetItemAsync("jwt_token", authenticationResponse.Token);
-            _navigationManager.NavigateTo("/");
+
+            _navigationManager.NavigateTo("/", true);
+
         }
         else
         {

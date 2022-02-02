@@ -37,8 +37,9 @@ namespace Bookmazon.Server.Controllers
             var emailExists = _context.Users.Where(e => e.Email == user.Email).FirstOrDefault();
             if (emailExists == null)
             {
-                var customerRole = _context.Roles.FirstOrDefault(f => f.RoleID == 2) ??  new Roles { RoleID = 2, RoleName = "customer"};
-                user.Roles?.Add(customerRole);
+                var customerRole = _context.Roles.FirstOrDefault(f => f.RoleName == "customer") ??  new Roles { RoleName = "customer"};
+                user.Roles = new List<Roles>();
+                user.Roles.Add(customerRole);
                 user.Salt = GenerateSalt();
                 user.Password = PasswordHash(user.Salt, user.Password);
                 _context.Users.Add(user);
@@ -52,38 +53,13 @@ namespace Bookmazon.Server.Controllers
 
         }
 
-        [HttpPost("loginuser")]
-        public async Task<ActionResult> LoginUser(User user)
-        {
-            var userExists = _context.Users.Where(u =>u.Email == user.Email).FirstOrDefault();
-            if (userExists != null)
-            {
-                var password = PasswordHash(userExists.Salt, user.Password);
-
-                if (password == userExists.Password)
-                {
-                    //create a claim
-                    var claimEmail = new Claim(ClaimTypes.Email, userExists.Email);
-                    var claimNameIdentifier = new Claim(ClaimTypes.NameIdentifier, userExists.UserID.ToString());
-                    //create claimsIdentity
-                    var claimsIdentity = new ClaimsIdentity(new[] { claimEmail, claimNameIdentifier }, "serverAuth");
-                    //create claimsPrincipal
-                    var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-                    //Sign In User
-                    await HttpContext.SignInAsync(claimsPrincipal);
-                }
-            }
-
-            return Ok();
-        }
-
         [HttpPost("authenticatetoken")]
         public async Task<ActionResult<AuthenticationResponse>> AuthenticateJwt(AuthenticationRequest authenticationRequest)
         {
             string token = string.Empty;
 
             //checking if user exists in database
-            User userExists = _context.Users.Where(u =>u.Email == authenticationRequest.Email).FirstOrDefault();
+            User userExists = _context.Users.Include(i => i.Roles).Where(u =>u.Email == authenticationRequest.Email).FirstOrDefault();
 
             if (userExists != null)
             {
@@ -124,14 +100,27 @@ namespace Bookmazon.Server.Controllers
 
         private string GenerateJwtToken(User user)
         {
+            //get secret key
             string secretKey = _configuration["JWTSettings:SecretKey"];
             var key = Encoding.ASCII.GetBytes(secretKey);
 
-            var claimEmail = new Claim(ClaimTypes.Email, user.Email);
-            var claimNameIdentifier = new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString());
+            //create claims
+            Claim[] getClaims()
+            {
+                List<Claim> claims = new List<Claim>();
+                claims.Add(new Claim(ClaimTypes.Email, user.Email));
+                claims.Add(new Claim(ClaimTypes.NameIdentifier, Convert.ToString(user.UserID)));
+                foreach (var role in user.Roles)
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, role.RoleName == null ? "" : role.RoleName.ToString()));
+                }
+                return claims.ToArray();
+            }
 
-            var claimsIdentity = new ClaimsIdentity(new[] { claimEmail, claimNameIdentifier }, "serverAuth");
+            //create claimsIdentity
+            var claimsIdentity = new ClaimsIdentity(getClaims(), "serverAuth");
 
+            // generate token that is valid for 2 hours
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = claimsIdentity,
@@ -139,9 +128,11 @@ namespace Bookmazon.Server.Controllers
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
+            //creating a token handler
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
+            //returning the token back
             return tokenHandler.WriteToken(token);
         }
 
@@ -173,7 +164,8 @@ namespace Bookmazon.Server.Controllers
                 {
                     //returning the user if found
                     var userId = principle.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                    return await _context.Users.Where(u => u.UserID == Convert.ToInt64(userId)).FirstOrDefaultAsync();
+                    var user = await _context.Users.Include(i => i.Roles).Where(u => u.UserID == Convert.ToInt64(userId)).FirstOrDefaultAsync();
+                    return user;
                 }
             }
             catch (Exception ex)

@@ -2,6 +2,7 @@
 @using Bookmazon.Client.Services
 @using Bookmazon.Client.Events
 @using Bookmazon.Shared.Filter
+@using Microsoft.AspNetCore.Components.Authorization
 
 
 @inject NavigationManager Nav
@@ -9,9 +10,7 @@
 @inject EventService eventService;
 
 
-
-
-<form @onsubmit:preventDefault @onsubmit="search">
+    <form @onsubmit:preventDefault @onsubmit="search">
     <div class="form-group">
         <div class="input-group">
             <input  @bind="_serachString" class="form-control" placeholder="search"/>
@@ -19,6 +18,8 @@
         </div>
     </div>
 </form>
+
+
 
 @code {
     [QueryStringParameter]

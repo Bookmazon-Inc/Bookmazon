@@ -1,11 +1,13 @@
 ﻿@page "/"
 @using Bookmazon.Shared.Dtos.Book
+@using Microsoft.AspNetCore.Components.Authorization
 
 @inject NavigationManager Nav
 @inject HttpClient Http
 
 
 <PageTitle>Index</PageTitle>
+
 
 
 @if(books != null)
@@ -32,10 +34,20 @@
 
 
 @code {
+    [CascadingParameter]
+    public Task<AuthenticationState> authenticationState { get; set; }
     private BookDto[] books;
 
     protected override async Task OnInitializedAsync()
     {
+        //var user = (await authenticationState).User;
+
+        //if (user.IsInRole("admin"))
+        //{
+        //    Nav.NavigateTo("/adminMain", true);
+        //}
+
+
         try
         {
             books = await Http.GetFromJsonAsync<BookDto[]>("/api/book/");

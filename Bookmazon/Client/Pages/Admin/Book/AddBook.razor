@@ -1,5 +1,5 @@
 ﻿@page "/AdminMain/Books/AddBook"
-
+@attribute [Authorize(Roles ="admin")]
 
 @using Bookmazon.Shared.Models
 @using Bookmazon.Shared.Dtos.Author
@@ -8,6 +8,7 @@
 @using Bookmazon.Shared.Dtos.Language
 @using Bookmazon.Shared.Dtos.Publisher
 @using Bookmazon.Shared.Dtos.VAT
+@using Microsoft.AspNetCore.Authorization
 
 
 @inject HttpClient Http
