@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Bookmazon.Server.Repos
 {
-    public class SupplyOrderRepo
+    public class SupplyOrderRepo : ISupplyOrderRepo
     {
         //Constructor
         public SupplyOrderRepo(DBContext context)
@@ -38,7 +38,29 @@ namespace Bookmazon.Server.Repos
         /// <returns></returns>
         public async Task<SupplyOrder?> GetSupplyOrder(int SupplyOrderId)
         {
-            return await _dbc.SupplyOrders.FindAsync();
+            return await _dbc.SupplyOrders.FindAsync(SupplyOrderId);
+        }
+
+        /// <summary>
+        /// This function returns all open SupplyOrders (defined by SupplyOrderStateID != 5, which is currently the state of "arrived"
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<SupplyOrder>> GetOpenSupplyOrders()
+        {
+            var query = from co in _dbc.SupplyOrders
+                        where co.SupplyOrderStateID != 5 // 5 is the current state of "arrived", could be better implemented but eh
+                        select co;
+
+            return await query.ToArrayAsync();
+        }
+
+        public async Task<IEnumerable<SupplyOrder>> GetLastXSupplyOrders(int amount)
+        {
+            var query = from co in _dbc.SupplyOrders
+                        orderby co.SupplyOrderDate descending
+                        select co;
+
+            return await query.Take(amount).ToArrayAsync();
         }
 
         // Set

@@ -1,0 +1,69 @@
+﻿@page "/Order"
+
+@using Bookmazon.Shared.Models
+@using Blazored.Toast.Services
+@using Microsoft.AspNetCore.Components.Authorization
+
+@inject IToastService _toastService
+
+
+<h2>Order</h2>
+<h3>Please enter your Adress</h3>
+<EditForm Model="@ord" OnValidSubmit="@(()=>Save())">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="text" @bind="@ord.Address" placeholder="Address" class="form-control dark-theme-textbox" maxlength="15">
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="text" @bind="@ord.ZIP" placeholder="ZIP" class="form-control dark-theme-textbox" maxlength="150">
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="text" @bind="@ord.City" placeholder="City" class="form-control dark-theme-textbox" maxlength="100">
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="text" @bind="@ord.Country" placeholder="Country" class="form-control dark-theme-textbox" maxlength="150">
+    </div>
+    <br />
+
+    <button class="btn btn-danger" @onclick="@()">Cancel</button>
+    <button class="btn btn-danger" type="submit">Confirm Order</button>
+</EditForm>
+
+
+<!--
+Address
+ZIP
+City
+Country
+
+-->
+
+@code {
+    private CustomerOrder ord;
+    private Task<AuthenticationState> authenticationState;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ord.OrderDate = DateTime.Now;
+        var authState = await authenticationState;
+        var user = authState.User;
+
+        
+    }
+
+    private void Save()
+    {
+
+    }
+
+    private void Cancel()
+    {
+        
+    }
+
+
+}

@@ -9,6 +9,9 @@ namespace Bookmazon.Server.Interfaces.Repos
         // Get
         Task<IEnumerable<SupplyOrder>> GetAllSupplyOrders(SupplyOrderFilter? supplyOrderFilter);
         Task<SupplyOrder?> GetSupplyOrder(int SupplyOrderId);
+        Task<IEnumerable<SupplyOrder>> GetOpenSupplyOrders();
+        Task<IEnumerable<SupplyOrder>> GetLastXSupplyOrders(int amount);
+
 
         // Set
         void AddSupplyOrder(SupplyOrder SupplyOrder);

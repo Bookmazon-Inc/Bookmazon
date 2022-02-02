@@ -39,4 +39,8 @@
     <ProjectReference Include="..\Shared\Bookmazon.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Pages\Admin\CustomerOrder\" />
+  </ItemGroup>
+
 </Project>

@@ -16,13 +16,14 @@ namespace Bookmazon.Server.Data
         }
 
 
-        private IUserRepo _userReo;
-        public IUserRepo UserRepo => _userReo ??= new UserRepo(_dbContext);
+        private IUserRepo _userRepo;
+        public IUserRepo UserRepo => _userRepo ??= new UserRepo(_dbContext);
 
         private IBookRepo _bookRepo;
         public IBookRepo BookRepo => _bookRepo ??= new BookRepo(_dbContext);
 
-        public ISupplierRepo SupplierRepo => throw new NotImplementedException();
+        private ISupplierRepo _supplierRepo;
+        public ISupplierRepo SupplierRepo => _supplierRepo ??= new SupplierRepo(_dbContext);
 
         public ICustomerOrderRepo customerOrderRepo => throw new NotImplementedException();
 
@@ -30,9 +31,11 @@ namespace Bookmazon.Server.Data
 
         public IInvoiceRepo invoiceRepo => throw new NotImplementedException();
 
-        public IStorageRepo storageRepo => throw new NotImplementedException();
+        private IStorageRepo _storageRepo;
+        public IStorageRepo storageRepo => _storageRepo ??= new StorageRepo(_dbContext);
 
-        public ISupplyOrderRepo supplyOrderRepo => throw new NotImplementedException();
+        private ISupplyOrderRepo _supplyOrderRepo;
+        public ISupplyOrderRepo supplyOrderRepo => _supplyOrderRepo ??= new SupplyOrderRepo(_dbContext);
 
         #region Functions
         public void Commit()

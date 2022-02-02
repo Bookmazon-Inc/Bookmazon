@@ -1,0 +1,116 @@
+﻿@page "/Admin/SupplyOrders"
+@using Bookmazon.Shared.Models
+@using Bookmazon.Shared.Dtos.SupplyOrder
+
+@inject HttpClient Http
+    
+<h1>Supply orders</h1>
+<a style="font-weight: bold;" href="/AdminMain/Books/AddBook">Create a new Order</a>
+
+<h2>Open Orders</h2>
+@if (openOrders != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Order ID</th>
+                <th>State</th>
+                <th>Discount (in %)</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ord in openOrders)
+            {
+                @try
+                {
+                    <tr>
+                        <td>@ord.SupplyOrderDate</td>
+                        <td>@ord.SupplyOrderID</td>
+                        <td>@ord.SupplyOrderState</td>
+                        <td>@ord.Discount</td>
+                        <!-- <td><button class="btn-outline-primary" @onclick="@()"></button></td> -->
+                    </tr>
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+
+<h2>All Past Orders</h2>
+@if (allOrders != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Order ID</th>
+                <th>State</th>
+                <th>Discount (in %)</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ord in allOrders)
+            {
+                @try
+                {
+                    <tr>
+                        <td>@ord.SupplyOrderDate</td>
+                        <td>@ord.SupplyOrderID</td>
+                        <td>@ord.SupplyOrderState</td>
+                        <td>@ord.Discount</td>
+                        <!-- <td><button class="btn-outline-primary" @onclick="@()"></button></td> -->
+                    </tr>
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+
+
+
+@code {
+    // Variables
+    private List<SupplyOrderDto> allOrders = new();
+    private List<SupplyOrderDto> openOrders = new();
+    private List<SupplyOrderDto> lastOrders = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        LoadData();
+    }
+
+    private async void LoadData()
+    {
+        allOrders   = await Http.GetFromJsonAsync<List<SupplyOrderDto>>("api/SupplyOrder");
+        openOrders  = await Http.GetFromJsonAsync<List<SupplyOrderDto>>("api/SupplyOrder/OpenSupplyOrders");
+        lastOrders  = await Http.GetFromJsonAsync<List<SupplyOrderDto>>(String.Format("api/SupplyOrder/LastSupplyOrders"));
+        StateHasChanged();
+    }
+
+
+
+
+}
