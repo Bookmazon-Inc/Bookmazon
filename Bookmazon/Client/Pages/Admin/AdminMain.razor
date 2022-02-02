@@ -1,5 +1,7 @@
 ﻿@page "/AdminMain"
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
 @attribute [Authorize(Roles ="admin")]
 
 
@@ -8,5 +10,4 @@
 </div>
 
 @code {
-
 }

@@ -53,6 +53,16 @@ namespace Bookmazon.Server.Controllers
 
         }
 
+        private string GenerateSalt()
+        {
+            using (var generator = RandomNumberGenerator.Create())
+            {
+                var salt = new byte[24];
+                generator.GetBytes(salt);
+                return Convert.ToBase64String(salt);
+            }
+        }
+
         [HttpPost("authenticatetoken")]
         public async Task<ActionResult<AuthenticationResponse>> AuthenticateJwt(AuthenticationRequest authenticationRequest)
         {
@@ -72,30 +82,6 @@ namespace Bookmazon.Server.Controllers
             }
             return await Task.FromResult(new AuthenticationResponse() { Token = token });
 
-        }
-
-
-
-        private string GenerateSalt()
-        {
-            using (var generator = RandomNumberGenerator.Create())
-            {
-                var salt = new byte[24];
-                generator.GetBytes(salt);
-                return Convert.ToBase64String(salt);
-            }
-        }
-
-        private string PasswordHash(string salt, string password)
-        {
-            byte[] saltBytes = Convert.FromBase64String(salt);
-            string hashedPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                password: password,
-                salt: saltBytes,
-                prf: KeyDerivationPrf.HMACSHA256,
-                iterationCount: 10000,
-                numBytesRequested: 56));
-            return hashedPassword;
         }
 
         private string GenerateJwtToken(User user)
@@ -177,6 +163,18 @@ namespace Bookmazon.Server.Controllers
             //returning null if token is not validated
             return null;
 
+        }
+
+        private string PasswordHash(string salt, string password)
+        {
+            byte[] saltBytes = Convert.FromBase64String(salt);
+            string hashedPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                password: password,
+                salt: saltBytes,
+                prf: KeyDerivationPrf.HMACSHA256,
+                iterationCount: 10000,
+                numBytesRequested: 56));
+            return hashedPassword;
         }
     }
 }

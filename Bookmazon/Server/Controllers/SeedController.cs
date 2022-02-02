@@ -43,14 +43,12 @@ namespace Bookmazon.Server.Controllers
             CustomerOrderPositionState cosstate1 = new CustomerOrderPositionState { CustomerOrderPositionStateId = 1, Title = "In Packaging" };
             CustomerOrderPositionState cosstate2 = new CustomerOrderPositionState { CustomerOrderPositionStateId = 2, Title = "Packaged" };
 
-            SupplyOrderState sustate1 = new SupplyOrderState { SupplyOrderStateID = 1, Title = "New" };
-            SupplyOrderState sustate2 = new SupplyOrderState { SupplyOrderStateID = 2, Title = "In packaging" };
-            SupplyOrderState sustate3 = new SupplyOrderState { SupplyOrderStateID = 3, Title = "Packaged" };
-            SupplyOrderState sustate4 = new SupplyOrderState { SupplyOrderStateID = 4, Title = "Sent" };
-            SupplyOrderState sustate5 = new SupplyOrderState { SupplyOrderStateID = 5, Title = "Arrived" };
+            SupplyOrderState sustate1 = new SupplyOrderState { SupplyOrderStateID = 1, Title = "Not yet released" };
+            SupplyOrderState sustate2 = new SupplyOrderState { SupplyOrderStateID = 2, Title = "Ordered" };
+            SupplyOrderState sustate3 = new SupplyOrderState { SupplyOrderStateID = 3, Title = "Arrived" };
 
-            SupplyOrderPositionState supstate1 = new SupplyOrderPositionState { SupplyOrderPositionStateID = 1, Title = "In Packaging" };
-            SupplyOrderPositionState supstate2 = new SupplyOrderPositionState { SupplyOrderPositionStateID = 2, Title = "Packaged" };
+            SupplyOrderPositionState supstate1 = new SupplyOrderPositionState { SupplyOrderPositionStateID = 1, Title = "Ordered" };
+            SupplyOrderPositionState supstate2 = new SupplyOrderPositionState { SupplyOrderPositionStateID = 2, Title = "Arrived" };
 
             Language de = new Language { LanguageCode = "de", FullName = "Deutsch/German" };
             Language en = new Language { LanguageCode = "en", FullName = "English" };
@@ -72,8 +70,8 @@ namespace Bookmazon.Server.Controllers
             VAT vat1 = new VAT { VATID = 1, VATPercentage = 10 };
             VAT vat2 = new VAT { VATID = 2, VATPercentage = 20 };
 
-            Supplier sup1 = new Supplier { SupplierID = 1, Title = "AustrianBookSupplier GmbH" };
-            Supplier sup2 = new Supplier { SupplierID = 2, Title = "Bookstore Yeldricius" };
+            Supplier sup1 = new Supplier { SupplierID = 1, Title = "AustrianBookSupplier GmbH", Land = "Austria", PostalCode = "6020", City = "Innsbruck", Street = "Boooksupplierstreet", HouseNumber = "1a", Email = "austrian@booksupplier.at"};
+            Supplier sup2 = new Supplier { SupplierID = 2, Title = "Bookstore Yeldricius", Land = "Holy Empire Tyrol", PostalCode = "1", City = "Capital", Street = "Capitalcitystreet", HouseNumber = "0b", Email = "southtyroldidnothingwrong@yeldricius.com" };
 
             Author aut1 = new Author { AuthorId = 1, Firstname = "Marc-Uwe", Lastname = "Kling" };
             Author aut2 = new Author { AuthorId = 2, Firstname = "Paru", Lastname = "Itagaki" };
@@ -86,7 +84,7 @@ namespace Bookmazon.Server.Controllers
                 ISBN = "9783548372570",
                 Title = "Die Känguru-Chroniken: Ansichten eines vorlauten Beuteltiers",
                 Description = "'Ich bin ein Känguru - und Marc-Uwe ist mein Mitbewohner und Chronist. Nur manches, was er über mich erzählt, stimmt. Zum Beispiel, dass ich mal beim Vietcong war. Das Allermeiste jedoch ist übertrieben, verdreht oder gelogen! Aber ich darf nicht meckern. Wir gehen zusammen essen und ins Kino, und ich muss nix bezahlen.' Mal bissig, mal verschroben, dann wieder liebevoll ironisch wird der Alltag eines ungewöhnlichen Duos beleuchtet.",
-                PictureURL = "https://assets.thalia.media/img/artikel/154079d4058177b17311d9e33fb92f820a24c67e-00-00.jpeg",
+                PictureURL = "https://assets.thalia.media/img/artikel/f2310c9f64498c54daea67690209c544c5bf496c-00-00.jpeg",
                 NetPriceSell = 9.41m,
                 PricePurchase = 2.99m,
                 LanguageCode = de.LanguageCode,
@@ -108,8 +106,8 @@ namespace Bookmazon.Server.Controllers
                 VATID = vat2.VATID
             };
 
-            SupplyOrder so1 = new SupplyOrder { SupplyOrderID = 1, SupplyOrderDate = new DateTime(2021, 11, 30), SupplierID = sup2.SupplierID, Discount = 0, SupplyOrderStateID = 5 };
-            SupplyOrder so2 = new SupplyOrder { SupplyOrderID = 2, SupplyOrderDate = new DateTime(2021, 11, 24), SupplierID = sup1.SupplierID, Discount = 0, SupplyOrderStateID = 5 };
+            SupplyOrder so1 = new SupplyOrder { SupplyOrderID = 1, SupplyOrderDate = new DateTime(2021, 11, 30), SupplierID = sup2.SupplierID, Discount = 0, SupplyOrderStateID = 3 };
+            SupplyOrder so2 = new SupplyOrder { SupplyOrderID = 2, SupplyOrderDate = new DateTime(2021, 11, 24), SupplierID = sup1.SupplierID, Discount = 0, SupplyOrderStateID = 3 };
 
             SupplyOrderPosition sop1 = new SupplyOrderPosition { SupplyOrderID = 1, SupplyOrderPositionID = 1, Amount = 50, Price = book1.PricePurchase, Discount = 0, BookISBN = book1.ISBN, SupplyOrderPositionStateID = supstate2.SupplyOrderPositionStateID };
             SupplyOrderPosition sop2 = new SupplyOrderPosition { SupplyOrderID = 1, SupplyOrderPositionID = 2, Amount = 50, Price = book2.PricePurchase, Discount = 0, BookISBN = book2.ISBN, SupplyOrderPositionStateID = supstate2.SupplyOrderPositionStateID };
@@ -198,7 +196,7 @@ namespace Bookmazon.Server.Controllers
 
 
                 _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[SupplyOrderState] ON");
-                _dbc.SupplyOrderStates.AddRange(sustate1, sustate2, sustate3, sustate4, sustate5);
+                _dbc.SupplyOrderStates.AddRange(sustate1, sustate2, sustate3);
                 _dbc.SaveChanges();
                 _dbc.Database.ExecuteSqlRaw("SET IDENTITY_INSERT [ord].[SupplyOrderState] OFF");
 
@@ -252,6 +250,8 @@ namespace Bookmazon.Server.Controllers
         {
             _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[Author]");
             _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[AuthorBook]");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [str].[Storage]");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [ord].[SupplyOrderPosition]");
             _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[Book]");
             _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[BookDiscount]");
             _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[BookSupplier]");
@@ -264,10 +264,11 @@ namespace Bookmazon.Server.Controllers
             _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[Publisher]");
             _dbc.Database.ExecuteSqlRaw("DELETE FROM [usr].[Roles]");
             _dbc.Database.ExecuteSqlRaw("DELETE FROM [usr].[RolesUser]");
-            _dbc.Database.ExecuteSqlRaw("DELETE FROM [str].[Storage]");
+  
             _dbc.Database.ExecuteSqlRaw("DELETE FROM [str].[StorageLocation]");
-            _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[Supplier]");
             _dbc.Database.ExecuteSqlRaw("DELETE FROM [ord].[SupplyOrder]");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[Supplier]");
+
             _dbc.Database.ExecuteSqlRaw("DELETE FROM [ord].[SupplyOrderPositionState]");
             _dbc.Database.ExecuteSqlRaw("DELETE FROM [ord].[SupplyOrderState]");
             _dbc.Database.ExecuteSqlRaw("DELETE FROM [usr].[User]");

@@ -1,0 +1,190 @@
+﻿@page "/AdminMain/Supplier/AddSupplier"
+@attribute [Authorize(Roles ="admin")]
+
+@using Bookmazon.Shared.Models
+@using Bookmazon.Shared.Dtos.Author
+@using Bookmazon.Shared.Dtos.Book
+@using Bookmazon.Shared.Dtos.Genre
+@using Bookmazon.Shared.Dtos.Language
+@using Bookmazon.Shared.Dtos.Publisher
+@using Bookmazon.Shared.Dtos.VAT
+@using Microsoft.AspNetCore.Authorization
+
+
+@inject HttpClient Http
+@inject NavigationManager navMan
+
+<h1>Add a Book</h1>
+
+<EditForm Model="@NewBook" OnValidSubmit="@(()=>Save())">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="text" @bind="NewBook.ISBN" placeholder="ISBN" class="form-control dark-theme-textbox" maxlength="13">
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="text" @bind="NewBook.Title" placeholder="Title" class="form-control dark-theme-textbox">
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <!-- <input type="text" @bind="NewBook.Description" placeholder="Description" class="form-control dark-theme-textbox"> -->
+        <textarea @bind="NewBook.Description" placeholder="Description" class="form-control dark-theme-textbox"></textarea>
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="text" @bind="NewBook.PictureURL" placeholder="Picture URL" class="form-control dark-theme-textbox">
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="number" @bind="NewBook.NetPriceSell" placeholder="Net selling price (0.0000)" class="form-control dark-theme-textbox" step="0.0001" min="0">
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="number" @bind="NewBook.PricePurchase" placeholder="Net purchasing price (0.0000)" class="form-control dark-theme-textbox"step="0.0001" min="0">
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <InputSelect @bind-Value="NewBook.GenreID" class="form-control dark-theme-textbox">
+            @foreach (GenreDto gen in Genres)
+            {
+                <option value="@gen.GenreId">@gen.Title</option>
+            }
+        </InputSelect>
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <InputSelect @bind-Value="NewBook.LanguageCode" class="form-control dark-theme-textbox">
+            @foreach (LanguageDto lan in Languages)
+           {
+                <option value="@lan.LanguageCode">@lan.FullName</option>
+           }
+        </InputSelect>
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <InputSelect @bind-Value="NewBook.PublisherID" class="form-control dark-theme-textbox">
+            @foreach (PublisherDto pub in Publishers)
+           {
+               <option value="@pub.PublisherId">@pub.PublisherName</option>
+           }
+        </InputSelect>
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <InputSelect @bind-Value="NewBook.VATID" class="form-control dark-theme-textbox">
+            @foreach (VATDto vat in VATs)
+           {
+               <option value="@vat.VATID">@vat.VATPercentage %</option>
+           }
+        </InputSelect>
+    </div>
+    <br />
+    <!--
+    <div class="col-xl-6 col-md-8 col-12">
+        <InputSelect @bind-Value="NewBook.VATID" class="form-control dark-theme-textbox">
+            @foreach (VATDto vat in VATs)
+           {
+               <option value="@vat.VATID">@vat.VATPercentage %</option>
+           }
+        </InputSelect>
+    </div>
+    <br />
+
+    <Label>Selected: @string.Join(", ", uncontrolledMultiSelectionResult.Select(x => x.Text))</Label>
+
+    <Dropdown ItemsSource=@items
+          MultiSelect="true"
+          Placeholder="Select options..."
+          OnChange=@UncontrolledMultiChangeHandler
+          Style="width:300px;" />
+
+
+    <div class="col-xl-6 col-md-8 col-12">
+        <select class="form-control dark-theme-textbox" multiple onchange=>
+            @foreach (AuthorDto aut in Authors)
+            {
+                <option value="@aut.AuthorId" onclick="()=>">
+                    @if (aut.Firstname != null && aut.Lastname != null)
+                    {
+                        @aut.Firstname @aut.Lastname
+                    }
+                    else
+                    {
+                        @if (@aut.Penname != null)
+                        {
+                            @if (aut.Firstname != null && aut.Lastname != null)
+                            {
+                                @aut.Penname
+                            }
+                            else 
+                            {
+                                @aut.Penname
+                            }
+                        }
+                    }
+                </option>
+            }
+        </select>
+    </div>
+    <br /> -->
+    <button class="btn btn-danger" type="submit">Add Book</button>
+</EditForm>
+
+@code {
+    // Variables
+    private BookCreateDto NewBook = new();
+    private List<GenreDto>? Genres = new();
+    private List<LanguageDto>? Languages = new();
+    private List<PublisherDto>? Publishers = new();
+    private List<VATDto>? VATs = new();
+    private List<AuthorDto>? Authors = new();
+    private List<int>? SelectedAuthorIds = new();
+
+
+    protected override Task OnInitializedAsync()
+    {
+        NewBook = new();
+        LoadData();
+        return base.OnInitializedAsync();
+    }
+
+    private async void LoadData()
+    {
+        try { Genres = await Http.GetFromJsonAsync<List<GenreDto>>("api/Genre"); }
+        catch (Exception e) { throw e; }
+
+        try { Languages = await Http.GetFromJsonAsync<List<LanguageDto>>("api/Language"); }
+        catch (Exception e) { throw e; }
+
+        try { Publishers = await Http.GetFromJsonAsync<List<PublisherDto>>("api/Publisher"); }
+        catch (Exception e) { throw e; }
+
+        try { VATs = await Http.GetFromJsonAsync<List<VATDto>>("api/VAT"); }
+        catch (Exception e) { throw e; }
+
+        try { Authors = await Http.GetFromJsonAsync<List<AuthorDto>>("api/Author"); }
+        catch (Exception e) { throw e; }
+
+        // Set Default Values
+        NewBook.VATID           = VATs[0].VATID;
+        NewBook.GenreID         = Genres[0].GenreId;
+        NewBook.LanguageCode    = Languages[0].LanguageCode;
+        NewBook.PublisherID     = Publishers[0].PublisherId;
+        
+
+        // For good measure
+        StateHasChanged();
+    }
+
+    private void OnClick(int id)
+    {
+
+    }
+
+    private async Task Save()
+    {
+        await Http.PostAsJsonAsync("api/Book/AddBook", NewBook);
+        navMan.NavigateTo("/AdminMain/Books");   
+    }
+}

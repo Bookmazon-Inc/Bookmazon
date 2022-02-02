@@ -40,12 +40,13 @@
 
     protected override async Task OnInitializedAsync()
     {
-        //var user = (await authenticationState).User;
+        var user = (await authenticationState).User;
 
-        //if (user.IsInRole("admin"))
-        //{
-        //    Nav.NavigateTo("/adminMain", true);
-        //}
+       
+        if (user.IsInRole("admin"))
+        {
+            Nav.NavigateTo("/adminMain", true);
+        }
 
 
         try

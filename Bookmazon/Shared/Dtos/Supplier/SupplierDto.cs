@@ -5,14 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bookmazon.Shared.Models
-{
-    public class Supplier
-    {
-        [Key]
-        public int SupplierID { get; set;}
+namespace Bookmazon.Shared.Dtos.Supplier
 
-        [Required][StringLength(50)]
+{
+    public class SupplierDto
+    {
+        public int SupplierID { get; set; }
+
+        [Required]
+        [StringLength(50)]
         public string Title { get; set; }
 
         [Required]
@@ -30,15 +31,12 @@ namespace Bookmazon.Shared.Models
         [Required]
         public string PostalCode { get; set; }
 
-        [Required][EmailAddress]
+        [Required]
+        [EmailAddress]
         public string Email { get; set; }
 
         [StringLength(400)]
         public string? Notes { get; set; }
 
-        // (n:m) Relationship
-        public virtual ICollection<Book>? Books { get; set; } 
-        
-        public virtual ICollection<SupplyOrder>? SupplyOrders { get; set; }
     }
 }
