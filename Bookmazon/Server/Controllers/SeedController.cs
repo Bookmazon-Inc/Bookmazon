@@ -118,6 +118,25 @@ namespace Bookmazon.Server.Controllers
             Storage stor1 = new Storage { StorageLocationID = sloc1.StorageLocationID, ISBN = book1.ISBN, Amount = 50 };
             Storage stor2 = new Storage { StorageLocationID = sloc2.StorageLocationID, ISBN = book1.ISBN, Amount = 25 };
             Storage stor3 = new Storage { StorageLocationID = sloc3.StorageLocationID, ISBN = book2.ISBN, Amount = 50 };
+
+
+            //password = TestAdminPassword
+            User adminUser = new User { LastName = "TestAdminLastName",
+                FirstName = "TestAdminFirstName",
+                CompanyName = "TestAdminCompany",
+                Email = "TestAdmin@email.com",
+                Password = "mO7wFkhMrhKRcmUnVdO8n5Qvy8vthOqvUwj891opz2WqiU12Qzd6HjoO7YENaqg2TurCyJgGCxM=",
+                Salt = "IoajMClJpbeZ0crKf0iVcJ1b2XfC0FtO",
+                Roles = new List<Roles> { role1 } };
+            //password = TestCustomerPassword
+            User customerUser = new User { LastName = "TestCustomerLastName",
+                FirstName = "TestCustomerFirstName",
+                CompanyName = "TestCustomerCompany",
+                Email = "TestCustomer@email.com",
+                Password = "UG6Lav1nKevW41G0BjmXk0pJy7t3vlqA9c61erGPo8dhnEDCGRfw1aWChfpeg+VJdgvY0pzbxA8=",
+                Salt = "uEN50wiLk1tn3ZEg73Jj5ex1SB75NWax",
+                Roles = new List<Roles> { role2 } };
+
             #endregion
 
 
@@ -214,8 +233,12 @@ namespace Bookmazon.Server.Controllers
 
                 _dbc.SupplyOrderPositions.AddRange(sop1, sop2, sop3);
                 _dbc.Storages.AddRange(stor1, stor2, stor3);
-
                 _dbc.SaveChanges();
+
+
+                _dbc.Users.AddRange(adminUser, customerUser);
+                _dbc.SaveChanges();
+
 
                 ts.Commit();
             }

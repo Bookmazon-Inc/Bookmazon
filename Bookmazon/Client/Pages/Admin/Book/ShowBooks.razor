@@ -1,8 +1,9 @@
 ﻿@page "/AdminMain/Books"
 @using Bookmazon.Shared.Models
 @using Bookmazon.Shared.Dtos.Book
+@using Microsoft.AspNetCore.Authorization
 @inject HttpClient Http
-
+@attribute [Authorize(Roles ="admin")]
 <h1>Books</h1>
 <p>
     <a style="font-weight: bold;" href="/AdminMain/Books/AddBook">Add Book</a>

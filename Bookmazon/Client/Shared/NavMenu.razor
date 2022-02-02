@@ -1,8 +1,12 @@
-﻿@using Bookmazon.Client.Services
+﻿@using Blazored.LocalStorage
+@using Bookmazon.Client.Services
 @using Bookmazon.Client.Events
+@using Microsoft.AspNetCore.Components.Authorization
 
 @inject EventService eventService
 @inject CartService cartService
+@inject ILocalStorageService _localStorageService
+@inject NavigationManager _navigationManager
 
 <nav class="navbar navbar navbar-dark bg-dark">
   <div class="container-fluid">
@@ -12,21 +16,29 @@
 
 
     <SearchField />
-    <div class="d-flex justify-content-evenly w-25" style="color: #FFF">
-        <NavLink href="/cart">
-            <span type="button" class="oi oi-basket position-relative">
-              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                @cartAmount
-                <span class="visually-hidden">unread messages</span>
-              </span>
-            </span>
+    <div class="d-flex justify-content-evenly w-25" style="color: #FFF"> 
+            <NavLink href="/cart">
+                <span type="button" class="oi oi-basket position-relative">
+                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    @cartAmount
+                    <span class="visually-hidden">unread messages</span>
+                  </span>
+                </span>
+            </NavLink>
+        <AuthorizeView>
+            <NotAuthorized>
+                <NavLink href="/loginuser">
+                <span type="button" class="btn btn-success">
+                    Login
+                </span>
         </NavLink>
-        <NavLink href="/loginuser">
-            Login
-        </NavLink>
+            </NotAuthorized>
+            <Authorized>
+                <h4><b>Hello, @name</b></h4> &nbsp; &nbsp;
+                <button class="btn btn-danger" @onclick="LogoutUser">Logout</button>
+            </Authorized>
+        </AuthorizeView> 
     </div>
-
-
   </div>
 </nav>
 
@@ -34,6 +46,9 @@
 @code {
     private int cartAmount { get; set; } = 0;
 
+    [CascadingParameter]
+    public Task <AuthenticationState> authenticationState { get; set; }
+    string name;
 
     private void updateCartCounter(object sender, object args)
     {
@@ -41,9 +56,11 @@
         StateHasChanged();
     }
 
-    protected override void OnInitialized()
+    protected override async void OnInitialized()
     {
-
+        var authState = await authenticationState;
+        var user = authState.User;
+        name = user.Identity.Name;
         cartAmount = cartService.cartItems.Count();
         var cartCounterUpdated = new CartCounterUpdatedEvent();
 
@@ -51,8 +68,16 @@
     }
 
 
+
     public void Dispose()
     {
         eventService.RemoveEventHandler(updateCartCounter);
     }
+
+    private async Task LogoutUser()
+    {
+        await _localStorageService.RemoveItemAsync("jwt_token");
+        _navigationManager.NavigateTo("/", true);
+    }
+
 }
