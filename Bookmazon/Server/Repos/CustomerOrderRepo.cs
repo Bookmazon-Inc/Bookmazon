@@ -32,6 +32,19 @@ namespace Bookmazon.Server.Repos
             return await query.ToArrayAsync();
         }
         /// <summary>
+        /// This function returns all Orders that a customer has made
+        /// </summary>
+        /// <param name="customerID"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<CustomerOrder>> GetOrdersFromCustomer(int customerID)
+        {
+            var query = from co in _dbc.CustomerOrders
+                        where co.UserID == customerID
+                        select co;
+
+            return await query.ToArrayAsync();
+        }
+        /// <summary>
         /// Returns a spefific CustomerOrder
         /// </summary>
         /// <param name="CustomerOrderId">The Id of the customerOrder</param>
