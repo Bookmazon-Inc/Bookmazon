@@ -1,17 +1,19 @@
-﻿@page "/Admin"
-@inject NavigationManager navMan
+﻿@page "/AdminMain"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@attribute [Authorize(Roles ="admin")]
 
-
-<h2>Administrator Panel</h2>
-<div class="col-xl-6 col-md-8 col-12">
-    <button type="button" class="btn btn-lg btn-outline-primary" @onclick="@(()=>NavToBooks())">Show Books</button>
+<div class="alert alert-secondary mt-4">
+    <a class="font-weight link-dark" href="/AdminMain/Books">Show Books</a>
 </div>
 <br />
-
+<div class="alert alert-secondary mt-4">
+    <a class="font-weight link-dark" href="/AdminMain/Suppliers">Show Suppliers</a>
+</div>
 
 @code {
     public void NavToBooks()
     {
         navMan.NavigateTo("/AdminMain/Books");
     }
-}

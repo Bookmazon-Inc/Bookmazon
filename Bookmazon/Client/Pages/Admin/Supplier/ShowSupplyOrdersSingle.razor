@@ -1,0 +1,81 @@
+﻿@page "/AdminMain/Suppliers/SomethingSomething1"
+@attribute [Authorize(Roles ="admin")]
+
+@using Bookmazon.Shared.Models
+@using Bookmazon.Shared.Dtos.Supplier
+@using Microsoft.AspNetCore.Authorization
+@inject HttpClient Http
+
+
+<h1>Suppliers</h1>
+<p>
+    <a style="font-weight: bold;" href="/AdminMain/Suppliers/AddSupplier">Add Supplier</a>
+</p>
+
+<h2>Suppliers in Database</h2>
+@if (Suppliers != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Email</th>
+                <th>Notes</th>
+                <!-- <th></th> -->
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var supplier in Suppliers)
+            {
+                @try
+                {
+                    <tr>
+                        <td>@supplier.Title</td>
+                        <th>@supplier.PostalCode @supplier.City, @supplier.Land</th>
+                        <td>@supplier.Email</td>
+                        <td>@supplier.Notes</td>
+                        <!-- <td><button class="btn alert-danger" @onclick="@(()=>RemoveBook(@supplier))">Remove</button></td> -->
+                    </tr>
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p><em>Loading...</em></p>
+}
+
+
+
+@code {
+    // Variables
+    private List<SupplierDto>? Suppliers;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetSuppliers();
+    }
+
+    private async Task GetSuppliers()
+    {
+        try { Suppliers = await Http.GetFromJsonAsync<List<SupplierDto>>("api/Supplier"); }
+        catch (Exception e) { throw e; }
+
+        StateHasChanged();
+    }
+
+    private async void RemoveSupplier(SupplierDto b)
+    {
+        try { await Http.PostAsJsonAsync("api/Supplier/RemoveSupplier", b); }
+        catch (Exception e) { throw e; }
+
+        await GetSuppliers();
+    }
+}

@@ -3,6 +3,7 @@ using Bookmazon.Server.Interfaces.Repos;
 using Bookmazon.Server.Exceptions;
 using Bookmazon.Shared.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.CompilerServices;
 
 namespace Bookmazon.Server.Repos
 {
@@ -52,15 +53,19 @@ namespace Bookmazon.Server.Repos
         /// <param name="ISBN">The ISBN number (Id) of the book</param>
         public void ConnectSupplierToBook(int supplierId, string ISBN)
         {
-            Supplier? supplier = _dbc.Suppliers.Find(supplierId);
-            Book? book = _dbc.Books.Find(ISBN);
+            Supplier? supplier = _dbc.Suppliers.Include(i => i.Books).First(f => f.SupplierID == supplierId);
+            Book? book = _dbc.Books.Include(i => i.Suppliers).First(f => f.ISBN == ISBN);
 
-            // Check if entities are existen
+            // Check if entities exist
             if (supplier == null) throw new EntityNotFoundException(nameof(supplier));
             if (book == null) throw new EntityNotFoundException(nameof(book));
 
             // Add content to relationship
-            supplier.Books.Add(book); // _dbc.Suppliers.Find(supplier).Books.Add(book);
+            supplier.Books.Add(book);
+            book.Suppliers.Add(supplier);
+            _dbc.Suppliers.Find(supplier.SupplierID).Books.Add(book);
+            _dbc.Books.Find(book.ISBN).Suppliers.Add(supplier);
+
         }
         /// <summary>
         /// Removes the connection between a supplier and an book

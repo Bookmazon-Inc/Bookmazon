@@ -2,6 +2,7 @@
 using Bookmazon.Server.Exceptions;
 using Bookmazon.Server.Filter;
 using Bookmazon.Server.Interfaces.Repos;
+using Bookmazon.Shared.Dtos.Supplier;
 using Bookmazon.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -48,6 +49,13 @@ namespace Bookmazon.Server.Repos
             var t = query.ToQueryString();
             var x = query.Expression;
 
+            return await query.ToArrayAsync();
+        }
+
+        public async Task<IEnumerable<Book>> GetAllBooks(int supplierID)
+        {
+            Supplier _supplier = _dbc.Suppliers.First(f => f.SupplierID == supplierID);
+            var query = _dbc.Books.Where(w => w.Suppliers.Contains(_supplier));
             return await query.ToArrayAsync();
         }
 

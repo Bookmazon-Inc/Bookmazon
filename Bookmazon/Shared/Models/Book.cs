@@ -37,9 +37,10 @@ namespace Bookmazon.Shared.Models
         [Required][Column(TypeName = "decimal(18, 4)")]
         public decimal PricePurchase { get; set; }
 
+
         // [NotMapped]
         // public decimal PriceSell => ((VAT.VATPercentage / 100) * NetPriceSell) + NetPriceSell; 
-        
+
 
 
 
