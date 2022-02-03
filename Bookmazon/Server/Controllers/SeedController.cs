@@ -250,28 +250,35 @@ namespace Bookmazon.Server.Controllers
         [HttpGet("SeedDOWN")]
         public void SeedDOWN()
         {
-            _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[Author]");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [str].[StorageLocation]");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [str].[Storage]");
+
             _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[AuthorBook]");
-            _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[Book]");
             _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[BookDiscount]");
             _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[BookSupplier]");
-            _dbc.Database.ExecuteSqlRaw("DELETE FROM [ord].[CustomerOrder]");
-            _dbc.Database.ExecuteSqlRaw("DELETE FROM [ord].[CustomerOrderPositionState]");
-            _dbc.Database.ExecuteSqlRaw("DELETE FROM [ord].CustomerOrderState");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [usr].[RolesUser]");
+
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[Author]");
             _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[Discount]");
             _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[Genre]");
             _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[Language]");
             _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[Publisher]");
-            _dbc.Database.ExecuteSqlRaw("DELETE FROM [usr].[Roles]");
-            _dbc.Database.ExecuteSqlRaw("DELETE FROM [usr].[RolesUser]");
-            _dbc.Database.ExecuteSqlRaw("DELETE FROM [str].[Storage]");
-            _dbc.Database.ExecuteSqlRaw("DELETE FROM [str].[StorageLocation]");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[VAT]");
             _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[Supplier]");
-            _dbc.Database.ExecuteSqlRaw("DELETE FROM [ord].[SupplyOrder]");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[Book]");
+
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [ord].[CustomerOrderPositionState]");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [ord].[CustomerOrderState]");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [ord].[CustomerOrderPosition]");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [ord].[CustomerOrder]");
+
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [usr].[Roles]");
+
             _dbc.Database.ExecuteSqlRaw("DELETE FROM [ord].[SupplyOrderPositionState]");
             _dbc.Database.ExecuteSqlRaw("DELETE FROM [ord].[SupplyOrderState]");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [ord].[SupplyOrderPosition]");
+            _dbc.Database.ExecuteSqlRaw("DELETE FROM [ord].[SupplyOrder]");
             _dbc.Database.ExecuteSqlRaw("DELETE FROM [usr].[User]");
-            _dbc.Database.ExecuteSqlRaw("DELETE FROM [bok].[VAT]");
 
             _dbc.SaveChangesAsync();
         }

@@ -5,8 +5,10 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
 @using Bookmazon.Client.Services
+@using Bookmazon.Client.Events
 
 @inject NavigationManager navMan
+@inject EventService eventService
 @inject CartService cartService
 @inject HttpClient Http
 
@@ -16,6 +18,7 @@
 <EditForm Model="@ord" OnValidSubmit="@(()=>Save())">
     <DataAnnotationsValidator />
     <ValidationSummary />
+
     <div class="col-xl-6 col-md-8 col-12">
         <input type="text" @bind="@ord.Address" placeholder="Address" class="form-control dark-theme-textbox" maxlength="15">
     </div>
@@ -35,7 +38,7 @@
 
     <h3>Your Order Summarized</h3>
     <h4>Positions</h4>
-    @if (cartItems != null)
+    @if (cartItems != null && cartItems.Count >=1)
     {
        <table>
         <thead>
@@ -48,14 +51,14 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (CartItemDto item in cartItems)
+            @foreach (var cartItem in cartItems)
            {
                <tr>
-                   <td>@item.Title</td>
-                   <td>@item.ISBN</td>
-                   <td>@item.Price</td>
-                   <td>@item.Amount</td>
-                   <td>@(item.Price * item.Amount)</td>
+                   <td>@cartItem.Title</td>
+                   <td>@cartItem.ISBN</td>
+                   <td>@cartItem.Price</td>
+                   <td>@cartItem.Amount</td>
+                   <td>@(cartItem.Price * cartItem.Amount)</td>
                </tr>
            }
         </tbody>
@@ -67,46 +70,61 @@
     }
 
     <button class="btn btn-danger" @onclick="@(()=> Cancel())">Cancel</button>
-    @if (cartItems != null && cartItems.Count !<=0)
-    {
-        <button class="btn btn-danger" type="submit">Confirm Order</button>
-    }
+    <button class="btn btn-danger" type="submit">Confirm Order</button>
 </EditForm>
 
 @code {
-    private CustomerOrder ord;
+    private CustomerOrder ord = new();
     [CascadingParameter]
-    private Task<AuthenticationState> authenticationState { get; set; }
-    private IList<CartItemDto> cartItems;
+    private Task<AuthenticationState> authenticationState { get; set; } 
+    private IList<CartItemDto> cartItems { get; set; } = new List<CartItemDto>();
 
-    protected override async Task OnInitializedAsync()
+    protected override async void OnInitialized()
     {
         ord.OrderDate = DateTime.Now;
         var userID = (await authenticationState).User.FindFirst(ClaimTypes.NameIdentifier).Value;
         ord.UserID = int.Parse(userID);
         cartItems = cartService.cartItems;
+        eventService.AddEventHandler(new CartCounterUpdatedEvent(), updateCart);
+    }
+
+    private void updateCart(object sender, object args)
+    {
+        cartItems = cartService.cartItems;
+        StateHasChanged();
     }
 
     private async void Save()
     {
+        User usr = await Http.GetFromJsonAsync<User>(String.Format("api/User/GetUser/{0}", ord.UserID));
+        CustomerOrderState cos = await Http.GetFromJsonAsync<CustomerOrderState>("api/CustomerOrder/GetState/1"); // Not clean but works for now - Marco
+        ord.User = usr;
+        ord.CustomerOrderState = cos;
+
+
         int i = 1;
-        foreach (CartItemDto item in cartItems)
+        List<CustomerOrderPosition> positions = new();
+
+        foreach (var cartItem in cartItems)
         {
-            ord.CustomerOrderPositions.Add(
-                new CustomerOrderPosition
+            positions.Add( new CustomerOrderPosition
                 {
                     CustomerOrderPositionID = i,
-                    Amount = item.Amount,
-                    ISBN = item.ISBN,
-                    Price = item.Price
-                }
-            );
+                    CustomerOrderPositionStateID = 1,
+                    CustomerOrderPositionState = await Http.GetFromJsonAsync<CustomerOrderPositionState>("api/CustomerOrder/GetPositionState/1"),
+                    Amount = cartItem.Amount,
+                    ISBN = cartItem.ISBN,
+                    Price = cartItem.Price,
+                    Books = await Http.GetFromJsonAsync<Book>(String.Format("api/Book/GetBook/{0}", cartItem.ISBN)),
+                    CustomerOrder = ord
+                });
 
             // Count PositionID up
             i++;
         }
 
         await Http.PostAsJsonAsync("/api/CustomerOrder/CreateOrder", ord);
+        await Http.PostAsJsonAsync("/api/CustomerOrder/CreatePositions", positions);
         cartService.cartItems.Clear();
     }
 

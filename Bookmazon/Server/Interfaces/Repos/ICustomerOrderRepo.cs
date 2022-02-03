@@ -9,7 +9,7 @@ namespace Bookmazon.Server.Interfaces.Repos
         // Get
         Task<IEnumerable<CustomerOrder>> GetAllCustomerOrders(CustomerOrderFilter? customerOrderFilter);
         Task<CustomerOrder?> GetCustomerOrder(int CustomerOrderId);
-        Task<IEnumerable<CustomerOrder>> GetOrdersFromCustomer(int customerID)
+        Task<IEnumerable<CustomerOrder>> GetOrdersFromCustomer(int customerID);
 
         // Set
         void AddCustomerOrder(CustomerOrder customerOrder);

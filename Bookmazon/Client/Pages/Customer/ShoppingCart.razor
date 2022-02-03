@@ -65,7 +65,7 @@
                     <input class="form-control" disabled value="@String.Format("{0:c}", cartItems.Sum(x => x.Amount * x.Price))"/>
                 </div>
 
-                <button class="btn btn-primary">
+                <button class="btn btn-primary" @onclick="@(()=>CheckOut())">
                     Checkout
                 </button>
             </div>

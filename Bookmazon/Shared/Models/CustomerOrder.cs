@@ -53,6 +53,6 @@ namespace Bookmazon.Shared.Models
         //Relation
         public virtual CustomerOrderState CustomerOrderState { get; set; }
         public virtual User User { get; set; }
-        public virtual ICollection<CustomerOrderPosition> CustomerOrderPositions { get; set; }
+        // public virtual ICollection<CustomerOrderPosition> CustomerOrderPositions { get; set; }
     }
 }
