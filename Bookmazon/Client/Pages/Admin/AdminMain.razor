@@ -4,6 +4,8 @@
 @using System.Security.Claims
 @attribute [Authorize(Roles ="admin")]
 
+@inject NavigationManager navMan
+
 <div class="alert alert-secondary mt-4">
     <a class="font-weight link-dark" href="/AdminMain/Books">Show Books</a>
 </div>
