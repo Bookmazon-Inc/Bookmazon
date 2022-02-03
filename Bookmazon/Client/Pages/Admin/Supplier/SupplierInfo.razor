@@ -1,0 +1,56 @@
+﻿@page "/AdminMain/Suppliers/{ID:int}"
+@attribute [Authorize(Roles ="admin")]
+
+@using Bookmazon.Shared.Dtos.Supplier
+@using Bookmazon.Shared.Models
+@using Microsoft.AspNetCore.Authorization
+
+
+@inject HttpClient Http
+@inject NavigationManager navMan
+
+@if (Supplier != null)
+{
+  <div class="container mt-3">
+    <h1>@Supplier.Title</h1>    
+      <dl>
+        <dt>Email</dt>
+        <dd>@Supplier.Email</dd>
+        <dt> @Supplier.Street @Supplier.HouseNumber, @Supplier.PostalCode @Supplier.City, @Supplier.Land</dt>
+        <dd></dd>
+      </dl>     
+</div>
+}
+else
+{
+    <p><em>Loading...</em></p>
+}
+
+
+<div class="alert alert-secondary mt-4">
+    <a class="font-weight link-dark" href="/AdminMain/Suppliers/@ID/AddBook">Add Books to Supplier</a>
+</div>
+<div class="alert alert-secondary mt-4">
+    <a class="font-weight link-dark" href="/AdminMain/Suppliers/@ID/AddOrder">Add Orders</a>
+</div>
+
+@code {
+    [Parameter]
+    public int ID { get; set; }
+    // Variables
+    private SupplierDto? Supplier;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetSupplier(ID);
+    }
+
+    private async Task GetSupplier(int supplierID)
+    {
+        try { Supplier = await Http.GetFromJsonAsync<SupplierDto>($"api/Supplier/{ID}"); }
+        catch (Exception e) { throw e; }
+
+        StateHasChanged();
+    }
+}

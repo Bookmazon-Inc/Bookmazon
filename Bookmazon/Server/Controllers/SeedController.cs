@@ -106,8 +106,8 @@ namespace Bookmazon.Server.Controllers
                 VATID = vat2.VATID
             };
 
-            SupplyOrder so1 = new SupplyOrder { SupplyOrderID = 1, SupplyOrderDate = new DateTime(2021, 11, 30), SupplierID = sup2.SupplierID, Discount = 0, SupplyOrderStateID = 3 };
-            SupplyOrder so2 = new SupplyOrder { SupplyOrderID = 2, SupplyOrderDate = new DateTime(2021, 11, 24), SupplierID = sup1.SupplierID, Discount = 0, SupplyOrderStateID = 3 };
+            SupplyOrder so1 = new SupplyOrder { SupplyOrderID = 1, SupplyOrderDate = new DateTime(2021, 11, 30), SupplierID = sup2.SupplierID, SupplyOrderStateID = 3 };
+            SupplyOrder so2 = new SupplyOrder { SupplyOrderID = 2, SupplyOrderDate = new DateTime(2021, 11, 24), SupplierID = sup1.SupplierID, SupplyOrderStateID = 3 };
 
             SupplyOrderPosition sop1 = new SupplyOrderPosition { SupplyOrderID = 1, SupplyOrderPositionID = 1, Amount = 50, Price = book1.PricePurchase, Discount = 0, BookISBN = book1.ISBN, SupplyOrderPositionStateID = supstate2.SupplyOrderPositionStateID };
             SupplyOrderPosition sop2 = new SupplyOrderPosition { SupplyOrderID = 1, SupplyOrderPositionID = 2, Amount = 50, Price = book2.PricePurchase, Discount = 0, BookISBN = book2.ISBN, SupplyOrderPositionStateID = supstate2.SupplyOrderPositionStateID };

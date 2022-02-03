@@ -1,4 +1,4 @@
-﻿@page "/AdminMain/Suppliers"
+﻿@page "/AdminMain/Suppliers/SomethingSomething2"
 @attribute [Authorize(Roles ="admin")]
 
 @using Bookmazon.Shared.Models
@@ -31,11 +31,7 @@
                 @try
                 {
                     <tr>
-                        <td>    
-                            <a class="font-weight link-dark" href="/AdminMain/Suppliers/@supplier.SupplierID">
-                                @supplier.Title
-                            </a>
-                        </td>
+                        <td>@supplier.Title</td>
                         <th>@supplier.PostalCode @supplier.City, @supplier.Land</th>
                         <td>@supplier.Email</td>
                         <td>@supplier.Notes</td>

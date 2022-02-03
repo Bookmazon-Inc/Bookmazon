@@ -8,6 +8,7 @@ namespace Bookmazon.Server.Interfaces.Repos
         #region Book
         Task<Book?> GetBook(string ISBN);
         Task<IEnumerable<Book>> GetAllBooks(BookFilter? bookFilter);
+        Task<IEnumerable<Book>> GetAllBooks(int supplierID);
 
         void AddBook(Book book);
         void UpdateBook(Book book);

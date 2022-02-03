@@ -49,5 +49,6 @@ namespace Bookmazon.Shared.Models
         {
             return new SupplierDto { SupplierID = supplier.SupplierID, Title = supplier.Title, Land = supplier.Land, City = supplier.City, Street = supplier.Street, HouseNumber = supplier.HouseNumber, PostalCode = supplier.PostalCode, Email = supplier.Email, Notes = supplier.Notes };
         }
+
     }
 }

@@ -1,0 +1,87 @@
+﻿@page "/AdminMain/Suppliers/{ID:int}/AddBook"
+@attribute [Authorize(Roles ="admin")]
+
+@using Bookmazon.Shared.Dtos.Book
+@using Bookmazon.Shared.Models
+@using Bookmazon.Shared.Dtos.Supplier
+@using Microsoft.AspNetCore.Authorization
+
+
+@inject HttpClient Http
+@inject NavigationManager navMan
+
+@if (Supplier != null)
+{
+  <div class="container mt-3">
+    <h1>@Supplier.Title</h1>    
+      <dl>
+        <dt>Email</dt>
+        <dd>@Supplier.Email</dd>
+        <dt> @Supplier.Street @Supplier.HouseNumber, @Supplier.PostalCode @Supplier.City, @Supplier.Land</dt>
+        <dd></dd>
+      </dl>     
+</div>
+}
+else
+{
+    <p><em>Loading...</em></p>
+}
+
+<h1>Add a Book to Supplier</h1>
+<EditForm Model="@helperDto" OnValidSubmit="Save">
+<InputSelect @bind-Value="helperDto.ISBN" class="form-control dark-theme-textbox">
+    @foreach (BookDto book in Books)
+    {
+        <option value="@book.ISBN">@book.Title</option>
+    }
+</InputSelect>
+<button class="btn btn-success" type="submit">Add Book</button>
+</EditForm>
+
+
+
+@code {
+    // Variables
+    [Parameter]
+
+    public int ID { get; set; }
+    private List<BookDto> Books =new();
+    private SupplierDto? Supplier = new();
+    private BookSupplierDto helperDto = new();
+
+
+    protected override Task OnInitializedAsync()
+    {
+        LoadData();
+        return base.OnInitializedAsync();
+    }
+
+    private async void LoadData()
+    {
+
+        try { Supplier = await Http.GetFromJsonAsync<SupplierDto>($"api/Supplier/{ID}"); }
+        catch (Exception e) { throw e; }
+
+        try { Books = await Http.GetFromJsonAsync<List<BookDto>>("/api/book/"); } 
+        catch (Exception e) { throw e; }
+
+        // Set Default Values
+        helperDto.ISBN           = Books[0].ISBN;
+
+        // For good measure
+        StateHasChanged();
+    }
+
+
+    private async Task Save()
+    {
+        helperDto = new BookSupplierDto
+            {
+                ISBN = helperDto.ISBN,
+                SupplierID = ID
+            };
+        await Http.PostAsJsonAsync($"api/Supplier/ConnectSupplierToBook",helperDto);
+        navMan.NavigateTo("/AdminMain/Suppliers");   
+        StateHasChanged();
+    }
+}

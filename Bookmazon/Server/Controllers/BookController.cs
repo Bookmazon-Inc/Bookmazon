@@ -35,7 +35,24 @@ namespace Bookmazon.Server.Controllers
 
             return Ok(books.Select(s => s.ToBookDto()));
         }
-        
+
+        [HttpGet("{ID:int}")]
+        public async Task<ActionResult<IEnumerable<BookDto>>> GetBySupplierID(int ID)
+        {
+ 
+            var books = await _uow.BookRepo.GetAllBooks(ID);
+            if (books == null)
+            {
+                return NotFound();
+            }
+
+            else
+            {
+                return Ok(books.Select(s => s.ToBookDto()));
+            }
+
+        }
+
         /// <summary>
         /// This Function removes a book from the database
         /// </summary>

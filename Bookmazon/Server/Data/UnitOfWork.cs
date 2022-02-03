@@ -33,7 +33,8 @@ namespace Bookmazon.Server.Data
 
         public IStorageRepo storageRepo => throw new NotImplementedException();
 
-        public ISupplyOrderRepo supplyOrderRepo => throw new NotImplementedException();
+        public ISupplyOrderRepo _supplyOrderRepo;
+        public ISupplyOrderRepo supplyOrderRepo => _supplyOrderRepo ??= new SupplyOrderRepo(_dbContext);
 
         #region Functions
         public void Commit()

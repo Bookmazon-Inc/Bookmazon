@@ -3,6 +3,7 @@ using Bookmazon.Server.Interfaces;
 using Bookmazon.Server.Repos;
 using Bookmazon.Shared.Dtos.Book;
 using Bookmazon.Shared.Dtos.Supplier;
+using Bookmazon.Shared.Dtos.SupplyOrder;
 using Bookmazon.Shared.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -38,7 +39,7 @@ namespace Bookmazon.Server.Controllers
         /// This Function removes a supplier from the database
         /// </summary>
         /// <param name="supplierDto"></param>
-        [HttpPost("RemoveBook")]
+        [HttpPost("RemoveSupplier")]
         public async void RemoveSupplier(SupplierDto supplierDto)
         {
             Supplier s = await _uow.SupplierRepo.GetSupplier(supplierDto.SupplierID);
@@ -69,7 +70,7 @@ namespace Bookmazon.Server.Controllers
         /// </summary>
         /// <param name="supplierDto"></param>
         [HttpPost("AddSupplier")]
-        public void AddBook(SupplierDto supplierDto)
+        public void AddSupplier(SupplierDto supplierDto)
         {
             Supplier s = new Supplier { 
                 Title = supplierDto.Title,
@@ -83,6 +84,29 @@ namespace Bookmazon.Server.Controllers
             };
 
             _uow.SupplierRepo.AddSupplier(s);
+            _uow.Commit();
+        }
+
+        //[HttpPost("AddSupplyOrder")]
+        //public void AddSupplyOrder(SupplyOrderCreateDto sopDto)
+        //{
+        //    SupplyOrder s = new SupplyOrder
+        //    {
+        //        SupplierID = sopDto.SupplierID,
+        //        SupplyOrderDate = sopDto.SupplyOrderDate,
+        //        //SupplyOrderPositions = sopDto.SupplyOrderPositions,
+        //    };
+        //}
+
+        /// <summary>
+        /// Connects supplier to book
+        /// </summary>
+        /// <param name="supplierID"></param>
+        /// <param name="ISBN"></param>
+        [HttpPost("ConnectSupplierToBook")]
+        public void ConnectSupplierToBook(BookSupplierDto bsdto)
+        {
+            _uow.SupplierRepo.ConnectSupplierToBook(bsdto.SupplierID, bsdto.ISBN);
             _uow.Commit();
         }
     }
