@@ -1,6 +1,10 @@
 # 4aINF_PP
-Mitglieder: 
+Amazon pls dont sue us
+Members: 
 
-Christopher Zobler (GitDatCookie)
+GitDatCookie
 Niklas Rettenwander
-Marco Wagner (HariboBie)
+HariboBie
+
+
+This is a project done for school to learn blazor
