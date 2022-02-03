@@ -19,6 +19,7 @@
 <EditForm Model="@NewBook" OnValidSubmit="@(()=>Save())">
     <DataAnnotationsValidator />
     <ValidationSummary />
+
     <div class="col-xl-6 col-md-8 col-12">
         <input type="text" @bind="NewBook.ISBN" placeholder="ISBN" class="form-control dark-theme-textbox" maxlength="13">
     </div>
@@ -28,7 +29,6 @@
     </div>
     <br />
     <div class="col-xl-6 col-md-8 col-12">
-        <!-- <input type="text" @bind="NewBook.Description" placeholder="Description" class="form-control dark-theme-textbox"> -->
         <textarea @bind="NewBook.Description" placeholder="Description" class="form-control dark-theme-textbox"></textarea>
     </div>
     <br />
@@ -80,54 +80,7 @@
         </InputSelect>
     </div>
     <br />
-    <!--
-    <div class="col-xl-6 col-md-8 col-12">
-        <InputSelect @bind-Value="NewBook.VATID" class="form-control dark-theme-textbox">
-            @foreach (VATDto vat in VATs)
-           {
-               <option value="@vat.VATID">@vat.VATPercentage %</option>
-           }
-        </InputSelect>
-    </div>
-    <br />
 
-    <Label>Selected: @string.Join(", ", uncontrolledMultiSelectionResult.Select(x => x.Text))</Label>
-
-    <Dropdown ItemsSource=@items
-          MultiSelect="true"
-          Placeholder="Select options..."
-          OnChange=@UncontrolledMultiChangeHandler
-          Style="width:300px;" />
-
-
-    <div class="col-xl-6 col-md-8 col-12">
-        <select class="form-control dark-theme-textbox" multiple onchange=>
-            @foreach (AuthorDto aut in Authors)
-            {
-                <option value="@aut.AuthorId" onclick="()=>">
-                    @if (aut.Firstname != null && aut.Lastname != null)
-                    {
-                        @aut.Firstname @aut.Lastname
-                    }
-                    else
-                    {
-                        @if (@aut.Penname != null)
-                        {
-                            @if (aut.Firstname != null && aut.Lastname != null)
-                            {
-                                @aut.Penname
-                            }
-                            else 
-                            {
-                                @aut.Penname
-                            }
-                        }
-                    }
-                </option>
-            }
-        </select>
-    </div>
-    <br /> -->
     <button class="btn btn-danger" type="submit">Add Book</button>
 </EditForm>
 

@@ -19,6 +19,17 @@ namespace Bookmazon.Server.Controllers
             _uow = unitOfWork;
         }
 
+        /// <summary>
+        /// This function returns a specific book from the database 
+        /// </summary>
+        /// <param name="ISBN"></param>
+        /// <returns></returns>
+        [HttpGet("GetBook/{ISBN}")]
+        public async Task<ActionResult<Book>> GetBook(string ISBN)
+        {
+            var book = await _uow.BookRepo.GetBook(ISBN);
+            return Ok(book);
+        }
 
         /// <summary>
         /// get all books - use the book filter to filter

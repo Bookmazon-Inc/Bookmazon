@@ -1,0 +1,135 @@
+﻿@page "/Order"
+
+@using Bookmazon.Shared.Models
+@using Bookmazon.Shared.Dtos.Cart
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@using Bookmazon.Client.Services
+@using Bookmazon.Client.Events
+
+@inject NavigationManager navMan
+@inject EventService eventService
+@inject CartService cartService
+@inject HttpClient Http
+
+
+<h2>Order</h2>
+<h3>Please enter your Adress</h3>
+<EditForm Model="@ord" OnValidSubmit="@(()=>Save())">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="text" @bind="@ord.Address" placeholder="Address" class="form-control dark-theme-textbox" maxlength="15">
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="text" @bind="@ord.ZIP" placeholder="ZIP" class="form-control dark-theme-textbox" maxlength="150">
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="text" @bind="@ord.City" placeholder="City" class="form-control dark-theme-textbox" maxlength="100">
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="text" @bind="@ord.Country" placeholder="Country" class="form-control dark-theme-textbox" maxlength="150">
+    </div>
+    <br />
+
+    <h3>Your Order Summarized</h3>
+    <h4>Positions</h4>
+    @if (cartItems != null && cartItems.Count >=1)
+    {
+       <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>ISBN</th>
+                <th>Price</th>
+                <th>Amount</th>
+                <th>Total Price for position</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cartItem in cartItems)
+           {
+               <tr>
+                   <td>@cartItem.Title</td>
+                   <td>@cartItem.ISBN</td>
+                   <td>@cartItem.Price</td>
+                   <td>@cartItem.Amount</td>
+                   <td>@(cartItem.Price * cartItem.Amount)</td>
+               </tr>
+           }
+        </tbody>
+    </table>
+    }
+    else
+    {
+        <p><em>No Positions!</em></p>
+    }
+
+    <button class="btn btn-danger" @onclick="@(()=> Cancel())">Cancel</button>
+    <button class="btn btn-danger" type="submit">Confirm Order</button>
+</EditForm>
+
+@code {
+    private CustomerOrder ord = new();
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationState { get; set; } 
+    private IList<CartItemDto> cartItems { get; set; } = new List<CartItemDto>();
+
+    protected override async void OnInitialized()
+    {
+        ord.OrderDate = DateTime.Now;
+        var userID = (await authenticationState).User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        ord.UserID = int.Parse(userID);
+        cartItems = cartService.cartItems;
+        eventService.AddEventHandler(new CartCounterUpdatedEvent(), updateCart);
+    }
+
+    private void updateCart(object sender, object args)
+    {
+        cartItems = cartService.cartItems;
+        StateHasChanged();
+    }
+
+    private async void Save()
+    {
+        User usr = await Http.GetFromJsonAsync<User>(String.Format("api/User/GetUser/{0}", ord.UserID));
+        CustomerOrderState cos = await Http.GetFromJsonAsync<CustomerOrderState>("api/CustomerOrder/GetState/1"); // Not clean but works for now - Marco
+        ord.User = usr;
+        ord.CustomerOrderState = cos;
+
+
+        int i = 1;
+        List<CustomerOrderPosition> positions = new();
+
+        foreach (var cartItem in cartItems)
+        {
+            positions.Add( new CustomerOrderPosition
+                {
+                    CustomerOrderPositionID = i,
+                    CustomerOrderPositionStateID = 1,
+                    CustomerOrderPositionState = await Http.GetFromJsonAsync<CustomerOrderPositionState>("api/CustomerOrder/GetPositionState/1"),
+                    Amount = cartItem.Amount,
+                    ISBN = cartItem.ISBN,
+                    Price = cartItem.Price,
+                    Books = await Http.GetFromJsonAsync<Book>(String.Format("api/Book/GetBook/{0}", cartItem.ISBN)),
+                    CustomerOrder = ord
+                });
+
+            // Count PositionID up
+            i++;
+        }
+
+        await Http.PostAsJsonAsync("/api/CustomerOrder/CreateOrder", ord);
+        await Http.PostAsJsonAsync("/api/CustomerOrder/CreatePositions", positions);
+        cartService.cartItems.Clear();
+    }
+
+    private void Cancel()
+    {
+        navMan.NavigateTo("/");
+    }
+}

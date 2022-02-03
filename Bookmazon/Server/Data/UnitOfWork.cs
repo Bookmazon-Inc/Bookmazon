@@ -16,8 +16,8 @@ namespace Bookmazon.Server.Data
         }
 
 
-        private IUserRepo _userReo;
-        public IUserRepo UserRepo => _userReo ??= new UserRepo(_dbContext);
+        private IUserRepo _userRepo;
+        public IUserRepo UserRepo => _userRepo ??= new UserRepo(_dbContext);
 
         private IBookRepo _bookRepo;
         public IBookRepo BookRepo => _bookRepo ??= new BookRepo(_dbContext);
@@ -25,7 +25,8 @@ namespace Bookmazon.Server.Data
         private ISupplierRepo _supplierRepo;
         public ISupplierRepo SupplierRepo => _supplierRepo ??= new SupplierRepo(_dbContext);
 
-        public ICustomerOrderRepo customerOrderRepo => throw new NotImplementedException();
+        private ICustomerOrderRepo _customerOrderRepo;
+        public ICustomerOrderRepo customerOrderRepo => _customerOrderRepo ??= new CustomerOrderRepo(_dbContext);
 
         public IDiscountRepo discountRepo => throw new NotImplementedException();
 

@@ -5,6 +5,8 @@
 
 @inject CartService cartService
 @inject EventService eventService
+@inject HttpClient Http
+@inject NavigationManager navMan
 
 <h3>ShoppingCart</h3>
 
@@ -63,7 +65,7 @@
                     <input class="form-control" disabled value="@String.Format("{0:c}", cartItems.Sum(x => x.Amount * x.Price))"/>
                 </div>
 
-                <button class="btn btn-primary">
+                <button class="btn btn-primary" @onclick="@(()=>CheckOut())">
                     Checkout
                 </button>
             </div>
@@ -95,5 +97,11 @@
     private void changeAmount(CartItemDto cartItem)
     {
         cartService.UpdateAmount(cartItem.ISBN, cartItem.Amount);
+    }
+
+
+    private void CheckOut()
+    {
+        navMan.NavigateTo("/Order");
     }
 }

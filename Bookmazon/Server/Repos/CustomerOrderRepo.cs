@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Bookmazon.Server.Repos
 {
-    public class CustomerOrderRepo
+    public class CustomerOrderRepo : ICustomerOrderRepo
     {
         //Constructor
         public CustomerOrderRepo (DBContext context)
@@ -27,6 +27,19 @@ namespace Bookmazon.Server.Repos
         public async Task<IEnumerable<CustomerOrder>> GetAllCustomerOrders(CustomerOrderFilter? customerOrderFilter)
         {
             var query = from co in _dbc.CustomerOrders
+                        select co;
+
+            return await query.ToArrayAsync();
+        }
+        /// <summary>
+        /// This function returns all Orders that a customer has made
+        /// </summary>
+        /// <param name="customerID"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<CustomerOrder>> GetOrdersFromCustomer(int customerID)
+        {
+            var query = from co in _dbc.CustomerOrders
+                        where co.UserID == customerID
                         select co;
 
             return await query.ToArrayAsync();
