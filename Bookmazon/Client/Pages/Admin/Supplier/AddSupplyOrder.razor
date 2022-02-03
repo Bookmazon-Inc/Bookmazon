@@ -1,0 +1,159 @@
+﻿@page "/AdminMain/Suppliers/{ID:int}/AddOrder"
+@attribute [Authorize(Roles ="admin")]
+
+@using Bookmazon.Shared.Dtos.Book
+@using Bookmazon.Shared.Dtos.SupplyOrder
+@using Bookmazon.Shared.Models
+@using Bookmazon.Shared.Dtos.Supplier
+@using Microsoft.AspNetCore.Authorization
+
+
+@inject HttpClient Http
+@inject NavigationManager navMan
+
+<h1>Add a new Order for @ID</h1>
+
+    @if(Books.Count != 0)
+    {
+    SetDefault();
+    <EditForm Model="@NewSupplyOrderPosition" OnValidSubmit="SavePosition">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="col-xl-6 col-md-8 col-12">
+                <InputSelect @bind-Value="NewSupplyOrderPosition.ISBN" class="form-control dark-theme-textbox">
+                    @foreach (BookDto book in Books)
+                    {
+                        <option value="@book.ISBN">@book.Title</option>
+                    }
+                </InputSelect>
+                <input type="number" @bind="NewSupplyOrderPosition.Amount" placeholder="Amount (0)" class="form-control dark-theme-textbox" step="1" min="1">
+            </div>
+                <br />
+            <button class="btn btn-danger" type="submit">Add new Order Position</button>
+        </EditForm>
+        @if(NewSupplyOrder != null)
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Amount</th>
+                        <th>Title</th>
+                        <th>Price</th>
+                        <!-- <th></th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var sop in soplist)
+                    {
+                        @try
+                        {
+                            <tr>
+                                <td>@sop.Amount</td>
+                                @foreach (var book in Books.Where(w => w.ISBN == sop.ISBN))
+                                {
+                                <td>@book.Title</td>                                
+                                }
+                                <td>@sop.Price</td>
+                                <!-- <td><button class="btn alert-danger" @onclick="@(()=>RemoveBook(@book))">Remove</button></td> -->
+                            </tr>
+                        }
+                        catch (Exception e)
+                        {
+                            throw e;
+                        }
+                    }
+                </tbody>
+            </table>
+        <button class="btn btn-success" type="submit" @onclick = "Save">Save Order</button>
+        }
+        else
+        {
+        
+        }
+    }
+    else
+    {
+        <p><a style="font-weight: bold;" href="/AdminMain/Suppliers/@ID/AddBook">No Books in Supplier, Add Books</a></p>
+    }
+
+@code {
+    [Parameter]
+    public int ID { get; set; }
+
+    private SupplyOrderCreateDto? NewSupplyOrder = null;
+    private SupplyOrderPositionCreateDto NewSupplyOrderPosition = new();
+    private List<SupplyOrderPositionCreateDto> soplist = new();
+    private List<BookDto> Books = new();
+
+    private decimal bookPrice = new();
+
+    protected override Task OnInitializedAsync()
+    {
+
+        soplist = new();
+        NewSupplyOrderPosition = new();
+        LoadLists();         
+        return base.OnInitializedAsync();
+    }
+
+    private async void LoadLists()
+    {
+        Books = await Http.GetFromJsonAsync<List<BookDto>>($"api/Book/{ID}");
+        StateHasChanged();
+    }
+
+    private async void SetDefault()
+    {
+        NewSupplyOrderPosition.ISBN = Books[0].ISBN;
+    }
+
+    private async void SetPrice(string ISBN)
+    {
+        @foreach (var book in Books.Where(w => w.ISBN == ISBN))
+        {
+            bookPrice = book.Price * NewSupplyOrderPosition.Amount;
+        }
+    }
+
+    private async void AddToList()
+    {
+        SetPrice(NewSupplyOrderPosition.ISBN);
+        soplist.Add(new SupplyOrderPositionCreateDto
+        {
+            ISBN = NewSupplyOrderPosition.ISBN,
+            Amount = NewSupplyOrderPosition.Amount,
+            Price = bookPrice,
+            SupplyOrderPositionStateID = 1
+        });  
+
+    }
+
+    private async Task SavePosition()
+    {
+        if(NewSupplyOrder == null)
+        {
+            NewSupplyOrder = new SupplyOrderCreateDto{};
+            AddToList();
+        }
+        else
+        {
+            AddToList();       
+        }
+
+        StateHasChanged();
+    }
+
+
+    private async Task Save()
+    {
+        NewSupplyOrder = new SupplyOrderCreateDto
+            {
+                SupplierID = ID,
+                SupplyOrderStateID = 2,
+                SupplyOrderDate = DateTime.Now,
+                SupplyOrderPositions = soplist 
+            };
+        await Http.PostAsJsonAsync("api/Supplier/AddSupplier", soplist);
+        navMan.NavigateTo("/AdminMain/Suppliers");   
+    }
+}

@@ -1,0 +1,82 @@
+﻿@page "/AdminMain/Suppliers/AddSupplier"
+@attribute [Authorize(Roles ="admin")]
+
+@using Bookmazon.Shared.Models
+@using Bookmazon.Shared.Dtos.Supplier
+@using Microsoft.AspNetCore.Authorization
+
+
+@inject HttpClient Http
+@inject NavigationManager navMan
+
+<h1>Add a Supplier</h1>
+
+<EditForm Model="@NewSupplier" OnValidSubmit="Save">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="text" @bind="NewSupplier.Title" placeholder="Name" class="form-control dark-theme-textbox">
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="text" @bind="NewSupplier.Email" placeholder="Email" class="form-control dark-theme-textbox">
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="text" @bind="NewSupplier.Land" placeholder="Land" class="form-control dark-theme-textbox">
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="text" @bind="NewSupplier.PostalCode" placeholder="Postal Code" class="form-control dark-theme-textbox">
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="text" @bind="NewSupplier.City" placeholder="City" class="form-control dark-theme-textbox">
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="text" @bind="NewSupplier.Street" placeholder="Street" class="form-control dark-theme-textbox">
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <input type="text" @bind="NewSupplier.HouseNumber" placeholder="House Number" class="form-control dark-theme-textbox">
+    </div>
+    <br />
+    <div class="col-xl-6 col-md-8 col-12">
+        <!-- <input type="text" @bind="NewSupplier.Notes" placeholder="Notes" class="form-control dark-theme-textbox"> -->
+        <textarea @bind="NewSupplier.Notes" placeholder="Notes" class="form-control dark-theme-textbox"></textarea>
+    </div>
+    <br />
+    <button class="btn btn-danger" type="submit">Add Supplier</button>
+</EditForm>
+
+@code {
+    // Variables
+    private SupplierDto NewSupplier = new();
+
+
+    protected override Task OnInitializedAsync()
+    {
+        NewSupplier = new();
+        LoadData();
+        return base.OnInitializedAsync();
+    }
+
+    private async void LoadData()
+    {
+
+        // For good measure
+        StateHasChanged();
+    }
+
+    private void OnClick(int id)
+    {
+
+    }
+
+    private async Task Save()
+    {
+        await Http.PostAsJsonAsync("api/Supplier/AddSupplier", NewSupplier);
+        navMan.NavigateTo("/AdminMain/Suppliers");   
+    }
+}

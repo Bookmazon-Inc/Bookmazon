@@ -17,8 +17,6 @@ namespace Bookmazon.Shared.Models
         public DateTime SupplyOrderDate { get; set; }
 
 
-        public int Discount { get; set; }
-
 
         [StringLength(500)]
         public string? Notes { get; set; }

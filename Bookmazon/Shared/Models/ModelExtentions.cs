@@ -3,6 +3,7 @@ using Bookmazon.Shared.Dtos.Book;
 using Bookmazon.Shared.Dtos.Genre;
 using Bookmazon.Shared.Dtos.Language;
 using Bookmazon.Shared.Dtos.Publisher;
+using Bookmazon.Shared.Dtos.Supplier;
 using Bookmazon.Shared.Dtos.VAT;
 using System;
 using System.Collections.Generic;
@@ -43,5 +44,11 @@ namespace Bookmazon.Shared.Models
         {
             return new AuthorDto { AuthorId = author.AuthorId, Description = author.Description, Firstname = author.Firstname, Lastname = author.Lastname, Penname = author.Penname };
         }
+
+        public static SupplierDto ToSupplierDto(this Supplier supplier)
+        {
+            return new SupplierDto { SupplierID = supplier.SupplierID, Title = supplier.Title, Land = supplier.Land, City = supplier.City, Street = supplier.Street, HouseNumber = supplier.HouseNumber, PostalCode = supplier.PostalCode, Email = supplier.Email, Notes = supplier.Notes };
+        }
+
     }
 }
